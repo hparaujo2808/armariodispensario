@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Armário Dispensador</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Doto:wght@700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: bancada de teste. Palco 3D à esquerda, a porta (LCD + teclado) e o estado do Arduino à direita; embaixo, o corte da tranca e a ficha da porta. */
+:root {
+  --bg: #e6e9e4;
+  --surface: #f4f5f1;
+  --ink: #1b2420;
+  --muted: #5b6862;
+  --line: #c9cfc8;
+  --stage: #dfe3dd;
+  --edge: #6c5a44;
+  --mdf: #c8a376;
+  --accent: #1f6f78;
+  --ok: #2c8a4b;
+  --stop: #c0392b;
+  --cold: #2f6fd1;
+  --lcd-bg: #9fc23a;
+  --lcd-on: #1f2a12;
+  --lcd-off: rgba(31, 42, 18, 0.09);
+  --pad: #1c1d1f;
+  --key: #2c2e31;
+  --key-fg: #f2f2ee;
+  --key-red: #b8352b;
+  --term-bg: #18201c;
+  --term-fg: #d6e4da;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "Consolas", "Menlo", monospace;
+  --font-lcd: "Doto", "IBM Plex Mono", "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141917; --surface: #1c2220; --ink: #e5ebe6; --muted: #98a59e; --line: #2e3733;
+    --stage: #18201d; --edge: #d9c09a; --accent: #5fb7bf; --ok: #52b873; --stop: #e0614f; --cold: #6aa0ff;
+    --lcd-bg: #8fb233; --pad: #0e0f10; --key: #26282b; --term-bg: #0b0f0d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141917; --surface: #1c2220; --ink: #e5ebe6; --muted: #98a59e; --line: #2e3733;
+  --stage: #18201d; --edge: #d9c09a; --accent: #5fb7bf; --ok: #52b873; --stop: #e0614f; --cold: #6aa0ff;
+  --lcd-bg: #8fb233; --pad: #0e0f10; --key: #26282b; --term-bg: #0b0f0d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  font-variation-settings: "wdth" 100;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(28px, 4.2vw, 44px); font-weight: 800; font-variation-settings: "wdth" 82; letter-spacing: -0.01em; line-height: 1.05; }
+h2 { font-size: 24px; font-weight: 750; font-variation-settings: "wdth" 86; }
+h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: 0.04em; }
+
+header.top { display: grid; gap: 10px; }
+.sub { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 13px; font-weight: 600; }
+.chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.chip[data-s="stop"] i { background: var(--stop); }
+.chip[data-s="ok"] i { background: var(--ok); }
+.chip[data-s="cold"] i { background: var(--cold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cold) 25%, transparent); }
+
+.bancada { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr); gap: 18px; align-items: start; }
+.cena { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
+#palco { width: 100%; height: clamp(380px, 64vh, 660px); display: block; touch-action: none; }
+.cena .barra { position: absolute; left: 10px; right: 10px; top: 10px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.cena .barra > * { pointer-events: auto; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.seg button, .btn { font: 600 13px var(--font-body); color: var(--ink); background: transparent; border: 0; padding: 7px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.btn { background: var(--surface); border: 1px solid var(--line); border-radius: 7px; }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dica { position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted); background: color-mix(in srgb, var(--surface) 85%, transparent); padding: 4px 8px; border-radius: 6px; }
+.carregando { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
+
+aside.painel { display: grid; gap: 14px; min-width: 0; }
+.bloco { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 12px; min-width: 0; }
+
+/* LCD 16x2 HD44780: 16 colunas, matriz de 5x8 pontos por caractere */
+.lcd-moldura { background: #1e5a2f; border-radius: 6px; padding: 10px 12px; box-shadow: inset 0 0 0 3px #164524; }
+.lcd { background: var(--lcd-bg); border-radius: 3px; padding: 8px 8px; display: grid; gap: 4px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
+.lcd .linha { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
+.lcd .c { aspect-ratio: 5 / 8; display: grid; place-items: center; font-family: var(--font-lcd); font-weight: 800; color: var(--lcd-on); font-size: clamp(17px, 2.05vw, 26px); line-height: 1;
+  background-image: radial-gradient(circle, var(--lcd-off) 38%, transparent 42%); background-size: 20% 12.5%; }
+.teclado { background: var(--pad); border-radius: 8px; padding: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+.tecla { font: 700 20px var(--font-display); color: var(--key-fg); background: var(--key); border: 0; border-radius: 6px; aspect-ratio: 1.15; cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05); transition: transform 60ms; }
+.tecla.vermelha { background: var(--key-red); }
+.tecla:active, .tecla.batida { transform: translateY(2px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.35); }
+.tecla:disabled { opacity: 0.55; cursor: not-allowed; }
+.linha-info { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.linha-info code { font-family: var(--font-mono); color: var(--ink); background: var(--bg); padding: 1px 6px; border-radius: 4px; }
+
+.acoes { display: grid; gap: 10px; }
+.btn-porta { font: 700 15px var(--font-body); padding: 11px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--surface); cursor: pointer; }
+.gavetas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.gav { font: 600 13px var(--font-mono); padding: 7px 0; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; position: relative; }
+.gav.fria::after { content: ""; position: absolute; top: 4px; right: 5px; width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+.gav.fria.ligada::after { background: var(--cold); }
+.gav[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+.hw { display: grid; gap: 0; }
+.hw .item { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.hw .item:first-child { border-top: 0; }
+.hw .v { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; padding: 1px 8px; border-radius: 4px; background: var(--bg); }
+.hw .v[data-s="ok"] { color: var(--ok); }
+.hw .v[data-s="stop"] { color: var(--stop); }
+.hw .v[data-s="cold"] { color: var(--cold); }
+.serial { font-family: var(--font-mono); font-size: 12px; line-height: 1.55; background: var(--term-bg); color: var(--term-fg); border-radius: 8px; padding: 10px 12px; height: 168px; overflow: auto; margin: 0; white-space: pre-wrap; }
+.serial .t { opacity: 0.55; }
+
+.tranca { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.corte { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+.corte svg { width: 100%; height: auto; display: block; }
+.corte .estado { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); padding: 6px 4px 0; }
+.texto { display: grid; gap: 14px; min-width: 0; }
+ol.passos { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 64ch; }
+ol.passos li::marker { font-family: var(--font-mono); color: var(--accent); }
+
+.ficha { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.tabela-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
+td.k { font-family: var(--font-mono); font-weight: 500; white-space: nowrap; }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 920px) {
+  .bancada, .tranca, .ficha { grid-template-columns: 1fr; }
+  #palco { height: clamp(320px, 52vh, 480px); }
+}
+@media (prefers-reduced-motion: reduce) { .tecla { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">PROTÓTIPO · ARDUINO MEGA · MDF 3 mm · 880 × 880 × 700 mm</span>
+    <h1>Armário Dispensador</h1>
+    <p class="sub">rogi: Simulação do armário pronto, com a porta que ainda vai ser construída. Digite a senha no teclado, abra a porta, puxe as gavetas e ligue o frio. A tranca, o display e as gavetas reagem como o Arduino vai fazer.</p>
+    <div class="chips" aria-live="polite">
+      <span class="chip" id="chip-trava" data-s="stop"><i></i><span>Tranca travada</span></span>
+      <span class="chip" id="chip-porta" data-s="stop"><i></i><span>Porta fechada</span></span>
+      <span class="chip" id="chip-c1"><i></i><span>Frio C1 desligado</span></span>
+      <span class="chip" id="chip-c2"><i></i><span>Frio C2 desligado</span></span>
+    </div>
+  </header>
+
+  <section class="bancada">
+    <div class="cena">
+      <canvas id="palco" aria-label="Modelo 3D do armário. Arraste para girar, role para aproximar, clique na porta e nas gavetas."></canvas>
+      <div class="carregando" id="carregando">Carregando o modelo 3D…</div>
+      <div class="barra">
+        <div class="seg" role="group" aria-label="Vista">
+          <button type="button" id="v-geral" aria-pressed="true">Geral</button>
+          <button type="button" id="v-porta" aria-pressed="false">Porta</button>
+          <button type="button" id="v-tranca" aria-pressed="false">Tranca</button>
+          <button type="button" id="v-eletronica" aria-pressed="false">Eletrônica</button>
+        </div>
+        <button type="button" class="btn" id="raiox" aria-pressed="false">Raio-X</button>
+      </div>
+      <div class="dica">Arraste para girar · clique na porta e nas gavetas</div>
+    </div>
+
+    <aside class="painel">
+      <div class="bloco">
+        <h3>Na porta</h3>
+        <div class="lcd-moldura"><div class="lcd" id="lcd" role="status" aria-live="polite"></div></div>
+        <div class="teclado" id="teclado"></div>
+        <div class="linha-info"><span>Senha de teste <code>1234</code> · <code>#</code> confirma · <code>*</code> apaga</span><button type="button" class="btn" id="som" aria-pressed="true">Som ligado</button></div>
+      </div>
+
+      <div class="bloco acoes">
+        <h3>Mãos da enfermeira</h3>
+        <button type="button" class="btn-porta" id="btn-porta">Puxar a porta</button>
+        <div class="gavetas" id="gavetas"></div>
+      </div>
+
+      <div class="bloco">
+        <h3>O que o Arduino está fazendo</h3>
+        <div class="hw">
+          <div class="item"><span>Relé 1 · trava solenoide</span><span class="v" id="hw-r1">DESLIGADO</span></div>
+          <div class="item"><span>Relé 2 · Peltier gaveta C1</span><span class="v" id="hw-r2">DESLIGADO</span></div>
+          <div class="item"><span>Relé 3 · Peltier gaveta C2</span><span class="v" id="hw-r3">DESLIGADO</span></div>
+          <div class="item"><span>Sensor da porta (reed)</span><span class="v" id="hw-reed">FECHADA</span></div>
+          <div class="item"><span>Senhas erradas seguidas</span><span class="v" id="hw-erros">0 de 3</span></div>
+        </div>
+        <h3>Monitor serial · 9600</h3>
+        <pre class="serial" id="serial" aria-live="off"></pre>
+      </div>
+    </aside>
+  </section>
+
+  <section class="tranca" aria-labelledby="t-tranca">
+    <div class="corte">
+      <svg id="corte" viewBox="0 0 420 270" role="img" aria-label="Corte visto de cima: trava na parede direita e batente com janela preso na porta"></svg>
+      <div class="estado" id="corte-estado">Lingueta dentro da janela do batente: a porta não sai.</div>
+    </div>
+    <div class="texto">
+      <span class="eyebrow">VISTO DE CIMA · CANTO DIREITO DA FRENTE</span>
+      <h2 id="t-tranca">Como a tranca segura a porta</h2>
+      <p>rogi: A trava solenoide é uma peça só, mas trabalha em dupla com um batente. O corpo dela fica parafusado por dentro, na parede direita, e de lá sai a lingueta. Na porta vai um batente em L com uma janela. Com a porta fechada, a lingueta fica enfiada nessa janela, e puxar a porta só faz o batente bater nela.</p>
+      <ol class="passos">
+        <li><strong>Sem energia, travada.</strong> Uma mola empurra a lingueta para fora. A trava não gasta nada parada.</li>
+        <li><strong>Senha certa.</strong> O Arduino liga o relé 1, a bobina recebe 12 V e puxa a lingueta para dentro. A porta fica livre por 5 s. Assim que o sensor vê a porta aberta, o relé desliga e a lingueta volta.</li>
+        <li><strong>Fechar tranca sozinho.</strong> A lingueta tem a ponta chanfrada virada para a frente. Ao fechar, o batente desliza no chanfro, empurra a lingueta e ela estala dentro da janela. Ninguém precisa apertar nada.</li>
+      </ol>
+      <p>rogi: Isso resolve a dúvida de como fechar. O fechamento é mecânico. O sensor de porta só conta para o Arduino que fechou, e a tecla D tranca na hora se a enfermeira desistir antes de abrir.</p>
+    </div>
+  </section>
+
+  <section class="ficha">
+    <div class="texto">
+      <span class="eyebrow">AINDA NÃO EXISTE</span>
+      <h2>A porta que falta</h2>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Proposta</th></tr></thead>
+          <tbody>
+            <tr><td>Folha</td><td>MDF 6 mm, 880 × 880 mm, sobreposta à frente da caixa. Se for 3 mm como o resto, colar um quadro de ripas atrás para não empenar.</td></tr>
+            <tr><td>Dobradiças</td><td>2, na lateral esquerda, a 120 mm do topo e da base.</td></tr>
+            <tr><td>Puxador</td><td>Do lado direito, a 440 mm de altura.</td></tr>
+            <tr><td>Puxadores das gavetas</td><td>Rasgo ou furo na frente da gaveta, nada saltado para fora. A porta fecha por cima das gavetas e bateria em qualquer puxador.</td></tr>
+            <tr><td>LCD</td><td>Janela de 71 × 24 mm, centro a 690 mm de altura. A placa do módulo (80 × 36 mm) fica por dentro.</td></tr>
+            <tr><td>Teclado</td><td>Membrana adesiva colada por fora, logo abaixo do LCD. Rasgo de 22 × 2 mm para o cabo flat passar.</td></tr>
+            <tr><td>Batente da trava</td><td>Cantoneira em L por dentro da porta, na altura da lingueta (600 mm), com janela de 12 × 20 mm.</td></tr>
+            <tr><td>Ímã do sensor</td><td>Na borda direita da porta, a 300 mm, de frente para o reed switch.</td></tr>
+            <tr><td>Fios da porta</td><td>12 fios (8 do teclado, 4 do LCD). Dois cabos de rede resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="texto">
+      <span class="eyebrow">TECLADO 4x4</span>
+      <h2>O que cada tecla faz</h2>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Tecla</th><th>Função</th></tr></thead>
+          <tbody>
+            <tr><td class="k">0 a 9</td><td>Digita a senha (4 dígitos, aparecem como *)</td></tr>
+            <tr><td class="k">*</td><td>Apaga o último dígito</td></tr>
+            <tr><td class="k">#</td><td>Confirma a senha</td></tr>
+            <tr><td class="k">A</td><td>Liga ou desliga o frio da gaveta C1 (só depois da senha)</td></tr>
+            <tr><td class="k">B</td><td>Liga ou desliga o frio da gaveta C2 (só depois da senha)</td></tr>
+            <tr><td class="k">C</td><td>Livre, reserva para depois</td></tr>
+            <tr><td class="k">D</td><td>Tranca na hora, cancelando a liberação</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>rogi: Três senhas erradas seguidas travam o teclado por 30 s, com contagem no display. O teclado do computador também funciona aqui: números, <code>*</code>, <code>#</code> ou Enter, e A a D.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Medidas da caixa, do gaveteiro e da baia do dispensador tiradas do manual de montagem v2.3. Altura das prateleiras aproximada.</span>
+    <span>Gavetas frias em C1 e C2 é sugestão: são as mais altas e cabem a pastilha e o dissipador atrás do fundo falso. O display real não tem acento, por isso as mensagens saem sem.</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const SENHA = "1234";
+  const T_LIBERA = 5000, T_BLOQUEIO = 30000, MAX_ERROS = 3;
+  const GAVETAS = ["A1", "A2", "A3", "A4", "B1", "B2", "C1", "C2"];
+  const FRIAS = { C1: "A", C2: "B" };
+
+  /* ---------------- estado (o mesmo que o firmware vai ter) ---------------- */
+  const st = {
+    entrada: "", erros: 0, bloqueioAte: 0,
+    trava: false, travaAte: 0, sessao: false,
+    portaAng: 0, portaAlvo: 0, tremeAte: 0, portaAbertaAntes: false,
+    lingueta: 1,
+    gav: Object.fromEntries(GAVETAS.map((g) => [g, { pos: 0, alvo: 0 }])),
+    frio: { C1: false, C2: false },
+    msg: null, msgAte: 0,
+  };
+  const t0 = performance.now();
+
+  /* ---------------- buzzer ativo: frequência fixa, só muda o ritmo ---------------- */
+  let audio = null, somLigado = true;
+  function bip(padrao) {
+    if (!somLigado) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      let t = audio.currentTime + 0.01, liga = true;
+      for (const ms of padrao) {
+        if (liga) {
+          const o = audio.createOscillator(), g = audio.createGain();
+          o.type = "square"; o.frequency.value = 2400; g.gain.value = 0.035;
+          o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t + ms / 1000);
+        }
+        t += ms / 1000; liga = !liga;
+      }
+    } catch (e) { /* sem áudio, segue sem som */ }
+  }
+  const SOM = { tecla: [35], ok: [90, 70, 90], erro: [600], bloqueio: [250, 120, 250, 120, 250], porta: [60] };
+
+  /* ---------------- monitor serial ---------------- */
+  const serial = $("serial");
+  function log(txt) {
+    const s = ((performance.now() - t0) / 1000).toFixed(1).padStart(6, " ");
+    const linha = document.createElement("div");
+    linha.innerHTML = '<span class="t">' + s + "s</span>  " + txt.replace(/</g, "&lt;");
+    serial.appendChild(linha);
+    while (serial.childNodes.length > 60) serial.removeChild(serial.firstChild);
+    serial.scrollTop = serial.scrollHeight;
+  }
+
+  /* ---------------- LCD 16x2 ---------------- */
+  const lcdEl = $("lcd");
+  const celulas = [];
+  for (let r = 0; r < 2; r++) {
+    const linha = document.createElement("div"); linha.className = "linha";
+    const row = [];
+    for (let c = 0; c < 16; c++) { const d = document.createElement("span"); d.className = "c"; linha.appendChild(d); row.push(d); }
+    lcdEl.appendChild(linha); celulas.push(row);
+  }
+  let lcdAtual = ["", ""];
+  function lcd(l1, l2) {
+    const a = (l1 || "").padEnd(16).slice(0, 16), b = (l2 || "").padEnd(16).slice(0, 16);
+    if (a === lcdAtual[0] && b === lcdAtual[1]) return;
+    lcdAtual = [a, b];
+    [a, b].forEach((txt, r) => { for (let c = 0; c < 16; c++) celulas[r][c].textContent = txt[c] === " " ? " " : txt[c]; });
+    lcdEl.setAttribute("aria-label", a.trim() + ". " + b.trim());
+    desenharLcd3d();
+  }
+  function mensagem(l1, l2, ms) { st.msg = [l1, l2]; st.msgAte = performance.now() + ms; }
+
+  function telaBase(agora) {
+    if (st.msg && agora < st.msgAte) return st.msg;
+    st.msg = null;
+    if (agora < st.bloqueioAte) return ["Bloqueado", "Aguarde " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s"];
+    if (st.sessao && st.portaAng > 3) return ["Porta aberta", "C1:" + (st.frio.C1 ? "LIG" : "DES") + " C2:" + (st.frio.C2 ? "LIG" : "DES")];
+    if (st.sessao && st.trava) return ["Acesso liberado", "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s"];
+    return ["Digite a senha", "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length)];
+  }
+
+  /* ---------------- teclado 4x4 ---------------- */
+  const TECLAS = ["1", "2", "3", "A", "4", "5", "6", "B", "7", "8", "9", "C", "*", "0", "#", "D"];
+  const tecladoEl = $("teclado");
+  const botoes = {};
+  TECLAS.forEach((k) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "tecla" + ("ABCD".includes(k) ? " vermelha" : ""); b.textContent = k;
+    b.setAttribute("aria-label", "Tecla " + k);
+    b.addEventListener("click", () => tecla(k));
+    tecladoEl.appendChild(b); botoes[k] = b;
+  });
+
+  function setTrava(on, motivo) {
+    if (st.trava === on) return;
+    st.trava = on;
+    log("Rele 1 (trava) " + (on ? "LIGADO" : "DESLIGADO") + (motivo ? " - " + motivo : ""));
+  }
+  function setFrio(g, on) {
+    st.frio[g] = on;
+    log("Rele " + (g === "C1" ? 2 : 3) + " (Peltier " + g + ") " + (on ? "LIGADO" : "DESLIGADO"));
+  }
+
+  function tecla(k) {
+    const agora = performance.now();
+    const b = botoes[k];
+    if (b) { b.classList.add("batida"); setTimeout(() => b.classList.remove("batida"), 90); }
+    if (agora < st.bloqueioAte) { bip([80]); return; }
+    bip(SOM.tecla);
+
+    if (k === "D") {
+      if (st.trava && st.portaAng < 1) { setTrava(false, "tecla D"); st.sessao = false; mensagem("Trancado", "pela tecla D", 1500); }
+      else if (st.portaAng > 3) mensagem("Feche a porta", "para trancar", 1500);
+      else mensagem("Ja trancado", "", 1200);
+      return;
+    }
+    if (k === "A" || k === "B") {
+      const g = k === "A" ? "C1" : "C2";
+      if (!st.sessao) { mensagem("Digite a senha", "para usar A e B", 1500); return; }
+      setFrio(g, !st.frio[g]);
+      mensagem("Frio gaveta " + g, st.frio[g] ? "Ligado" : "Desligado", 1300);
+      return;
+    }
+    if (k === "C") { mensagem("Tecla C", "sem funcao ainda", 1200); return; }
+    if (st.sessao) return; // durante a sessão os números não fazem nada
+    if (k === "*") { st.entrada = st.entrada.slice(0, -1); st.msg = null; return; }
+    if (k === "#") {
+      if (st.entrada.length < 4) { mensagem("Senha incompleta", "Use 4 digitos", 1400); return; }
+      if (st.entrada === SENHA) {
+        st.entrada = ""; st.erros = 0; st.sessao = true; st.msg = null;
+        setTrava(true, "senha correta");
+        st.travaAte = agora + T_LIBERA;
+        bip(SOM.ok);
+      } else {
+        st.entrada = ""; st.erros++;
+        log("Senha incorreta (" + st.erros + " de " + MAX_ERROS + ")");
+        if (st.erros >= MAX_ERROS) {
+          st.bloqueioAte = agora + T_BLOQUEIO; st.erros = 0; st.msg = null;
+          log("Teclado bloqueado por 30 s");
+          bip(SOM.bloqueio);
+        } else {
+          mensagem("Senha incorreta", "Tentativa " + st.erros + " de 3", 1600);
+          bip(SOM.erro);
+        }
+      }
+      return;
+    }
+    if (/\d/.test(k) && st.entrada.length < 4) { st.entrada += k; st.msg = null; }
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    let k = e.key;
+    if (k === "Enter") k = "#";
+    if (k === "Backspace") k = "*";
+    k = k.length === 1 ? k.toUpperCase() : k;
+    if (TECLAS.includes(k)) { e.preventDefault(); tecla(k); }
+  });
+
+  /* ---------------- porta e gavetas ---------------- */
+  function puxarPorta() {
+    const agora = performance.now();
+    if (st.portaAlvo === 0) {
+      if (!st.trava) {
+        st.tremeAte = agora + 450; bip([80]);
+        mensagem("Porta trancada", "Digite a senha", 1500);
+        log("Puxaram a porta trancada: lingueta segurou");
+        return;
+      }
+      st.portaAlvo = 100;
+    } else {
+      const aberta = GAVETAS.find((g) => st.gav[g].alvo > 0 || st.gav[g].pos > 0.02);
+      if (aberta) { mensagem("Feche a gaveta", aberta, 1500); bip([80]); return; }
+      st.portaAlvo = 0;
+    }
+  }
+  $("btn-porta").addEventListener("click", puxarPorta);
+
+  const gavEl = $("gavetas");
+  const gavBtn = {};
+  GAVETAS.forEach((g) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "gav" + (FRIAS[g] ? " fria" : ""); b.textContent = g;
+    b.setAttribute("aria-pressed", "false");
+    b.setAttribute("aria-label", "Gaveta " + g + (FRIAS[g] ? " (fria)" : ""));
+    b.addEventListener("click", () => mexerGaveta(g));
+    gavEl.appendChild(b); gavBtn[g] = b;
+  });
+  function mexerGaveta(g) {
+    if (st.portaAng < 70) { mensagem("Abra a porta", "primeiro", 1200); return; }
+    st.gav[g].alvo = st.gav[g].alvo ? 0 : 1;
+  }
+
+  $("som").addEventListener("click", (e) => {
+    somLigado = !somLigado;
+    e.currentTarget.setAttribute("aria-pressed", String(somLigado));
+    e.currentTarget.textContent = somLigado ? "Som ligado" : "Som desligado";
+  });
+
+  /* ---------------- corte visto de cima (SVG) ---------------- */
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = $("corte");
+  function el(tag, attrs, pai) { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); (pai || svg).appendChild(n); return n; }
+  el("rect", { x: 0, y: 0, width: 420, height: 270, fill: "var(--surface)" });
+  // interior do armário (fundo) e parede direita
+  el("rect", { x: 20, y: 18, width: 312, height: 186, fill: "var(--bg)" });
+  el("rect", { x: 332, y: 18, width: 16, height: 190, fill: "var(--mdf)", stroke: "var(--edge)", "stroke-width": 1 });
+  el("text", { x: 340, y: 14, "text-anchor": "middle", "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "parede direita";
+  // lingueta (desenhada antes do corpo para sumir atrás dele ao recolher)
+  const lingueta = el("polygon", { points: "284,132 300,132 300,148 291,148 284,141", fill: "#9aa3a8", stroke: "var(--ink)", "stroke-width": 1 });
+  const corpo = el("rect", { x: 300, y: 118, width: 32, height: 44, rx: 2, fill: "#3b4247", stroke: "var(--ink)", "stroke-width": 1 });
+  el("text", { x: 316, y: 113, "text-anchor": "middle", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "trava 12 V";
+  const bobina = el("rect", { x: 306, y: 128, width: 20, height: 24, rx: 2, fill: "none", stroke: "#9aa3a8", "stroke-width": 1.2, "stroke-dasharray": "2 2" });
+  // porta + batente (giram juntos em torno da dobradiça, bem à esquerda, fora do desenho)
+  const portaG = el("g", {});
+  el("rect", { x: -260, y: 208, width: 612, height: 12, fill: "var(--mdf)", stroke: "var(--edge)", "stroke-width": 1 }, portaG);
+  el("rect", { x: 262, y: 203, width: 34, height: 5, fill: "#7d868c" }, portaG);
+  el("rect", { x: 286, y: 116, width: 4, height: 14, fill: "#7d868c" }, portaG);
+  el("rect", { x: 286, y: 150, width: 4, height: 58, fill: "#7d868c" }, portaG);
+  el("text", { x: 130, y: 236, "text-anchor": "middle", "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }, portaG).textContent = "porta";
+  el("text", { x: 250, y: 176, "text-anchor": "end", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" }, portaG).textContent = "batente com janela";
+  el("line", { x1: 252, y1: 173, x2: 284, y2: 162, stroke: "var(--muted)", "stroke-width": 0.8 }, portaG);
+  el("text", { x: 236, y: 132, "text-anchor": "end", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "lingueta";
+  el("line", { x1: 238, y1: 129, x2: 282, y2: 137, stroke: "var(--muted)", "stroke-width": 0.8 });
+  el("text", { x: 22, y: 34, "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "dentro do armário";
+  el("text", { x: 22, y: 262, "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "frente (lado da enfermeira)";
+
+  function desenharCorte() {
+    const dx = (1 - st.lingueta) * 15;
+    lingueta.setAttribute("transform", "translate(" + dx.toFixed(2) + ",0)");
+    bobina.setAttribute("stroke", st.trava ? "var(--ok)" : "#9aa3a8");
+    bobina.setAttribute("stroke-dasharray", st.trava ? "0" : "2 2");
+    const a = Math.min(st.portaAng, 100) / 100 * 16 + tremor();
+    portaG.setAttribute("transform", "rotate(" + (a).toFixed(2) + " -260 214)");
+    let txt;
+    if (st.portaAng > 5) txt = "Porta aberta. A lingueta voltou, pronta para o próximo fechamento.";
+    else if (st.portaAng > 0.6 && st.lingueta < 0.99) txt = "Fechando: o batente desliza no chanfro e empurra a lingueta.";
+    else if (st.trava) txt = "Bobina com 12 V: lingueta recolhida, a porta pode sair.";
+    else txt = "Lingueta dentro da janela do batente: a porta não sai.";
+    $("corte-estado").textContent = txt;
+  }
+  function tremor() {
+    const agora = performance.now();
+    if (agora > st.tremeAte || reduzir) return 0;
+    return Math.sin(agora / 18) * 0.9;
+  }
+
+  /* ---------------- painel de estado ---------------- */
+  function chip(id, s, txt) { const c = $(id); if (s) c.dataset.s = s; else delete c.dataset.s; c.lastElementChild.textContent = txt; }
+  function hw(id, s, txt) { const v = $(id); if (s) v.dataset.s = s; else delete v.dataset.s; v.textContent = txt; }
+  let ultimoPainel = "";
+  function painel() {
+    const chave = [st.trava, st.portaAng > 3, st.frio.C1, st.frio.C2, st.erros, st.lingueta > 0.5, st.portaAlvo, ...GAVETAS.map((g) => st.gav[g].alvo)].join();
+    if (chave === ultimoPainel) return;
+    ultimoPainel = chave;
+    const aberta = st.portaAng > 3;
+    chip("chip-trava", st.trava ? "ok" : "stop", st.trava ? "Tranca liberada" : (aberta ? "Tranca solta (porta aberta)" : "Tranca travada"));
+    chip("chip-porta", aberta ? "ok" : "stop", aberta ? "Porta aberta" : "Porta fechada");
+    chip("chip-c1", st.frio.C1 ? "cold" : "", "Frio C1 " + (st.frio.C1 ? "ligado" : "desligado"));
+    chip("chip-c2", st.frio.C2 ? "cold" : "", "Frio C2 " + (st.frio.C2 ? "ligado" : "desligado"));
+    hw("hw-r1", st.trava ? "ok" : "", st.trava ? "LIGADO" : "DESLIGADO");
+    hw("hw-r2", st.frio.C1 ? "cold" : "", st.frio.C1 ? "LIGADO" : "DESLIGADO");
+    hw("hw-r3", st.frio.C2 ? "cold" : "", st.frio.C2 ? "LIGADO" : "DESLIGADO");
+    hw("hw-reed", aberta ? "ok" : "", aberta ? "ABERTA" : "FECHADA");
+    hw("hw-erros", st.erros ? "stop" : "", st.erros + " de 3");
+    $("btn-porta").textContent = st.portaAlvo ? "Fechar a porta" : "Puxar a porta";
+    GAVETAS.forEach((g) => {
+      gavBtn[g].setAttribute("aria-pressed", String(!!st.gav[g].alvo));
+      if (FRIAS[g]) gavBtn[g].classList.toggle("ligada", st.frio[g]);
+    });
+  }
+
+  /* ---------------- cena 3D (mm, x = largura, y = altura, z = frente +) ---------------- */
+  let three = null;
+  function cena3d() {
+    if (!window.THREE) { $("carregando").textContent = "Não deu para carregar o 3D. O resto da simulação funciona."; return; }
+    const THREE = window.THREE;
+    const canvas = $("palco");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(34, 1, 10, 20000);
+    camera.position.set(1650, 1150, 2050);
+    const controls = new THREE.OrbitControls(camera, canvas);
+    controls.target.set(0, 430, 60); controls.enableDamping = true; controls.minDistance = 350; controls.maxDistance = 5200;
+    controls.maxPolarAngle = Math.PI * 0.52;
+
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x8f8a80, 0.85));
+    const sol = new THREE.DirectionalLight(0xffffff, 0.75);
+    sol.position.set(900, 1700, 1400); sol.castShadow = true;
+    sol.shadow.mapSize.set(2048, 2048);
+    Object.assign(sol.shadow.camera, { left: -1300, right: 1300, top: 1300, bottom: -600, near: 100, far: 5000 });
+    scene.add(sol);
+    const chao = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.ShadowMaterial({ opacity: 0.16 }));
+    chao.rotation.x = -Math.PI / 2; chao.receiveShadow = true; scene.add(chao);
+
+    const mdf = new THREE.MeshStandardMaterial({ color: 0xc8a376, roughness: 0.88 });
+    const mdfPorta = new THREE.MeshStandardMaterial({ color: 0xd3b68f, roughness: 0.8 });
+    const linhaMat = new THREE.LineBasicMaterial({ color: 0x6c5a44, transparent: true, opacity: 0.55 });
+    const metal = new THREE.MeshStandardMaterial({ color: 0x9aa3a8, metalness: 0.6, roughness: 0.35 });
+    const escuro = new THREE.MeshStandardMaterial({ color: 0x2f3438, roughness: 0.6 });
+    const transparentes = [mdf, mdfPorta];
+    const clicaveis = [];
+
+    function caixa(pai, w, h, d, x, y, z, mat, bordas = true) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; pai.add(m);
+      if (bordas) { const l = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), linhaMat); m.add(l); }
+      return m;
+    }
+    function texto(txt, w, h, cor, fundo) {
+      const c = document.createElement("canvas"); c.width = 256; c.height = Math.round(256 * h / w);
+      const x = c.getContext("2d");
+      if (fundo) { x.fillStyle = fundo; x.fillRect(0, 0, c.width, c.height); }
+      x.fillStyle = cor; x.font = "700 " + Math.round(c.height * 0.62) + "px Archivo, Arial, sans-serif";
+      x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(txt, c.width / 2, c.height / 2 + 2);
+      const t = new THREE.CanvasTexture(c); t.anisotropy = 4;
+      return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, transparent: true }));
+    }
+
+    const corpoArm = new THREE.Group(); scene.add(corpoArm);
+    const FRENTE = 350, FF = 350 - 494, PROF = 494, ZC = (FRENTE + FF) / 2;
+    // caixa
+    caixa(corpoArm, 880, 3, 700, 0, 1.5, 0, mdf);
+    caixa(corpoArm, 880, 3, 700, 0, 878.5, 0, mdf);
+    caixa(corpoArm, 3, 874, 700, -438.5, 440, 0, mdf);
+    caixa(corpoArm, 3, 874, 700, 438.5, 440, 0, mdf);
+    caixa(corpoArm, 874, 874, 3, 0, 440, -348.5, mdf);
+    caixa(corpoArm, 874, 874, 3, 0, 440, FF, mdf); // fundo falso
+    // gaveteiro e prateleiras
+    caixa(corpoArm, 874, 3, PROF, 0, 397.5, ZC, mdf); // TETO_GAV
+    [-92.5, 72.5, 237.5].forEach((x) => caixa(corpoArm, 3, 393, PROF, x, 199.5, ZC, mdf));
+    [530, 662, 794].forEach((y) => caixa(corpoArm, 874, 3, PROF, 0, y, ZC, mdf)); // PRAT_2, PRAT_1, P_CAM
+    // baia do dispensador por gravidade
+    const bx = 338, bw = 196;
+    const dz = (FRENTE - 20) - FF, dy = 333 - 245.9, L = Math.hypot(dz, dy), ang = Math.atan2(dy, dz);
+    const pista = caixa(corpoArm, bw, 3, L, bx, (333 + 245.9) / 2, (FRENTE - 20 + FF) / 2, mdf);
+    pista.rotation.x = ang;
+    caixa(corpoArm, bw, 40, 3, bx, 264.6, FRENTE - 12, mdf);
+    const rolo = new THREE.MeshStandardMaterial({ color: 0xe9e6dc, roughness: 0.5 });
+    for (let i = 0; i < 4; i++) {
+      const s = 0.12 + i * 0.105, z = (FRENTE - 20) - s * dz, y = 245.9 + s * dy + 24;
+      const r = new THREE.Mesh(new THREE.CylinderGeometry(22, 22, 170, 24), rolo);
+      r.rotation.z = Math.PI / 2; r.position.set(bx, y, z); r.castShadow = true; corpoArm.add(r);
+    }
+
+    // gavetas
+    const gav3d = {};
+    const LEDS = {};
+    function gaveta(id, x0, x1, y0, y1) {
+      const g = new THREE.Group(); corpoArm.add(g);
+      const w = x1 - x0 - 4, h = y1 - y0 - 4, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+      const frente = caixa(g, w, h, 3, cx, cy, FRENTE - 1.5, mdf);
+      frente.userData = { tipo: "gaveta", id }; clicaveis.push(frente);
+      const prof = 450, hh = h * 0.78, zb = FRENTE - 3 - prof / 2;
+      caixa(g, w - 8, 3, prof, cx, y0 + 6, zb, mdf);
+      caixa(g, 3, hh, prof, x0 + 6, y0 + 4 + hh / 2, zb, mdf);
+      caixa(g, 3, hh, prof, x1 - 6, y0 + 4 + hh / 2, zb, mdf);
+      caixa(g, w - 8, hh, 3, cx, y0 + 4 + hh / 2, FRENTE - 3 - prof, mdf);
+      const puxador = caixa(g, Math.min(70, w * 0.4), 9, 1, cx, cy + h * 0.28, FRENTE + 0.3, escuro, false);
+      puxador.userData = { tipo: "gaveta", id }; clicaveis.push(puxador);
+      const rot = texto(id, 40, 18, "#3a2c1c");
+      rot.position.set(cx, cy - h * 0.18, FRENTE + 0.4); g.add(rot);
+      if (FRIAS[id]) {
+        const led = new THREE.Mesh(new THREE.CircleGeometry(4, 16), new THREE.MeshBasicMaterial({ color: 0x3a4652 }));
+        led.position.set(cx + 22, cy - h * 0.18, FRENTE + 0.5); g.add(led); LEDS[id] = led;
+        const gelo = new THREE.Mesh(new THREE.BoxGeometry(w - 16, 2, prof - 10), new THREE.MeshStandardMaterial({ color: 0x9cc4ff, emissive: 0x2f6fd1, emissiveIntensity: 0.0, transparent: true, opacity: 0.0 }));
+        gelo.position.set(cx, y0 + 9, zb); g.add(gelo); LEDS[id + "gelo"] = gelo;
+      }
+      gav3d[id] = g;
+    }
+    const yA = [3, 101.25, 199.5, 297.75, 396];
+    gaveta("A1", -437, -94, yA[3], yA[4]); gaveta("A2", -437, -94, yA[2], yA[3]);
+    gaveta("A3", -437, -94, yA[1], yA[2]); gaveta("A4", -437, -94, yA[0], yA[1]);
+    gaveta("B1", -91, 71, 199.5, 396); gaveta("B2", -91, 71, 3, 199.5);
+    gaveta("C1", 74, 236, 199.5, 396); gaveta("C2", 74, 236, 3, 199.5);
+
+    // eletrônica no vão de trás (entre o fundo falso e o traseiro)
+    const ZE = -347 + 2;
+    const verde = new THREE.MeshStandardMaterial({ color: 0x0b7a8a, roughness: 0.5 });
+    const azul = new THREE.MeshStandardMaterial({ color: 0x1f4fa8, roughness: 0.5 });
+    const prata = new THREE.MeshStandardMaterial({ color: 0xaab2b7, metalness: 0.5, roughness: 0.4 });
+    const pretoMat = new THREE.MeshStandardMaterial({ color: 0x222426, roughness: 0.7 });
+    const comp = new THREE.Group(); corpoArm.add(comp);
+    caixa(comp, 101.5, 53, 3, -150, 640, ZE, verde, false);           // Arduino Mega
+    caixa(comp, 75, 55, 16, 0, 640, ZE + 8, azul, false);              // relé 4 canais
+    caixa(comp, 43, 21, 12, -260, 470, ZE + 6, azul, false);           // LM2596
+    caixa(comp, 215, 50, 115, -230, 28, -250, prata, false);           // fonte 12 V 20 A
+    caixa(comp, 12, 12, 9, -80, 700, ZE + 5, pretoMat, false);         // buzzer
+    const ventoinhas = [];
+    function peltier(id, y) {
+      caixa(comp, 40, 40, 4, 155, y, FF - 3, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false);
+      caixa(comp, 80, 80, 36, 155, y, FF - 24, prata, false);
+      const f = new THREE.Group(); f.position.set(155, y, FF - 58); comp.add(f);
+      caixa(f, 80, 80, 4, 0, 0, -10, pretoMat, false);
+      const pas = new THREE.Group(); f.add(pas);
+      for (let i = 0; i < 5; i++) { const p = caixa(pas, 8, 34, 2, 0, 18, 0, new THREE.MeshStandardMaterial({ color: 0x55595d }), false); p.position.set(Math.cos(i * 1.2566) * 18, Math.sin(i * 1.2566) * 18, 0); p.rotation.z = i * 1.2566 - Math.PI / 2; }
+      ventoinhas.push({ id, pas });
+    }
+    peltier("C1", 298); peltier("C2", 101);
+
+    // trava na parede direita (corpo fixo) e lingueta
+    const YT = 600, ZT = 318;
+    caixa(corpoArm, 28, 40, 54, 437 - 14, YT, ZT, escuro, false);
+    const lingueta3d = caixa(corpoArm, 16, 10, 16, 413, YT, ZT, metal, false);
+    const reed = caixa(corpoArm, 10, 28, 8, 431, 300, FRENTE - 6, new THREE.MeshStandardMaterial({ color: 0xf4f4f0 }), false);
+
+    // fios (só aparecem no raio-X)
+    const fios = new THREE.Group(); fios.visible = false; scene.add(fios);
+    function fio(pts, cor) { const g = new THREE.BufferGeometry().setFromPoints(pts.map((p) => new THREE.Vector3(...p))); fios.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color: cor }))); }
+    fio([[423, YT, ZT - 27], [425, YT, -200], [425, 620, -330], [37, 640, -330]], 0xd23b2b);           // trava -> relé
+    fio([[-420, 660, 330], [-425, 660, -200], [-425, 640, -330], [-200, 640, -330]], 0xe8b31a);      // porta -> Arduino
+    fio([[155, 298, FF - 80], [150, 600, -330], [10, 612, -330]], 0xd23b2b);
+    fio([[155, 101, FF - 80], [140, 590, -330], [20, 612, -330]], 0xd23b2b);
+    fio([[-230, 53, -250], [-260, 450, -340], [-260, 470, -340]], 0xd23b2b);                          // fonte -> LM2596
+    fio([[-260, 480, -340], [-170, 610, -340]], 0x2e8b57);                                            // 5 V
+    fio([[-425, 300, 340], [-425, 300, -200]], 0x8a8f94);
+
+    // porta (dobradiça na esquerda, pivô na quina da frente)
+    const porta = new THREE.Group(); porta.position.set(-440, 0, FRENTE); scene.add(porta);
+    const folha = caixa(porta, 880, 880, 6, 440, 440, 3, mdfPorta);
+    folha.userData = { tipo: "porta" }; clicaveis.push(folha);
+    [120, 760].forEach((y) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60, 16), metal); d.position.set(0, y, 3); porta.add(d); });
+    const puxador = caixa(porta, 14, 140, 14, 838, 440, 22, escuro, false);
+    puxador.userData = { tipo: "porta" }; clicaveis.push(puxador);
+    [404, 476].forEach((y) => caixa(porta, 10, 8, 12, 838, y, 10, escuro, false));
+    // caixa do LCD + teclado
+    caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true);
+    const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 176;
+    const lcdTex = new THREE.CanvasTexture(lcdCanvas); lcdTex.anisotropy = 4;
+    const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(71, 24.5), new THREE.MeshBasicMaterial({ map: lcdTex }));
+    lcdTela.position.set(760, 690, 16.2); porta.add(lcdTela);
+    caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false);
+    const tecCanvas = document.createElement("canvas"); tecCanvas.width = 276; tecCanvas.height = 304;
+    (function () {
+      const x = tecCanvas.getContext("2d");
+      x.fillStyle = "#1c1d1f"; x.fillRect(0, 0, 276, 304);
+      TECLAS.forEach((k, i) => {
+        const cx = 12 + (i % 4) * 65, cy = 12 + Math.floor(i / 4) * 72;
+        x.fillStyle = "ABCD".includes(k) ? "#b8352b" : "#2c2e31"; x.fillRect(cx, cy, 55, 62);
+        x.fillStyle = "#f2f2ee"; x.font = "700 32px Archivo, Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+        x.fillText(k, cx + 27, cy + 33);
+      });
+    })();
+    const tecPlano = new THREE.Mesh(new THREE.PlaneGeometry(69, 76), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(tecCanvas) }));
+    tecPlano.position.set(760, 610, 16.2); porta.add(tecPlano);
+    // batente em L com janela (por dentro da porta) e ímã do sensor
+    caixa(porta, 40, 50, 3, 842, YT, -1.5, metal, false);
+    caixa(porta, 3, 19, 60, 842, YT + 15.5, -30, metal, false);
+    caixa(porta, 3, 19, 60, 842, YT - 15.5, -30, metal, false);
+    caixa(porta, 3, 12, 22, 842, YT, -11, metal, false);
+    caixa(porta, 3, 12, 18, 842, YT, -51, metal, false);
+    caixa(porta, 10, 28, 8, 871, 300, -4, new THREE.MeshStandardMaterial({ color: 0x8a8f94 }), false);
+    fio([[860, 640, -2], [20, 650, -2], [4, 655, -10]].map((p) => p), 0xe8b31a);
+    const fioPorta = fios.children[fios.children.length - 1]; fios.remove(fioPorta); fioPorta.visible = false; porta.add(fioPorta);
+
+    function desenharLcdTela() {
+      const x = lcdCanvas.getContext("2d");
+      x.fillStyle = "#9fc23a"; x.fillRect(0, 0, 512, 176);
+      x.fillStyle = "#1f2a12"; x.font = "800 58px Doto, 'IBM Plex Mono', monospace"; x.textBaseline = "middle";
+      lcdAtual.forEach((l, r) => { for (let c = 0; c < 16; c++) x.fillText(l[c] || " ", 14 + c * 30.4, 50 + r * 78); });
+      lcdTex.needsUpdate = true;
+    }
+
+    // raio-X
+    let raiox = false;
+    function setRaiox(on) {
+      raiox = on;
+      transparentes.forEach((m) => { m.transparent = on; m.opacity = on ? 0.16 : 1; m.depthWrite = !on; m.needsUpdate = true; });
+      fios.visible = on; fioPorta.visible = on;
+      $("raiox").setAttribute("aria-pressed", String(on));
+    }
+    $("raiox").addEventListener("click", () => setRaiox(!raiox));
+
+    // vistas
+    const VISTAS = {
+      geral: { p: [1650, 1150, 2050], t: [0, 430, 60], x: null },
+      porta: { p: [520, 760, 1150], t: [300, 620, 330], x: null },
+      tranca: { p: [760, 900, 760], t: [400, 600, 310], x: true },
+      eletronica: { p: [-900, 1300, -1500], t: [-80, 400, -250], x: true },
+    };
+    let voo = null;
+    function vista(nome) {
+      const v = VISTAS[nome];
+      Object.keys(VISTAS).forEach((k) => $("v-" + k).setAttribute("aria-pressed", String(k === nome)));
+      if (v.x !== null) setRaiox(v.x); else if (nome === "geral") setRaiox(false);
+      voo = { de: camera.position.clone(), deT: controls.target.clone(), para: new THREE.Vector3(...v.p), paraT: new THREE.Vector3(...v.t), ini: performance.now(), dur: reduzir ? 1 : 900 };
+    }
+    Object.keys(VISTAS).forEach((k) => $("v-" + k).addEventListener("click", () => vista(k)));
+
+    // cliques
+    const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+    let baixo = null;
+    canvas.addEventListener("pointerdown", (e) => { baixo = [e.clientX, e.clientY]; });
+    canvas.addEventListener("pointerup", (e) => {
+      if (!baixo || Math.hypot(e.clientX - baixo[0], e.clientY - baixo[1]) > 6) return;
+      const r = canvas.getBoundingClientRect();
+      mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(mouse, camera);
+      const hit = ray.intersectObjects(clicaveis, false)[0];
+      if (!hit) return;
+      const u = hit.object.userData;
+      if (u.tipo === "porta") puxarPorta(); else if (u.tipo === "gaveta") mexerGaveta(u.id);
+    });
+    canvas.addEventListener("pointermove", (e) => {
+      const r = canvas.getBoundingClientRect();
+      mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(mouse, camera);
+      canvas.style.cursor = ray.intersectObjects(clicaveis, false).length ? "pointer" : "grab";
+    });
+
+    function tema() {
+      renderer.setClearColor(new THREE.Color(css("--stage") || "#dfe3dd"));
+      linhaMat.color.set(css("--edge") || "#6c5a44");
+    }
+    tema();
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tema);
+    new MutationObserver(tema).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+    function tamanho() {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
+        renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      }
+    }
+
+    three = {
+      quadro(agora, dt) {
+        tamanho();
+        if (voo) {
+          const k = Math.min(1, (agora - voo.ini) / voo.dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          camera.position.lerpVectors(voo.de, voo.para, e); controls.target.lerpVectors(voo.deT, voo.paraT, e);
+          if (k >= 1) voo = null;
+        }
+        porta.rotation.y = -THREE.MathUtils.degToRad(st.portaAng + tremor());
+        lingueta3d.position.x = 413 - 12 * st.lingueta;
+        GAVETAS.forEach((g) => { gav3d[g].position.z = st.gav[g].pos * 330; });
+        Object.keys(FRIAS).forEach((g) => {
+          LEDS[g].material.color.set(st.frio[g] ? 0x4f8dff : 0x3a4652);
+          const gelo = LEDS[g + "gelo"].material; gelo.opacity += ((st.frio[g] ? 0.55 : 0) - gelo.opacity) * Math.min(1, dt * 3); gelo.emissiveIntensity = gelo.opacity;
+        });
+        ventoinhas.forEach((v) => { if (st.frio[v.id] && !reduzir) v.pas.rotation.z -= dt * 18; });
+        controls.update();
+        renderer.render(scene, camera);
+      },
+      lcd: desenharLcdTela,
+    };
+    $("carregando").hidden = true;
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => desenharLcdTela());
+  }
+  function desenharLcd3d() { if (three) three.lcd(); }
+
+  /* ---------------- laço principal ---------------- */
+  let antes = performance.now();
+  function passo(agora) {
+    const dt = Math.min(0.05, (agora - antes) / 1000); antes = agora;
+
+    // liberação expira sem abrir
+    if (st.trava && st.portaAng < 1 && agora > st.travaAte) {
+      setTrava(false, "5 s sem abrir"); st.sessao = false;
+      mensagem("Tempo esgotado", "Trancado de novo", 1600); bip(SOM.erro);
+    }
+    // bloqueio terminou
+    if (st.bloqueioAte && agora > st.bloqueioAte) { st.bloqueioAte = 0; log("Teclado liberado"); }
+
+    // porta
+    const vel = reduzir ? 1000 : 150;
+    if (st.portaAng < st.portaAlvo) st.portaAng = Math.min(st.portaAlvo, st.portaAng + vel * dt);
+    else if (st.portaAng > st.portaAlvo) st.portaAng = Math.max(st.portaAlvo, st.portaAng - vel * dt);
+    const aberta = st.portaAng > 3;
+    if (aberta && !st.portaAbertaAntes) {
+      st.portaAbertaAntes = true; log("Sensor: porta ABERTA"); bip(SOM.porta);
+      if (st.trava) setTrava(false, "porta aberta");
+    }
+    if (!aberta && st.portaAbertaAntes && st.portaAng <= 0.01) {
+      st.portaAbertaAntes = false; st.sessao = false; st.erros = 0;
+      log("Sensor: porta FECHADA, lingueta encaixou"); bip(SOM.ok);
+      mensagem("Porta trancada", "Sessao encerrada", 2000);
+    }
+
+    // lingueta: recolhe com a bobina, é empurrada pelo batente ao fechar, mola devolve
+    let alvoL = 1;
+    if (st.trava) alvoL = 0;
+    else if (st.portaAlvo === 0 && st.portaAng > 0.6 && st.portaAng < 5) alvoL = st.portaAng > 4 ? st.portaAng - 4 : 0;
+    st.lingueta += (alvoL - st.lingueta) * Math.min(1, dt * (alvoL > st.lingueta ? 30 : 18));
+
+    // gavetas
+    GAVETAS.forEach((g) => { const o = st.gav[g]; o.pos += (o.alvo - o.pos) * Math.min(1, dt * (reduzir ? 60 : 5)); if (Math.abs(o.alvo - o.pos) < 0.001) o.pos = o.alvo; });
+
+    const tela = telaBase(agora);
+    lcd(tela[0], tela[1]);
+    Object.values(botoes).forEach((b) => { b.disabled = agora < st.bloqueioAte; });
+    painel();
+    desenharCorte();
+    if (three) three.quadro(agora, dt);
+    requestAnimationFrame(passo);
+  }
+
+  log("Armario pronto. Senha de teste: 1234");
+  try { cena3d(); } catch (e) { $("carregando").textContent = "Não deu para abrir o 3D neste aparelho. O resto da simulação funciona."; }
+  requestAnimationFrame(passo);
+})();
+</script>
+</body>
+</html>

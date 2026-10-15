@@ -25,12 +25,15 @@ rogi: Tudo roda local num Arduino Mega, sem internet e sem servidor. A senha é 
 
 O que comprar, com quantidade e para que serve cada peça: [LISTA-DE-COMPRAS.md](LISTA-DE-COMPRAS.md).
 
+Simulação do armário pronto, com a porta, o pinpad, o LCD, a trava e as gavetas frias: abra `docs/simulacao.html` no navegador.
+
 ## Estrutura
 
 | Pasta | Conteúdo |
 |---|---|
 | `firmware/armario_dispensador/` | Código do Arduino (abre na Arduino IDE) |
 | `simulacao/` | Circuito do [Wokwi](https://wokwi.com) para testar sem as peças |
+| `docs/simulacao.html` | Demonstração 3D do funcionamento completo, com a porta proposta |
 
 ## Situação
 
