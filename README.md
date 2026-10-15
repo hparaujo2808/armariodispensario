@@ -1,0 +1,46 @@
+# Armário Dispensador
+
+rogi: Protótipo de dispensário eletrônico para medicamentos, feito como projeto de faculdade. É um armário de MDF com gaveteiro, e a porta só abre com senha. A enfermeira digita o código no teclado da porta, acompanha no display o que está digitando, a tranca solta, ela pega o que precisa nas gavetas e a porta volta a trancar. Duas gavetas têm pastilhas de resfriamento para o que precisa ficar frio.
+
+rogi: Tudo roda local num Arduino Mega, sem internet e sem servidor. A senha é uma constante no código, porque aqui o objetivo é provar o funcionamento, não guardar remédio de verdade.
+
+## Como funciona
+
+1. O LCD da porta mostra `Digite a senha`.
+2. A enfermeira digita 4 dígitos. Cada dígito aparece como `*`. A tecla `*` apaga e a `#` confirma.
+3. Senha certa: bipe curto, o LCD mostra `Acesso liberado` e a trava solenoide recolhe.
+4. Senha errada: bipe longo e a contagem de erros sobe. No terceiro erro seguido o teclado trava por 30 s, com contagem regressiva no display.
+5. Ela abre a porta, usa as gavetas e fecha. A tranca volta a fechar por tecla e/ou pelo sensor de porta (a definir).
+6. As pastilhas Peltier das duas gavetas frias ligam e desligam por teclas do teclado.
+
+## Hardware
+
+| Parte | Componente |
+|---|---|
+| Controle | Arduino Mega 2560 |
+| Porta | LCD 16x2 com módulo I2C, teclado de membrana 4x4, buzzer |
+| Tranca | Trava solenoide 12 V, acionada por relé |
+| Frio | 2 pastilhas Peltier TEC1-12706 com dissipador e cooler, acionadas por relé |
+| Energia | Fonte chaveada 12 V 20 A + regulador 12 V → 5 V para os relés |
+
+O que comprar, com quantidade e para que serve cada peça: [LISTA-DE-COMPRAS.md](LISTA-DE-COMPRAS.md).
+
+## Estrutura
+
+| Pasta | Conteúdo |
+|---|---|
+| `firmware/armario_dispensador/` | Código do Arduino (abre na Arduino IDE) |
+| `simulacao/` | Circuito do [Wokwi](https://wokwi.com) para testar sem as peças |
+
+## Situação
+
+- [x] Decisões de hardware
+- [x] Lista de compras
+- [ ] Mapa de pinos e esquema de ligação
+- [ ] Código: senha, LCD, teclado, bloqueio
+- [ ] Código: tranca e fechamento
+- [ ] Código: liga e desliga das pastilhas
+- [ ] Simulação no Wokwi
+- [ ] Montagem no armário
+
+Fora do escopo por enquanto: o dispensador por gravidade e a câmera do compartimento de cima.

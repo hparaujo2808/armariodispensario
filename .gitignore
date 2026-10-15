@@ -1,0 +1,10 @@
+# Arduino IDE / PlatformIO
+build/
+.pio/
+*.hex
+*.elf
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
