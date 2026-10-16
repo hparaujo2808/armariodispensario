@@ -27,6 +27,10 @@ O que comprar, com quantidade e para que serve cada peça: [LISTA-DE-COMPRAS.md]
 
 Simulação do armário pronto, com a porta, o pinpad, o LCD, a trava e as gavetas frias: abra `docs/simulacao.html` no navegador.
 
+Como cada peça se liga, por onde passa cada fio e os furos para fazer antes da cola: [docs/LIGACOES.md](docs/LIGACOES.md).
+
+![Diagrama de ligações](docs/diagrama-ligacoes.svg)
+
 ## Estrutura
 
 | Pasta | Conteúdo |
@@ -34,12 +38,14 @@ Simulação do armário pronto, com a porta, o pinpad, o LCD, a trava e as gavet
 | `firmware/armario_dispensador/` | Código do Arduino (abre na Arduino IDE) |
 | `simulacao/` | Circuito do [Wokwi](https://wokwi.com) para testar sem as peças |
 | `docs/simulacao.html` | Demonstração 3D do funcionamento completo, com a porta proposta |
+| `docs/LIGACOES.md` | Mapa de pinos, cabos, caminhos e furos |
+| `docs/gerar_diagrama.py` | Gera `docs/diagrama-ligacoes.svg` |
 
 ## Situação
 
 - [x] Decisões de hardware
 - [x] Lista de compras
-- [ ] Mapa de pinos e esquema de ligação
+- [x] Mapa de pinos e esquema de ligação
 - [ ] Código: senha, LCD, teclado, bloqueio
 - [ ] Código: tranca e fechamento
 - [ ] Código: liga e desliga das pastilhas
