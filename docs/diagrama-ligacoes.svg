@@ -11,8 +11,6 @@
 <text x="236" y="145" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">GND</text>
 <rect x="245" y="205" width="10" height="10" fill="#141414"/>
 <text x="236" y="215" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">Vin</text>
-<rect x="245" y="245" width="10" height="10" fill="#141414"/>
-<text x="236" y="255" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D2</text>
 <rect x="245" y="305" width="10" height="10" fill="#141414"/>
 <text x="236" y="315" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D7</text>
 <rect x="245" y="375" width="10" height="10" fill="#141414"/>
@@ -64,16 +62,6 @@
 <line x1="276.0" y1="150" x2="294.0" y2="150" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="279.0" y1="154" x2="291.0" y2="154" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="282.0" y1="158" x2="288.0" y2="158" stroke="#1e1e1e" stroke-width="2.5"/>
-<polyline points="255,250 720,250" fill="none" stroke="#d4b106" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="720" y="237" width="100" height="26" rx="13" fill="#eef6fb" stroke="#7aa9b8" stroke-width="1.5"/>
-<polyline points="735,250 768,246" fill="none" stroke="#5b6862" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="772,254 805,250" fill="none" stroke="#5b6862" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="820,250 860,250" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="860" y1="250" x2="860" y2="260" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="851.0" y1="260" x2="869.0" y2="260" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="854.0" y1="264" x2="866.0" y2="264" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="857.0" y1="268" x2="863.0" y2="268" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="770" y="228" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">sensor da porta (reed) · INPUT_PULLUP</text>
 <polyline points="255,310 747,310" fill="none" stroke="#139aa0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="765" cy="310" r="18" fill="#222426"/><circle cx="765" cy="310" r="5" fill="#55595d"/>
 <text x="742" y="296" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="middle">+</text>
@@ -259,11 +247,9 @@
 <text x="1096" y="828" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
 <polyline points="1050,848 1084,848" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="1096" y="852" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
-<polyline points="1050,872 1084,872" fill="none" stroke="#d4b106" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="876" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">sensor da porta</text>
-<polyline points="1050,896 1084,896" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="900" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
-<text x="1050" y="940" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
-<text x="1050" y="960" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
-<text x="1050" y="980" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
+<polyline points="1050,872 1084,872" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="876" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
+<text x="1050" y="916" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
+<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
+<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
 </svg>

@@ -10,8 +10,8 @@ rogi: Tudo roda local num Arduino Mega, sem internet e sem servidor. A senha é 
 2. A enfermeira digita 4 dígitos. Cada dígito aparece como `*`. A tecla `*` apaga e a `#` confirma.
 3. Senha certa: bipe curto, o LCD mostra `Acesso liberado` e a trava solenoide recolhe.
 4. Senha errada: bipe longo e a contagem de erros sobe. No terceiro erro seguido o teclado trava por 30 s, com contagem regressiva no display.
-5. Ela abre a porta, usa as gavetas e fecha. A tranca volta a fechar por tecla e/ou pelo sensor de porta (a definir).
-6. As pastilhas Peltier das duas gavetas frias ligam e desligam por teclas do teclado.
+5. Ela abre a porta, usa as gavetas e fecha. A lingueta da trava é chanfrada e tranca sozinha quando a porta encosta. A tecla `D` encerra a sessão (corta a trava se ainda estiver solta e bloqueia as teclas do frio). Sem tecla nenhuma por 60 s, a sessão encerra sozinha.
+6. As pastilhas Peltier das duas gavetas frias ligam e desligam pelas teclas `A` (C1) e `B` (C2), só durante a sessão.
 
 ## Hardware
 

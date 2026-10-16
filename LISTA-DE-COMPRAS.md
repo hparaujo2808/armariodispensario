@@ -17,9 +17,8 @@ rogi: Os preços são uma faixa de referência de lojas online brasileiras, só 
 
 | Qtd | Peça | Para quê | Faixa (R$) |
 |---|---|---|---|
-| 1 | Trava solenoide 12 V (fechadura elétrica de lingueta) | Segura a porta. Recolhe quando recebe 12 V | 35 a 70 |
+| 1 | Trava solenoide 12 V de **lingueta chanfrada** (não a de pino reto) | Segura a porta, recolhe quando recebe 12 V e tranca sozinha quando a porta fecha | 35 a 70 |
 | 2 | Diodo 1N4007 | Protege o circuito do pico de tensão quando a trava desliga (1 vai na trava, 1 é reserva) | 1 a 2 |
-| 1 | Sensor de porta reed switch MC-38 *(só se o fechamento for pelo sensor)* | Avisa o Arduino que a porta encostou | 8 a 15 |
 
 ## Frio (duas gavetas)
 

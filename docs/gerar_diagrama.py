@@ -57,7 +57,7 @@ AX, AY, AW, AH = 40, 80, 210, 1040
 caixa(AX, AY, AW, AH, "#0b8a8a", 12)
 texto(AX + AW / 2, AY + 22, "posição dos pinos simplificada", 11, "#d8f3f1", "middle")
 texto(AX + 70, AY + AH / 2, "ARDUINO MEGA 2560", 30, "#ffffff", "middle", 800, rot=-90)
-P = {"5V": 110, "GND": 140, "Vin": 210, "D2": 250, "D7": 310, "D8": 380, "D9": 460, "D10": 540, "D20 SDA": 660, "D21 SCL": 700}
+P = {"5V": 110, "GND": 140, "Vin": 210, "D7": 310, "D8": 380, "D9": 460, "D10": 540, "D20 SDA": 660, "D21 SCL": 700}
 TECL = ["D22", "D24", "D26", "D28", "D30", "D32", "D34", "D36"]
 for i, n in enumerate(TECL):
     P[n] = 806 + i * 36
@@ -88,13 +88,6 @@ texto(1462, 380, "GND da fonte (comum)", 11.5, "#5b6862", "middle", rot=90)
 # Mega GND
 fio([(PX, 140), (285, 140)], C["gnd"])
 terra(285, 140)
-
-# ---------------- sensor da porta (reed) ----------------
-fio([(PX, 250), (720, 250)], C["reed"])
-caixa(720, 237, 100, 26, "#eef6fb", 13, "#7aa9b8")
-fio([(735, 250), (768, 246)], "#5b6862", 2.5); fio([(772, 254), (805, 250)], "#5b6862", 2.5)
-fio([(820, 250), (860, 250)], C["gnd"]); terra(860, 250)
-texto(770, 228, "sensor da porta (reed) · INPUT_PULLUP", 12, anc="middle", peso=600)
 
 # ---------------- buzzer ----------------
 fio([(PX, 310), (747, 310)], C["buz"])
@@ -195,7 +188,6 @@ leg = [
     (C["lcd"], "LCD I2C (SDA e SCL)"),
     (C["lin"], "teclado: linhas"),
     (C["col"], "teclado: colunas"),
-    (C["reed"], "sensor da porta"),
     (C["buz"], "buzzer"),
 ]
 for i, (cor, t) in enumerate(leg):

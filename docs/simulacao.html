@@ -210,7 +210,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           <div class="item"><span>Relé 1 · trava solenoide</span><span class="v" id="hw-r1">DESLIGADO</span></div>
           <div class="item"><span>Relé 2 · Peltier gaveta C1</span><span class="v" id="hw-r2">DESLIGADO</span></div>
           <div class="item"><span>Relé 3 · Peltier gaveta C2</span><span class="v" id="hw-r3">DESLIGADO</span></div>
-          <div class="item"><span>Sensor da porta (reed)</span><span class="v" id="hw-reed">FECHADA</span></div>
+          <div class="item"><span>Sessão (teclas A, B e D)</span><span class="v" id="hw-sessao">ENCERRADA</span></div>
           <div class="item"><span>Senhas erradas seguidas</span><span class="v" id="hw-erros">0 de 3</span></div>
         </div>
         <h3>Monitor serial · 9600</h3>
@@ -230,16 +230,16 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       <p>rogi: A trava solenoide é uma peça só, mas trabalha em dupla com um batente. O corpo dela fica parafusado por dentro, na parede direita, e de lá sai a lingueta. Na porta vai um batente em L com uma janela. Com a porta fechada, a lingueta fica enfiada nessa janela, e puxar a porta só faz o batente bater nela.</p>
       <ol class="passos">
         <li><strong>Sem energia, travada.</strong> Uma mola empurra a lingueta para fora. A trava não gasta nada parada.</li>
-        <li><strong>Senha certa.</strong> O Arduino liga o relé 1, a bobina recebe 12 V e puxa a lingueta para dentro. A porta fica livre por 5 s. Assim que o sensor vê a porta aberta, o relé desliga e a lingueta volta.</li>
+        <li><strong>Senha certa.</strong> O Arduino liga o relé 1, a bobina recebe 12 V e puxa a lingueta para dentro. A porta fica livre por 5 s. Depois o relé desliga sozinho e a lingueta volta, com a porta aberta ou não.</li>
         <li><strong>Fechar tranca sozinho.</strong> A lingueta tem a ponta chanfrada virada para a frente. Ao fechar, o batente desliza no chanfro, empurra a lingueta e ela estala dentro da janela. Ninguém precisa apertar nada.</li>
       </ol>
-      <p>rogi: Isso resolve a dúvida de como fechar. O fechamento é mecânico. O sensor de porta só conta para o Arduino que fechou, e a tecla D tranca na hora se a enfermeira desistir antes de abrir.</p>
+      <p>rogi: Por isso não precisa de sensor. O fechamento é mecânico e o Arduino nem fica sabendo se a porta fechou. Quem encerra a sessão é a tecla D: corta a trava se ela ainda estiver solta e bloqueia as teclas do frio. Se a enfermeira esquecer, a sessão encerra sozinha depois de 60 s sem nenhuma tecla.</p>
     </div>
   </section>
 
   <section class="fiacao" aria-labelledby="t-fios">
     <div class="texto">
-      <span class="eyebrow">10 CABOS · 5 FUROS</span>
+      <span class="eyebrow">9 CABOS · 4 FUROS</span>
       <h2 id="t-fios">Por onde passa cada fio</h2>
       <p>rogi: Todo fio termina no vão de trás, entre o fundo falso e o traseiro, onde ficam o Arduino, os relés e a fonte. Os da porta são os únicos que se mexem. Saem da caixa do LCD por um rasgo, correm por dentro da porta até a dobradiça, fazem um laço de folga por fora e entram pela lateral esquerda. No diagrama está o circuito. Na tabela, clique num cabo para ver só ele no 3D.</p>
     </div>
@@ -256,8 +256,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <text x="236" y="145" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">GND</text>
 <rect x="245" y="205" width="10" height="10" fill="#141414"/>
 <text x="236" y="215" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">Vin</text>
-<rect x="245" y="245" width="10" height="10" fill="#141414"/>
-<text x="236" y="255" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D2</text>
 <rect x="245" y="305" width="10" height="10" fill="#141414"/>
 <text x="236" y="315" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D7</text>
 <rect x="245" y="375" width="10" height="10" fill="#141414"/>
@@ -309,16 +307,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <line x1="276.0" y1="150" x2="294.0" y2="150" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="279.0" y1="154" x2="291.0" y2="154" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="282.0" y1="158" x2="288.0" y2="158" stroke="#1e1e1e" stroke-width="2.5"/>
-<polyline points="255,250 720,250" fill="none" stroke="#d4b106" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="720" y="237" width="100" height="26" rx="13" fill="#eef6fb" stroke="#7aa9b8" stroke-width="1.5"/>
-<polyline points="735,250 768,246" fill="none" stroke="#5b6862" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="772,254 805,250" fill="none" stroke="#5b6862" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="820,250 860,250" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="860" y1="250" x2="860" y2="260" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="851.0" y1="260" x2="869.0" y2="260" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="854.0" y1="264" x2="866.0" y2="264" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="857.0" y1="268" x2="863.0" y2="268" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="770" y="228" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">sensor da porta (reed) · INPUT_PULLUP</text>
 <polyline points="255,310 747,310" fill="none" stroke="#139aa0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="765" cy="310" r="18" fill="#222426"/><circle cx="765" cy="310" r="5" fill="#55595d"/>
 <text x="742" y="296" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="middle">+</text>
@@ -504,13 +492,11 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <text x="1096" y="828" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
 <polyline points="1050,848 1084,848" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="1096" y="852" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
-<polyline points="1050,872 1084,872" fill="none" stroke="#d4b106" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="876" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">sensor da porta</text>
-<polyline points="1050,896 1084,896" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="900" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
-<text x="1050" y="940" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
-<text x="1050" y="960" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
-<text x="1050" y="980" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
+<polyline points="1050,872 1084,872" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="876" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
+<text x="1050" y="916" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
+<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
+<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
 </svg></div>
     <div class="tabela-wrap">
       <table class="cabos">
@@ -519,7 +505,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           <tr><td><button type="button" class="cabo-btn" data-cabo="teclado" aria-pressed="false"><i style="background:#e8892a"></i>Teclado</button></td><td>Teclado 4x4 → Mega 22 a 36 (pares)</td><td class="n">8</td><td>cabo de rede 1</td><td>Por dentro da porta até a dobradiça, laço de folga, furo na lateral esquerda, lateral por dentro (embaixo da prateleira de cima) até o fundo falso, furo, Arduino</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD I2C → Mega 20 (SDA), 21 (SCL), 5 V, GND · buzzer → Mega 7</td><td class="n">6 de 8</td><td>cabo de rede 2</td><td>O mesmo caminho do teclado, lado a lado. Sobram 2 fios de reserva</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="trava" aria-pressed="false"><i style="background:#d23b2b"></i>Trava</button></td><td>Trava → relé 1 (COM e NA) e GND</td><td class="n">2</td><td>0,5 mm²</td><td>Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 soldado nos terminais da trava</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="reed" aria-pressed="false"><i style="background:#e0c11c"></i>Sensor da porta</button></td><td>Reed switch → Mega 2 e GND</td><td class="n">2</td><td>0,2 mm²</td><td>Sobe a 370 mm, acima da pista do dispensador, e segue pela parede direita até o fundo falso, furo, Arduino</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha e cooler → relés 2 e 3</td><td class="n">2 + 2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. O cooler liga junto com a pastilha</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 15 A → bornes → COM dos relés, LM2596, Vin do Mega</td><td class="n">1 por ramal</td><td>1,5 mm²</td><td>Só no vão de trás</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="gnd" aria-pressed="false"><i style="background:#262626"></i>GND</button></td><td>Fonte → bornes → todos os negativos (Mega, LM2596, relés, trava, Peltier)</td><td class="n">1 por ramal</td><td>1,5 mm²</td><td>Só no vão de trás. Os GND da fonte e do Mega precisam estar ligados juntos</td></tr>
@@ -536,7 +521,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           <table>
             <thead><tr><th>Pino</th><th>Liga em</th></tr></thead>
             <tbody>
-              <tr><td class="k">2</td><td>Sensor da porta (com pull-up interno)</td></tr>
               <tr><td class="k">7</td><td>Buzzer</td></tr>
               <tr><td class="k">8 · 9 · 10</td><td>Relé 1 trava · relé 2 Peltier C1 · relé 3 Peltier C2</td></tr>
               <tr><td class="k">11</td><td>Relé 4, livre</td></tr>
@@ -558,7 +542,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
               <tr><td>Lateral esquerda</td><td class="n">660 mm de altura, 28 mm da frente</td><td>Cabos da porta</td></tr>
               <tr><td>Fundo falso</td><td class="n">660 mm, rente à esquerda</td><td>Cabos da porta</td></tr>
               <tr><td>Fundo falso</td><td class="n">600 mm, rente à direita</td><td>Trava</td></tr>
-              <tr><td>Fundo falso</td><td class="n">372 mm, rente à direita</td><td>Sensor da porta</td></tr>
               <tr><td>Traseiro</td><td class="n">28 mm, a 95 mm da esquerda</td><td>Cabo de força</td></tr>
             </tbody>
           </table>
@@ -583,7 +566,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
             <tr><td>LCD</td><td>Janela de 71 × 24 mm, centro a 690 mm de altura. A placa do módulo (80 × 36 mm) fica por dentro.</td></tr>
             <tr><td>Teclado</td><td>Membrana adesiva colada por fora, logo abaixo do LCD. Rasgo de 22 × 2 mm para o cabo flat passar.</td></tr>
             <tr><td>Batente da trava</td><td>Cantoneira em L por dentro da porta, na altura da lingueta (600 mm), com janela de 12 × 20 mm.</td></tr>
-            <tr><td>Ímã do sensor</td><td>Na borda direita da porta, a 300 mm, de frente para o reed switch.</td></tr>
             <tr><td>Fios da porta</td><td>14 fios (8 do teclado, 4 do LCD, 2 do buzzer). Dois cabos de rede resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
             <tr><td>Buzzer</td><td>Na caixa do LCD, por fora. Dentro do vão de trás ninguém ouviria.</td></tr>
           </tbody>
@@ -603,7 +585,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
             <tr><td class="k">A</td><td>Liga ou desliga o frio da gaveta C1 (só depois da senha)</td></tr>
             <tr><td class="k">B</td><td>Liga ou desliga o frio da gaveta C2 (só depois da senha)</td></tr>
             <tr><td class="k">C</td><td>Livre, reserva para depois</td></tr>
-            <tr><td class="k">D</td><td>Tranca na hora, cancelando a liberação</td></tr>
+            <tr><td class="k">D</td><td>Encerra a sessão: corta a trava se ainda estiver solta e bloqueia A e B (sem tecla por 60 s, encerra sozinha)</td></tr>
           </tbody>
         </table>
       </div>
@@ -626,7 +608,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const SENHA = "1234";
-  const T_LIBERA = 5000, T_BLOQUEIO = 30000, MAX_ERROS = 3;
+  const T_LIBERA = 5000, T_BLOQUEIO = 30000, T_SESSAO = 60000, MAX_ERROS = 3;
   const GAVETAS = ["A1", "A2", "A3", "A4", "B1", "B2", "C1", "C2"];
   const FRIAS = { C1: "A", C2: "B" };
 
@@ -634,7 +616,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
   const st = {
     entrada: "", erros: 0, bloqueioAte: 0,
     trava: false, travaAte: 0, sessao: false,
-    portaAng: 0, portaAlvo: 0, tremeAte: 0, portaAbertaAntes: false,
+    portaAng: 0, portaAlvo: 0, tremeAte: 0, portaAbertaAntes: false, ultimaTecla: 0,
     lingueta: 1,
     gav: Object.fromEntries(GAVETAS.map((g) => [g, { pos: 0, alvo: 0 }])),
     frio: { C1: false, C2: false },
@@ -696,8 +678,8 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     if (st.msg && agora < st.msgAte) return st.msg;
     st.msg = null;
     if (agora < st.bloqueioAte) return ["Bloqueado", "Aguarde " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s"];
-    if (st.sessao && st.portaAng > 3) return ["Porta aberta", "C1:" + (st.frio.C1 ? "LIG" : "DES") + " C2:" + (st.frio.C2 ? "LIG" : "DES")];
     if (st.sessao && st.trava) return ["Acesso liberado", "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s"];
+    if (st.sessao) return ["C1:" + (st.frio.C1 ? "LIG" : "DES") + " C2:" + (st.frio.C2 ? "LIG" : "DES"), "D = encerrar"];
     return ["Digite a senha", "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length)];
   }
 
@@ -723,6 +705,14 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     log("Rele " + (g === "C1" ? 2 : 3) + " (Peltier " + g + ") " + (on ? "LIGADO" : "DESLIGADO"));
   }
 
+  function encerrar(motivo) {
+    if (st.trava) setTrava(false, motivo);
+    st.sessao = false; st.erros = 0;
+    log("Sessao encerrada (" + motivo + ")");
+    mensagem("Sessao encerrada", "Feche a porta", 2000);
+    bip(SOM.ok);
+  }
+
   function tecla(k) {
     const agora = performance.now();
     const b = botoes[k];
@@ -730,9 +720,9 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     if (agora < st.bloqueioAte) { bip([80]); return; }
     bip(SOM.tecla);
 
+    st.ultimaTecla = agora;
     if (k === "D") {
-      if (st.trava && st.portaAng < 1) { setTrava(false, "tecla D"); st.sessao = false; mensagem("Trancado", "pela tecla D", 1500); }
-      else if (st.portaAng > 3) mensagem("Feche a porta", "para trancar", 1500);
+      if (st.sessao) encerrar("tecla D");
       else mensagem("Ja trancado", "", 1200);
       return;
     }
@@ -749,7 +739,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     if (k === "#") {
       if (st.entrada.length < 4) { mensagem("Senha incompleta", "Use 4 digitos", 1400); return; }
       if (st.entrada === SENHA) {
-        st.entrada = ""; st.erros = 0; st.sessao = true; st.msg = null;
+        st.entrada = ""; st.erros = 0; st.sessao = true; st.msg = null; st.ultimaTecla = agora;
         setTrava(true, "senha correta");
         st.travaAte = agora + T_LIBERA;
         bip(SOM.ok);
@@ -872,7 +862,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
   function hw(id, s, txt) { const v = $(id); if (s) v.dataset.s = s; else delete v.dataset.s; v.textContent = txt; }
   let ultimoPainel = "";
   function painel() {
-    const chave = [st.trava, st.portaAng > 3, st.frio.C1, st.frio.C2, st.erros, st.lingueta > 0.5, st.portaAlvo, ...GAVETAS.map((g) => st.gav[g].alvo)].join();
+    const chave = [st.trava, st.sessao, st.portaAng > 3, st.frio.C1, st.frio.C2, st.erros, st.lingueta > 0.5, st.portaAlvo, ...GAVETAS.map((g) => st.gav[g].alvo)].join();
     if (chave === ultimoPainel) return;
     ultimoPainel = chave;
     const aberta = st.portaAng > 3;
@@ -883,7 +873,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     hw("hw-r1", st.trava ? "ok" : "", st.trava ? "LIGADO" : "DESLIGADO");
     hw("hw-r2", st.frio.C1 ? "cold" : "", st.frio.C1 ? "LIGADO" : "DESLIGADO");
     hw("hw-r3", st.frio.C2 ? "cold" : "", st.frio.C2 ? "LIGADO" : "DESLIGADO");
-    hw("hw-reed", aberta ? "ok" : "", aberta ? "ABERTA" : "FECHADA");
+    hw("hw-sessao", st.sessao ? "ok" : "", st.sessao ? "ABERTA" : "ENCERRADA");
     hw("hw-erros", st.erros ? "stop" : "", st.erros + " de 3");
     $("btn-porta").textContent = st.portaAlvo ? "Fechar a porta" : "Puxar a porta";
     GAVETAS.forEach((g) => {
@@ -1027,7 +1017,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const YT = 600, ZT = 318;
     caixa(corpoArm, 28, 40, 54, 437 - 14, YT, ZT, escuro, false);
     const lingueta3d = caixa(corpoArm, 16, 10, 16, 413, YT, ZT, metal, false);
-    const reed = caixa(corpoArm, 10, 28, 8, 431, 300, FRENTE - 6, new THREE.MeshStandardMaterial({ color: 0xf4f4f0 }), false);
 
     // porta (dobradiça na esquerda, pivô na quina da frente)
     const porta = new THREE.Group(); porta.position.set(-440, 0, FRENTE); scene.add(porta);
@@ -1057,13 +1046,12 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     })();
     const tecPlano = new THREE.Mesh(new THREE.PlaneGeometry(69, 76), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(tecCanvas) }));
     tecPlano.position.set(760, 610, 16.2); porta.add(tecPlano);
-    // batente em L com janela (por dentro da porta) e ímã do sensor
+    // batente em L com janela (por dentro da porta)
     caixa(porta, 40, 50, 3, 842, YT, -1.5, metal, false);
     caixa(porta, 3, 19, 60, 842, YT + 15.5, -30, metal, false);
     caixa(porta, 3, 19, 60, 842, YT - 15.5, -30, metal, false);
     caixa(porta, 3, 12, 22, 842, YT, -11, metal, false);
     caixa(porta, 3, 12, 18, 842, YT, -51, metal, false);
-    caixa(porta, 10, 28, 8, 871, 300, -4, new THREE.MeshStandardMaterial({ color: 0x8a8f94 }), false);
     const buzzer = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 8, 20), pretoMat);
     buzzer.rotation.x = Math.PI / 2; buzzer.position.set(800, 722, 20); porta.add(buzzer);
 
@@ -1090,13 +1078,12 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       if (eixo === "x") f.rotation.z = Math.PI / 2; else f.rotation.x = Math.PI / 2;
       f.position.set(x, y, z); corpoArm.add(f);
     }
-    const COR = { teclado: 0xe8892a, lcd: 0x2f7fd1, trava: 0xd23b2b, reed: 0xe0c11c, peltier: 0xb3261e, v12: 0xe24a3b, gnd: 0x262626, v5: 0x2e8b57, controle: 0x8e5cc7, forca: 0x7d868c };
+    const COR = { teclado: 0xe8892a, lcd: 0x2f7fd1, trava: 0xd23b2b, peltier: 0xb3261e, v12: 0xe24a3b, gnd: 0x262626, v5: 0x2e8b57, controle: 0x8e5cc7, forca: 0x7d868c };
 
     // furos que precisam ser feitos antes da cola
     furo(-438.5, 660, 322, "x");   // lateral esquerda, cabos da porta
     furo(-428, 660, FF, "z");      // fundo falso, cabos da porta
     furo(430, 600, FF, "z");       // fundo falso, trava
-    furo(432, 372, FF, "z");       // fundo falso, sensor da porta
     furo(-345, 28, -348.5, "z");   // traseiro, cabo de força
 
     // porta: teclado (cabo de rede 1) e LCD + buzzer (cabo de rede 2) por dentro da folha até a dobradiça
@@ -1125,8 +1112,6 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     cabo("lcd", [[-436, 665, 322], [-422, 665, 300], [-422, 665, -200], [-422, 636, -330], [-205, 636, -341]], COR.lcd, 3);
     // trava: parede direita a 600 mm
     cabo("trava", [[423, YT, 290], [430, YT, 280], [430, YT, -200], [430, 615, -330], [40, 615, -339]], COR.trava, 2.5);
-    // sensor da porta: sobe acima da pista do dispensador e segue pela parede direita
-    cabo("reed", [[431, 300, 340], [432, 372, 340], [432, 372, -210], [432, 590, -330], [-110, 612, -341]], COR.reed, 1.8);
     // Peltier C1 e C2 (cooler ligado junto): já saem no vão de trás
     cabo("peltier", [[180, 298, -150], [200, 298, -205], [200, 600, -330], [35, 605, -339]], COR.peltier, 3.5);
     cabo("peltier", [[180, 101, -150], [210, 101, -205], [210, 595, -330], [30, 600, -339]], COR.peltier, 3.5);
@@ -1261,10 +1246,9 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const dt = Math.min(0.05, (agora - antes) / 1000); antes = agora;
 
     // liberação expira sem abrir
-    if (st.trava && st.portaAng < 1 && agora > st.travaAte) {
-      setTrava(false, "5 s sem abrir"); st.sessao = false;
-      mensagem("Tempo esgotado", "Trancado de novo", 1600); bip(SOM.erro);
-    }
+    if (st.trava && agora > st.travaAte) setTrava(false, "fim dos 5 s");
+    // sessão esquecida aberta
+    if (st.sessao && agora - st.ultimaTecla > T_SESSAO) encerrar("60 s sem tecla");
     // bloqueio terminou
     if (st.bloqueioAte && agora > st.bloqueioAte) { st.bloqueioAte = 0; log("Teclado liberado"); }
 
@@ -1273,14 +1257,11 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     if (st.portaAng < st.portaAlvo) st.portaAng = Math.min(st.portaAlvo, st.portaAng + vel * dt);
     else if (st.portaAng > st.portaAlvo) st.portaAng = Math.max(st.portaAlvo, st.portaAng - vel * dt);
     const aberta = st.portaAng > 3;
-    if (aberta && !st.portaAbertaAntes) {
-      st.portaAbertaAntes = true; log("Sensor: porta ABERTA"); bip(SOM.porta);
-      if (st.trava) setTrava(false, "porta aberta");
-    }
+    // sem sensor: o Arduino não sabe da porta; o log só narra o que acontece no mundo físico
+    if (aberta && !st.portaAbertaAntes) st.portaAbertaAntes = true;
     if (!aberta && st.portaAbertaAntes && st.portaAng <= 0.01) {
-      st.portaAbertaAntes = false; st.sessao = false; st.erros = 0;
-      log("Sensor: porta FECHADA, lingueta encaixou"); bip(SOM.ok);
-      mensagem("Porta trancada", "Sessao encerrada", 2000);
+      st.portaAbertaAntes = false;
+      log("(mecanico) porta fechou e a lingueta encaixou");
     }
 
     // lingueta: recolhe com a bobina, é empurrada pelo batente ao fechar, mola devolve
