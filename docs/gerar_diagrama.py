@@ -125,7 +125,7 @@ for pin, inn, nome in rotulos:
 texto(RX + 12, RY + 16, "MÓDULO DE RELÉS · liga com LOW", 11.5, "#ffffff", peso=700)
 fio([(1000, 210), (1000, P["D10"] - 12)], C["v12"], 3)
 
-# cargas: trava (com diodo), Peltier C1 e C2 (cooler em paralelo)
+# cargas: trava (com diodo), Peltier C1 e C2 (sem cooler, só dissipador)
 def carga(y, nome, sub, escura):
     fio([(RX + RW + 5, y + 12), (1080, y + 12)], "#a3221d")
     caixa(1080, y - 6, 160, 36, "#3b4247" if escura else "#eef2f5", 4, "#1e1e1e")
@@ -136,8 +136,8 @@ def carga(y, nome, sub, escura):
 
 
 carga(P["D8"], "trava solenoide", "12 V · 0,5 a 1 A", True)
-carga(P["D9"], "Peltier C1 + cooler", "12 V · ~6 A · 1,5 mm²", False)
-carga(P["D10"], "Peltier C2 + cooler", "12 V · ~6 A · 1,5 mm²", False)
+carga(P["D9"], "Peltier C1", "12 V · ~6 A · 1,5 mm²", False)
+carga(P["D10"], "Peltier C2", "12 V · ~6 A · 1,5 mm²", False)
 # diodo de proteção na trava (faixa/catodo no lado +)
 y = P["D8"] + 12
 fio([(1060, y), (1060, y - 46), (1132, y - 46)], "#5b6862", 2.5)

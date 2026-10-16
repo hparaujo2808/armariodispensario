@@ -25,8 +25,10 @@ rogi: Os preços são uma faixa de referência de lojas online brasileiras, só 
 | Qtd | Peça | Para quê | Faixa (R$) |
 |---|---|---|---|
 | 2 | Pastilha Peltier TEC1-12706 | Um lado gela, o outro esquenta. Uma por gaveta | 15 a 30 cada |
-| 2 | Dissipador com cooler 12 V (cooler de processador serve) | Tira o calor do lado quente. **Sem isso a pastilha queima em segundos** | 30 a 60 cada |
+| 2 | Dissipador de alumínio, **sem cooler** (o de um processador velho serve, só o metal) | Tira o calor do lado quente. **Sem ele a pastilha queima em segundos** | 0 a 25 cada |
 | 1 | Pasta térmica | Entre a pastilha e os dissipadores | 10 a 20 |
+
+rogi: O grupo decidiu em 16/10 não comprar cooler, por dinheiro e por tempo. A pastilha continua precisando de um pedaço de alumínio no lado quente: é ele que segura o calor que ela bombeia, e uma TEC1-12706 solta uns 70 W ali. Sem ventoinha esse dissipador perde calor devagar, então o frio fica mais fraco e a pastilha deve ficar ligada só na hora de mostrar, alguns minutos. Se a mão não aguentar ficar encostada no dissipador, desliga.
 
 ## Energia e acionamento
 
@@ -48,14 +50,14 @@ rogi: Os preços são uma faixa de referência de lojas online brasileiras, só 
 | 1 pacote | Bornes KF301 ou conectores Wago | Emendar os fios grossos sem solda | 10 a 15 |
 | — | Termo-retrátil, fita isolante, abraçadeiras | Acabamento e segurança | 10 a 20 |
 
-**Total estimado:** de R$ 400 a R$ 750, menos o que já vier no kit.
+**Total estimado:** de R$ 340 a R$ 680, menos o que já vier no kit.
 
 ## Versão mais barata
 
-rogi: Se o orçamento apertar, troquem as pastilhas por duas TEC1-12703 (uns 3 A cada) e a fonte por uma de 12 V 10 A. O frio fica mais fraco, mas mostra o funcionamento. O resto da lista continua igual.
+rogi: Se o orçamento apertar, troquem as pastilhas por duas TEC1-12703 (uns 3 A cada) e a fonte por uma de 12 V 10 A. Sem cooler essa é a troca que mais vale a pena: a 12703 solta metade do calor da 12706, e o dissipador passivo dá conta por mais tempo. O frio fica mais fraco, mas mostra o funcionamento. O resto da lista continua igual.
 
 ## Cuidados
 
 - **A fonte colmeia tem os bornes de tomada (127/220 V) expostos.** Conferir a chave seletora de tensão antes de ligar, ligar o cabo de força com ela desligada da tomada e não encostar nos bornes com ela ligada. Na primeira vez, de preferência com o professor junto.
-- **Nunca ligar a Peltier sem o dissipador e o cooler funcionando.**
+- **Nunca ligar a Peltier sem o dissipador preso nela, com pasta térmica.** Sem cooler, ligar só pelo tempo da demonstração.
 - **A trava solenoide esquenta se ficar ligada muito tempo.** O código só energiza a trava pelos segundos de abertura.

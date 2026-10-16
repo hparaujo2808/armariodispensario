@@ -87,6 +87,10 @@ header.top { display: grid; gap: 10px; }
 .btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .dica { position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted); background: color-mix(in srgb, var(--surface) 85%, transparent); padding: 4px 8px; border-radius: 6px; }
+.etiqueta { position: absolute; left: 0; top: 0; max-width: 260px; pointer-events: none; display: grid; gap: 2px; padding: 6px 10px; border-radius: 7px; background: var(--ink); color: var(--surface); box-shadow: 0 4px 14px rgba(0,0,0,0.22); font-size: 13px; line-height: 1.35; }
+.etiqueta[hidden] { display: none; }
+.etiqueta strong { font-weight: 700; }
+.etiqueta span { font-size: 12px; opacity: 0.78; }
 .carregando { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
 
 aside.painel { display: grid; gap: 14px; min-width: 0; }
@@ -187,7 +191,8 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
         </div>
         <button type="button" class="btn" id="raiox" aria-pressed="false">Raio-X</button>
       </div>
-      <div class="dica">Arraste para girar · clique na porta e nas gavetas</div>
+      <div class="dica">Arraste para girar · passe o mouse numa peça para ver o nome · clique na porta e nas gavetas</div>
+      <div class="etiqueta" id="etiqueta" role="status" hidden><strong></strong><span></span></div>
     </div>
 
     <aside class="painel">
@@ -380,13 +385,13 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <circle cx="1440" cy="392" r="4.5" fill="#1e1e1e"/>
 <polyline points="965,472 1080,472" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="1080" y="454" width="160" height="36" rx="4" fill="#eef2f5" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="469" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C1 + cooler</text>
+<text x="1160" y="469" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C1</text>
 <text x="1160" y="483" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">12 V · ~6 A · 1,5 mm²</text>
 <polyline points="1240,472 1440,472" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="1440" cy="472" r="4.5" fill="#1e1e1e"/>
 <polyline points="965,552 1080,552" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="1080" y="534" width="160" height="36" rx="4" fill="#eef2f5" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="549" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C2 + cooler</text>
+<text x="1160" y="549" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C2</text>
 <text x="1160" y="563" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">12 V · ~6 A · 1,5 mm²</text>
 <polyline points="1240,552 1440,552" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="1440" cy="552" r="4.5" fill="#1e1e1e"/>
@@ -505,7 +510,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           <tr><td><button type="button" class="cabo-btn" data-cabo="teclado" aria-pressed="false"><i style="background:#e8892a"></i>Teclado</button></td><td>Teclado 4x4 → Mega 22 a 36 (pares)</td><td class="n">8</td><td>cabo de rede 1</td><td>Por dentro da porta até a dobradiça, laço de folga, furo na lateral esquerda, lateral por dentro (embaixo da prateleira de cima) até o fundo falso, furo, Arduino</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD I2C → Mega 20 (SDA), 21 (SCL), 5 V, GND · buzzer → Mega 7</td><td class="n">6 de 8</td><td>cabo de rede 2</td><td>O mesmo caminho do teclado, lado a lado. Sobram 2 fios de reserva</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="trava" aria-pressed="false"><i style="background:#d23b2b"></i>Trava</button></td><td>Trava → relé 1 (COM e NA) e GND</td><td class="n">2</td><td>0,5 mm²</td><td>Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 soldado nos terminais da trava</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha e cooler → relés 2 e 3</td><td class="n">2 + 2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. O cooler liga junto com a pastilha</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha → relés 2 e 3</td><td class="n">2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 15 A → bornes → COM dos relés, LM2596, Vin do Mega</td><td class="n">1 por ramal</td><td>1,5 mm²</td><td>Só no vão de trás</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="gnd" aria-pressed="false"><i style="background:#262626"></i>GND</button></td><td>Fonte → bornes → todos os negativos (Mega, LM2596, relés, trava, Peltier)</td><td class="n">1 por ramal</td><td>1,5 mm²</td><td>Só no vão de trás. Os GND da fonte e do Mega precisam estar ligados juntos</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="v5" aria-pressed="false"><i style="background:#2e8b57"></i>5 V dos relés</button></td><td>LM2596 (ajustado em 5 V) → VCC do módulo de relés</td><td class="n">1</td><td>0,5 mm²</td><td>Só no vão de trás</td></tr>
@@ -905,7 +910,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     Object.assign(sol.shadow.camera, { left: -1300, right: 1300, top: 1300, bottom: -600, near: 100, far: 5000 });
     scene.add(sol);
     const chao = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.ShadowMaterial({ opacity: 0.16 }));
-    chao.rotation.x = -Math.PI / 2; chao.receiveShadow = true; scene.add(chao);
+    chao.rotation.x = -Math.PI / 2; chao.receiveShadow = true; chao.userData.chao = true; scene.add(chao);
 
     const mdf = new THREE.MeshStandardMaterial({ color: 0xc8a376, roughness: 0.88 });
     const mdfPorta = new THREE.MeshStandardMaterial({ color: 0xd3b68f, roughness: 0.8 });
@@ -914,6 +919,8 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const escuro = new THREE.MeshStandardMaterial({ color: 0x2f3438, roughness: 0.6 });
     const transparentes = [mdf, mdfPorta];
     const clicaveis = [];
+    // nome que aparece ao passar o mouse; filhos herdam o nome do pai mais próximo
+    function nome(obj, titulo, detalhe) { obj.userData.nome = titulo; if (detalhe) obj.userData.detalhe = detalhe; return obj; }
 
     function caixa(pai, w, h, d, x, y, z, mat, bordas = true) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
@@ -934,27 +941,27 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const corpoArm = new THREE.Group(); scene.add(corpoArm);
     const FRENTE = 350, FF = 350 - 494, PROF = 494, ZC = (FRENTE + FF) / 2;
     // caixa
-    caixa(corpoArm, 880, 3, 700, 0, 1.5, 0, mdf);
-    caixa(corpoArm, 880, 3, 700, 0, 878.5, 0, mdf);
-    caixa(corpoArm, 3, 874, 700, -438.5, 440, 0, mdf);
-    caixa(corpoArm, 3, 874, 700, 438.5, 440, 0, mdf);
-    caixa(corpoArm, 874, 874, 3, 0, 440, -348.5, mdf);
-    caixa(corpoArm, 874, 874, 3, 0, 440, FF, mdf); // fundo falso
+    nome(caixa(corpoArm, 880, 3, 700, 0, 1.5, 0, mdf), "Base", "MDF 3 mm");
+    nome(caixa(corpoArm, 880, 3, 700, 0, 878.5, 0, mdf), "Tampo", "MDF 3 mm");
+    nome(caixa(corpoArm, 3, 874, 700, -438.5, 440, 0, mdf), "Lateral esquerda", "furo de 10 mm a 660 mm para os cabos da porta");
+    nome(caixa(corpoArm, 3, 874, 700, 438.5, 440, 0, mdf), "Lateral direita", "a trava fica do lado de dentro, a 600 mm");
+    nome(caixa(corpoArm, 874, 874, 3, 0, 440, -348.5, mdf), "Traseiro", "furo embaixo à esquerda para o cabo de força");
+    nome(caixa(corpoArm, 874, 874, 3, 0, 440, FF, mdf), "Fundo falso", "separa as gavetas do vão da eletrônica; as Peltier ficam nele");
     // gaveteiro e prateleiras
-    caixa(corpoArm, 874, 3, PROF, 0, 397.5, ZC, mdf); // TETO_GAV
-    [-92.5, 72.5, 237.5].forEach((x) => caixa(corpoArm, 3, 393, PROF, x, 199.5, ZC, mdf));
-    [530, 662, 794].forEach((y) => caixa(corpoArm, 874, 3, PROF, 0, y, ZC, mdf)); // PRAT_2, PRAT_1, P_CAM
+    nome(caixa(corpoArm, 874, 3, PROF, 0, 397.5, ZC, mdf), "Teto do gaveteiro");
+    [-92.5, 72.5, 237.5].forEach((x) => nome(caixa(corpoArm, 3, 393, PROF, x, 199.5, ZC, mdf), "Divisória do gaveteiro"));
+    [["Prateleira 2", 530], ["Prateleira 1", 662], ["Piso do compartimento da câmera", 794]].forEach(([n, y]) => nome(caixa(corpoArm, 874, 3, PROF, 0, y, ZC, mdf), n));
     // baia do dispensador por gravidade
     const bx = 338, bw = 196;
     const dz = (FRENTE - 20) - FF, dy = 333 - 245.9, L = Math.hypot(dz, dy), ang = Math.atan2(dy, dz);
-    const pista = caixa(corpoArm, bw, 3, L, bx, (333 + 245.9) / 2, (FRENTE - 20 + FF) / 2, mdf);
+    const pista = nome(caixa(corpoArm, bw, 3, L, bx, (333 + 245.9) / 2, (FRENTE - 20 + FF) / 2, mdf), "Pista do dispensador por gravidade", "inclinada uns 10°");
     pista.rotation.x = ang;
-    caixa(corpoArm, bw, 40, 3, bx, 264.6, FRENTE - 12, mdf);
+    nome(caixa(corpoArm, bw, 40, 3, bx, 264.6, FRENTE - 12, mdf), "Retentor do dispensador", "segura os rolos na frente");
     const rolo = new THREE.MeshStandardMaterial({ color: 0xe9e6dc, roughness: 0.5 });
     for (let i = 0; i < 4; i++) {
       const s = 0.12 + i * 0.105, z = (FRENTE - 20) - s * dz, y = 245.9 + s * dy + 24;
       const r = new THREE.Mesh(new THREE.CylinderGeometry(22, 22, 170, 24), rolo);
-      r.rotation.z = Math.PI / 2; r.position.set(bx, y, z); r.castShadow = true; corpoArm.add(r);
+      r.rotation.z = Math.PI / 2; r.position.set(bx, y, z); r.castShadow = true; corpoArm.add(nome(r, "Rolo do dispensador"));
     }
 
     // gavetas
@@ -962,6 +969,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const LEDS = {};
     function gaveta(id, x0, x1, y0, y1) {
       const g = new THREE.Group(); corpoArm.add(g);
+      nome(g, "Gaveta " + id + (FRIAS[id] ? " (fria)" : ""), FRIAS[id] ? "tecla " + FRIAS[id] + " liga a Peltier atrás dela; clique para abrir" : "clique para abrir");
       const w = x1 - x0 - 4, h = y1 - y0 - 4, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
       const frente = caixa(g, w, h, 3, cx, cy, FRENTE - 1.5, mdf);
       frente.userData = { tipo: "gaveta", id }; clicaveis.push(frente);
@@ -995,44 +1003,39 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const prata = new THREE.MeshStandardMaterial({ color: 0xaab2b7, metalness: 0.5, roughness: 0.4 });
     const pretoMat = new THREE.MeshStandardMaterial({ color: 0x222426, roughness: 0.7 });
     const comp = new THREE.Group(); corpoArm.add(comp);
-    caixa(comp, 101.5, 53, 3, -150, 640, ZE, verde, false);           // Arduino Mega
-    caixa(comp, 75, 55, 16, 0, 640, ZE + 8, azul, false);              // relé 4 canais
-    caixa(comp, 43, 21, 12, -260, 470, ZE + 6, azul, false);           // LM2596
-    caixa(comp, 215, 50, 115, -230, 28, -250, prata, false);           // fonte 12 V 20 A
-    caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false); // porta-fusível 15 A
-    caixa(comp, 40, 14, 18, -55, 560, -338, new THREE.MeshStandardMaterial({ color: 0x3f8f5a }), false); // bornes de distribuição
-    const ventoinhas = [];
+    nome(caixa(comp, 101.5, 53, 3, -150, 640, ZE, verde, false), "Arduino Mega 2560", "lê o teclado, mostra no LCD e liga os relés");
+    nome(caixa(comp, 75, 55, 16, 0, 640, ZE + 8, azul, false), "Módulo relé 4 canais", "1 trava · 2 Peltier C1 · 3 Peltier C2 · 4 livre");
+    nome(caixa(comp, 43, 21, 12, -260, 470, ZE + 6, azul, false), "Regulador LM2596", "12 V → 5 V para os relés");
+    nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 20 A", "alimenta tudo; bornes de tomada expostos");
+    nome(caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false), "Porta-fusível 15 A", "na linha de 12 V");
+    nome(caixa(comp, 40, 14, 18, -55, 560, -338, new THREE.MeshStandardMaterial({ color: 0x3f8f5a }), false), "Bornes de distribuição", "emendam 12 V e GND sem solda");
+    // Peltier sem cooler (decisão de 16/10): pastilha no recorte do fundo falso, dissipador passivo atrás
     function peltier(id, y) {
-      caixa(comp, 40, 40, 4, 155, y, FF - 3, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false);
-      caixa(comp, 80, 80, 36, 155, y, FF - 24, prata, false);
-      const f = new THREE.Group(); f.position.set(155, y, FF - 58); comp.add(f);
-      caixa(f, 80, 80, 4, 0, 0, -10, pretoMat, false);
-      const pas = new THREE.Group(); f.add(pas);
-      for (let i = 0; i < 5; i++) { const p = caixa(pas, 8, 34, 2, 0, 18, 0, new THREE.MeshStandardMaterial({ color: 0x55595d }), false); p.position.set(Math.cos(i * 1.2566) * 18, Math.sin(i * 1.2566) * 18, 0); p.rotation.z = i * 1.2566 - Math.PI / 2; }
-      ventoinhas.push({ id, pas });
+      nome(caixa(comp, 40, 40, 4, 155, y, FF - 3, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false), "Pastilha Peltier TEC1-12706 da gaveta " + id, "no recorte 40 × 40 do fundo falso, lado frio virado para a gaveta");
+      nome(caixa(comp, 80, 80, 36, 155, y, FF - 24, prata, false), "Dissipador de alumínio da Peltier " + id, "lado quente, sem cooler; pasta térmica entre ele e a pastilha");
     }
     peltier("C1", 298); peltier("C2", 101);
 
     // trava na parede direita (corpo fixo) e lingueta
     const YT = 600, ZT = 318;
-    caixa(corpoArm, 28, 40, 54, 437 - 14, YT, ZT, escuro, false);
-    const lingueta3d = caixa(corpoArm, 16, 10, 16, 413, YT, ZT, metal, false);
+    nome(caixa(corpoArm, 28, 40, 54, 437 - 14, YT, ZT, escuro, false), "Trava solenoide 12 V", "lingueta chanfrada; recolhe com 12 V, relé 1");
+    const lingueta3d = nome(caixa(corpoArm, 16, 10, 16, 413, YT, ZT, metal, false), "Lingueta da trava", "o batente da porta empurra o chanfro ao fechar");
 
     // porta (dobradiça na esquerda, pivô na quina da frente)
     const porta = new THREE.Group(); porta.position.set(-440, 0, FRENTE); scene.add(porta);
     const folha = caixa(porta, 880, 880, 6, 440, 440, 3, mdfPorta);
-    folha.userData = { tipo: "porta" }; clicaveis.push(folha);
-    [120, 760].forEach((y) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60, 16), metal); d.position.set(0, y, 3); porta.add(d); });
+    folha.userData = { tipo: "porta", nome: "Porta", detalhe: "MDF 6 mm; clique para abrir" }; clicaveis.push(folha);
+    [120, 760].forEach((y) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60, 16), metal); d.position.set(0, y, 3); porta.add(nome(d, "Dobradiça")); });
     const puxador = caixa(porta, 14, 140, 14, 838, 440, 22, escuro, false);
-    puxador.userData = { tipo: "porta" }; clicaveis.push(puxador);
-    [404, 476].forEach((y) => caixa(porta, 10, 8, 12, 838, y, 10, escuro, false));
+    puxador.userData = { tipo: "porta", nome: "Puxador da porta", detalhe: "clique para abrir" }; clicaveis.push(puxador);
+    [404, 476].forEach((y) => nome(caixa(porta, 10, 8, 12, 838, y, 10, escuro, false), "Puxador da porta"));
     // caixa do LCD + teclado
-    caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true);
+    nome(caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true), "Caixa do LCD e do teclado", "o buzzer fica nela");
     const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 176;
     const lcdTex = new THREE.CanvasTexture(lcdCanvas); lcdTex.anisotropy = 4;
     const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(71, 24.5), new THREE.MeshBasicMaterial({ map: lcdTex }));
-    lcdTela.position.set(760, 690, 16.2); porta.add(lcdTela);
-    caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false);
+    lcdTela.position.set(760, 690, 16.2); porta.add(nome(lcdTela, "Display LCD 16x2 I2C", "pinos 20 (SDA) e 21 (SCL)"));
+    nome(caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false), "Display LCD 16x2 I2C", "pinos 20 (SDA) e 21 (SCL)");
     const tecCanvas = document.createElement("canvas"); tecCanvas.width = 276; tecCanvas.height = 304;
     (function () {
       const x = tecCanvas.getContext("2d");
@@ -1045,15 +1048,16 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       });
     })();
     const tecPlano = new THREE.Mesh(new THREE.PlaneGeometry(69, 76), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(tecCanvas) }));
-    tecPlano.position.set(760, 610, 16.2); porta.add(tecPlano);
+    tecPlano.position.set(760, 610, 16.2); porta.add(nome(tecPlano, "Teclado de membrana 4x4", "linhas nos pinos 22 a 28, colunas 30 a 36"));
     // batente em L com janela (por dentro da porta)
-    caixa(porta, 40, 50, 3, 842, YT, -1.5, metal, false);
-    caixa(porta, 3, 19, 60, 842, YT + 15.5, -30, metal, false);
-    caixa(porta, 3, 19, 60, 842, YT - 15.5, -30, metal, false);
-    caixa(porta, 3, 12, 22, 842, YT, -11, metal, false);
-    caixa(porta, 3, 12, 18, 842, YT, -51, metal, false);
+    const batente = new THREE.Group(); porta.add(nome(batente, "Batente em L com janela", "a lingueta encaixa na janela de 12 × 20 mm"));
+    caixa(batente, 40, 50, 3, 842, YT, -1.5, metal, false);
+    caixa(batente, 3, 19, 60, 842, YT + 15.5, -30, metal, false);
+    caixa(batente, 3, 19, 60, 842, YT - 15.5, -30, metal, false);
+    caixa(batente, 3, 12, 22, 842, YT, -11, metal, false);
+    caixa(batente, 3, 12, 18, 842, YT, -51, metal, false);
     const buzzer = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 8, 20), pretoMat);
-    buzzer.rotation.x = Math.PI / 2; buzzer.position.set(800, 722, 20); porta.add(buzzer);
+    buzzer.rotation.x = Math.PI / 2; buzzer.position.set(800, 722, 20); porta.add(nome(buzzer, "Buzzer ativo 5 V", "pino 7"));
 
     /* ---------- fios: um tubo por cabo, pelo caminho de verdade ---------- */
     const fios = new THREE.Group(); fios.visible = false; scene.add(fios);
@@ -1065,26 +1069,37 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       return c;
     }
     function registrar(id, mat) { (CABOS[id] = CABOS[id] || { mats: [] }).mats.push(mat); }
+    const NOME_CABO = {
+      teclado: ["Cabo do teclado", "cabo de rede 1, 8 fios"],
+      lcd: ["Cabo do LCD e do buzzer", "cabo de rede 2, 6 de 8 fios"],
+      trava: ["Fio da trava", "0,5 mm², relé 1"],
+      peltier: ["Fio da Peltier", "1,5 mm², relés 2 e 3"],
+      forca: ["Cabo de força", "tomada → fonte"],
+      v12: ["12 V", "1,5 mm², depois do fusível"],
+      gnd: ["GND", "terra comum da fonte e do Mega"],
+      v5: ["5 V dos relés", "saída do LM2596"],
+      controle: ["Controle dos relés", "pinos 8, 9 e 10 do Mega"],
+    };
     function cabo(id, pts, cor, raio, pai) {
       const mat = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.5, transparent: true, opacity: 1 });
       registrar(id, mat);
       const m = new THREE.Mesh(new THREE.TubeGeometry(trajeto(pts), (pts.length - 1) * 10, raio, 8, false), mat);
-      (pai || fios).add(m);
+      (pai || fios).add(nome(m, ...NOME_CABO[id]));
       return m;
     }
     const furoMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
-    function furo(x, y, z, eixo) {
+    function furo(x, y, z, eixo, para) {
       const f = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 6, 18), furoMat);
       if (eixo === "x") f.rotation.z = Math.PI / 2; else f.rotation.x = Math.PI / 2;
-      f.position.set(x, y, z); corpoArm.add(f);
+      f.position.set(x, y, z); corpoArm.add(nome(f, "Furo de 10 mm", para + "; fazer antes da cola"));
     }
     const COR = { teclado: 0xe8892a, lcd: 0x2f7fd1, trava: 0xd23b2b, peltier: 0xb3261e, v12: 0xe24a3b, gnd: 0x262626, v5: 0x2e8b57, controle: 0x8e5cc7, forca: 0x7d868c };
 
     // furos que precisam ser feitos antes da cola
-    furo(-438.5, 660, 322, "x");   // lateral esquerda, cabos da porta
-    furo(-428, 660, FF, "z");      // fundo falso, cabos da porta
-    furo(430, 600, FF, "z");       // fundo falso, trava
-    furo(-345, 28, -348.5, "z");   // traseiro, cabo de força
+    furo(-438.5, 660, 322, "x", "lateral esquerda, cabos da porta");
+    furo(-428, 660, FF, "z", "fundo falso, cabos da porta");
+    furo(430, 600, FF, "z", "fundo falso, fio da trava");
+    furo(-345, 28, -348.5, "z", "traseiro, cabo de força");
 
     // porta: teclado (cabo de rede 1) e LCD + buzzer (cabo de rede 2) por dentro da folha até a dobradiça
     cabo("teclado", [[760, 600, 4], [760, 600, -3], [760, 655, -3], [30, 655, -3], [12, 655, -6]], COR.teclado, 3, fiosPorta);
@@ -1104,7 +1119,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
         const a = porta.localToWorld(l.ancora.clone());
         const curva = new THREE.CatmullRomCurve3([a, new THREE.Vector3(-462, l.y, 372), new THREE.Vector3(-476, l.y, 340), new THREE.Vector3(-452, l.y, 322), new THREE.Vector3(-436, l.y, 322)]);
         const g = new THREE.TubeGeometry(curva, 40, 3, 8, false);
-        if (l.mesh) { l.mesh.geometry.dispose(); l.mesh.geometry = g; } else { l.mesh = new THREE.Mesh(g, l.mat); fios.add(l.mesh); }
+        if (l.mesh) { l.mesh.geometry.dispose(); l.mesh.geometry = g; } else { l.mesh = nome(new THREE.Mesh(g, l.mat), NOME_CABO[l.id][0], "laço de folga na dobradiça"); fios.add(l.mesh); }
       });
     }
     // dentro do armário: lateral esquerda, embaixo da PRAT_1, até o fundo falso e o Arduino
@@ -1112,7 +1127,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     cabo("lcd", [[-436, 665, 322], [-422, 665, 300], [-422, 665, -200], [-422, 636, -330], [-205, 636, -341]], COR.lcd, 3);
     // trava: parede direita a 600 mm
     cabo("trava", [[423, YT, 290], [430, YT, 280], [430, YT, -200], [430, 615, -330], [40, 615, -339]], COR.trava, 2.5);
-    // Peltier C1 e C2 (cooler ligado junto): já saem no vão de trás
+    // Peltier C1 e C2: já saem no vão de trás
     cabo("peltier", [[180, 298, -150], [200, 298, -205], [200, 600, -330], [35, 605, -339]], COR.peltier, 3.5);
     cabo("peltier", [[180, 101, -150], [210, 101, -205], [210, 595, -330], [30, 600, -339]], COR.peltier, 3.5);
     // energia: tomada, 12 V com fusível, GND, 5 V do LM2596, controle dos relés
@@ -1190,6 +1205,48 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(mouse, camera);
       canvas.style.cursor = ray.intersectObjects(clicaveis, false).length ? "pointer" : "grab";
+      // arrastando (girando a câmera) a etiqueta some; no toque ela aparece no tap
+      if (e.pointerType === "mouse" && !e.buttons) etiquetar(e); else esconderEtiqueta();
+    });
+    canvas.addEventListener("pointerleave", esconderEtiqueta);
+
+    // etiqueta com o nome da peça sob o cursor
+    const etiqueta = $("etiqueta");
+    let etiquetaAte = 0;
+    function visivel(o) { for (; o; o = o.parent) if (!o.visible) return false; return true; }
+    function apagado(o) { const m = o.material; return m && m.transparent && m.opacity < 0.3; }
+    function pecaSob() {
+      // no raio-X o MDF fica translúcido e é ignorado, então dá para apontar o que está dentro
+      for (const hit of ray.intersectObjects(scene.children, true)) {
+        const o = hit.object;
+        if (o.userData.chao) return null;
+        if (!o.isMesh || !visivel(o) || apagado(o)) continue;
+        for (let p = o; p; p = p.parent) if (p.userData.nome) return p.userData;
+        return null;
+      }
+      return null;
+    }
+    function etiquetar(e, ms) {
+      const u = pecaSob();
+      if (!u) { esconderEtiqueta(); return; }
+      etiqueta.firstElementChild.textContent = u.nome;
+      etiqueta.lastElementChild.textContent = u.detalhe || "";
+      etiqueta.lastElementChild.hidden = !u.detalhe;
+      etiqueta.hidden = false;
+      const caixaCena = etiqueta.parentElement.getBoundingClientRect();
+      let x = e.clientX - caixaCena.left + 14, y = e.clientY - caixaCena.top + 16;
+      if (x + etiqueta.offsetWidth > caixaCena.width - 8) x = e.clientX - caixaCena.left - etiqueta.offsetWidth - 14;
+      if (y + etiqueta.offsetHeight > caixaCena.height - 8) y = e.clientY - caixaCena.top - etiqueta.offsetHeight - 12;
+      etiqueta.style.transform = "translate(" + Math.max(8, x) + "px," + Math.max(8, y) + "px)";
+      etiquetaAte = ms ? performance.now() + ms : 0;
+    }
+    function esconderEtiqueta() { etiqueta.hidden = true; etiquetaAte = 0; }
+    canvas.addEventListener("pointerup", (e) => {
+      if (e.pointerType === "mouse" || !baixo || Math.hypot(e.clientX - baixo[0], e.clientY - baixo[1]) > 6) return;
+      const r = canvas.getBoundingClientRect();
+      mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(mouse, camera);
+      etiquetar(e, 2500);
     });
 
     function tema() {
@@ -1217,13 +1274,13 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
         }
         porta.rotation.y = -THREE.MathUtils.degToRad(st.portaAng + tremor());
         if (fios.visible) refazerLacos();
+        if (etiquetaAte && agora > etiquetaAte) esconderEtiqueta();
         lingueta3d.position.x = 413 - 12 * st.lingueta;
         GAVETAS.forEach((g) => { gav3d[g].position.z = st.gav[g].pos * 330; });
         Object.keys(FRIAS).forEach((g) => {
           LEDS[g].material.color.set(st.frio[g] ? 0x4f8dff : 0x3a4652);
           const gelo = LEDS[g + "gelo"].material; gelo.opacity += ((st.frio[g] ? 0.55 : 0) - gelo.opacity) * Math.min(1, dt * 3); gelo.emissiveIntensity = gelo.opacity;
         });
-        ventoinhas.forEach((v) => { if (st.frio[v.id] && !reduzir) v.pas.rotation.z -= dt * 18; });
         controls.update();
         renderer.render(scene, camera);
       },

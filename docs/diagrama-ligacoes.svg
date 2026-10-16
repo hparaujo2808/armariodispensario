@@ -135,13 +135,13 @@
 <circle cx="1440" cy="392" r="4.5" fill="#1e1e1e"/>
 <polyline points="965,472 1080,472" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="1080" y="454" width="160" height="36" rx="4" fill="#eef2f5" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="469" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C1 + cooler</text>
+<text x="1160" y="469" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C1</text>
 <text x="1160" y="483" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">12 V · ~6 A · 1,5 mm²</text>
 <polyline points="1240,472 1440,472" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="1440" cy="472" r="4.5" fill="#1e1e1e"/>
 <polyline points="965,552 1080,552" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="1080" y="534" width="160" height="36" rx="4" fill="#eef2f5" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="549" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C2 + cooler</text>
+<text x="1160" y="549" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C2</text>
 <text x="1160" y="563" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">12 V · ~6 A · 1,5 mm²</text>
 <polyline points="1240,552 1440,552" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="1440" cy="552" r="4.5" fill="#1e1e1e"/>

@@ -31,7 +31,7 @@ O módulo de relés comum liga com nível baixo: no código, `LOW` liga e `HIGH`
 | Teclado | Teclado 4x4 → Mega 22 a 36 (pares) | 8 | cabo de rede 1 | Por dentro da porta até a dobradiça, laço de folga de 15 cm por fora, furo na lateral esquerda, lateral por dentro (embaixo da prateleira de cima) até o fundo falso, furo, Arduino |
 | LCD e buzzer | LCD I2C → 20, 21, 5V, GND · buzzer → 7 e GND | 6 de 8 | cabo de rede 2 | O mesmo caminho do teclado, lado a lado. Sobram 2 fios de reserva |
 | Trava | Trava → NA do relé 1 e GND | 2 | 0,5 mm² | Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 nos terminais da trava, faixa no + |
-| Peltier C1 e C2 | Pastilha e cooler → NA dos relés 2 e 3 e GND | 2 + 2 cada | 1,5 mm² | A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. O cooler liga junto com a pastilha |
+| Peltier C1 e C2 | Pastilha → NA dos relés 2 e 3 e GND | 2 cada | 1,5 mm² | A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente |
 | 12 V | Fonte → fusível 15 A → bornes → COM dos relés, LM2596, Vin | 1 por ramal | 1,5 mm² | Só no vão de trás |
 | GND | Fonte → bornes → todos os negativos | 1 por ramal | 1,5 mm² | Só no vão de trás. GND da fonte e do Mega ligados juntos |
 | 5 V dos relés | LM2596 (ajustado em 5,0 V) → VCC do módulo de relés | 1 | 0,5 mm² | Só no vão de trás |
