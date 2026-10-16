@@ -27,6 +27,7 @@ rogi: Os preços são uma faixa de referência de lojas online brasileiras, só 
 | 2 | Pastilha Peltier TEC1-12706 | Um lado gela, o outro esquenta. Uma por gaveta | 15 a 30 cada |
 | 2 | Dissipador de alumínio, **sem cooler** (o de um processador velho serve, só o metal) | Tira o calor do lado quente. **Sem ele a pastilha queima em segundos** | 0 a 25 cada |
 | 1 | Pasta térmica | Entre a pastilha e os dissipadores | 10 a 20 |
+| 1 | Serra copo de 38 mm para madeira (se ninguém tiver) | Os dois furos das Peltier no fundo falso. Encaixa em furadeira comum | 10 a 25 |
 
 rogi: O grupo decidiu em 16/10 não comprar cooler, por dinheiro e por tempo. A pastilha continua precisando de um pedaço de alumínio no lado quente: é ele que segura o calor que ela bombeia, e uma TEC1-12706 solta uns 70 W ali. Sem ventoinha esse dissipador perde calor devagar, então o frio fica mais fraco e a pastilha deve ficar ligada só na hora de mostrar, alguns minutos. Se a mão não aguentar ficar encostada no dissipador, desliga.
 

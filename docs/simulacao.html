@@ -548,10 +548,12 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
               <tr><td>Fundo falso</td><td class="n">660 mm, rente à esquerda</td><td>Cabos da porta</td></tr>
               <tr><td>Fundo falso</td><td class="n">600 mm, rente à direita</td><td>Trava</td></tr>
               <tr><td>Traseiro</td><td class="n">28 mm, a 95 mm da esquerda</td><td>Cabo de força</td></tr>
+              <tr><td>Fundo falso</td><td class="n">Ø 38 mm, centro a 298 mm de altura e 595 mm da esquerda</td><td>Peltier da gaveta C1</td></tr>
+              <tr><td>Fundo falso</td><td class="n">Ø 38 mm, centro a 101 mm de altura e 595 mm da esquerda</td><td>Peltier da gaveta C2</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="nota">Furos de 10 mm. As Peltier vão em recortes de 40 × 40 mm no fundo falso, atrás de C1 e C2.</p>
+        <p class="nota">Furos de 10 mm, menos os dois das Peltier, que são de 38 mm com serra copo. Nada de recorte: o MDF já está todo cortado. A pastilha fica no vão de trás tampando o furo, com a face fria virada para a gaveta, e uma abraçadeira por dois furinhos de 5 mm aperta o dissipador contra ela. Medidas olhando o armário de frente.</p>
       </div>
     </div>
   </section>
@@ -1009,9 +1011,12 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 20 A", "alimenta tudo; bornes de tomada expostos");
     nome(caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false), "Porta-fusível 15 A", "na linha de 12 V");
     nome(caixa(comp, 40, 14, 18, -55, 560, -338, new THREE.MeshStandardMaterial({ color: 0x3f8f5a }), false), "Bornes de distribuição", "emendam 12 V e GND sem solda");
-    // Peltier sem cooler (decisão de 16/10): pastilha no recorte do fundo falso, dissipador passivo atrás
+    // Peltier sem cooler e sem recorte (16/10): furo de 38 mm no fundo falso, pastilha tampando por trás, dissipador passivo
     function peltier(id, y) {
-      nome(caixa(comp, 40, 40, 4, 155, y, FF - 3, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false), "Pastilha Peltier TEC1-12706 da gaveta " + id, "no recorte 40 × 40 do fundo falso, lado frio virado para a gaveta");
+      const furo40 = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 3.4, 40), new THREE.MeshStandardMaterial({ color: 0xdcdcdc, roughness: 0.6 }));
+      furo40.rotation.x = Math.PI / 2; furo40.position.set(155, y, FF);
+      comp.add(nome(furo40, "Furo de 38 mm atrás da gaveta " + id, "serra copo no fundo falso; aparece a face fria da pastilha"));
+      nome(caixa(comp, 40, 40, 4, 155, y, FF - 3.5, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false), "Pastilha Peltier TEC1-12706 da gaveta " + id, "no vão de trás, tampando o furo de 38 mm; face fria virada para a gaveta, presa por abraçadeira");
       nome(caixa(comp, 80, 80, 36, 155, y, FF - 24, prata, false), "Dissipador de alumínio da Peltier " + id, "lado quente, sem cooler; pasta térmica entre ele e a pastilha");
     }
     peltier("C1", 298); peltier("C2", 101);

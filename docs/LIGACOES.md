@@ -48,8 +48,10 @@ rogi: Não há sensor de porta. A lingueta chanfrada tranca sozinha quando a por
 | Fundo falso | 660 mm, rente à esquerda | Cabos da porta |
 | Fundo falso | 600 mm, rente à direita | Trava |
 | Traseiro | 28 mm de altura, 95 mm da esquerda | Cabo de força |
+| Fundo falso | Ø 38 mm, centro a 298 mm de altura e 595 mm da esquerda | Peltier da gaveta C1 |
+| Fundo falso | Ø 38 mm, centro a 101 mm de altura e 595 mm da esquerda | Peltier da gaveta C2 |
 
-rogi: Os furos são de 10 mm. As Peltier entram em recortes de 40 × 40 mm no fundo falso, atrás das gavetas C1 e C2. Do jeito que o manual de montagem está, o vão da eletrônica fica fechado depois da cola, então tudo isso precisa ser feito antes.
+rogi: Os furos são de 10 mm, menos os dois das Peltier: esses são de 38 mm, feitos com serra copo na furadeira. O MDF já está todo cortado, então não há recorte nenhum. A pastilha fica no vão de trás, tampando o furo (38 mm deixa 1 mm de borda pra ela vedar), com a face fria virada para a gaveta e o dissipador encostado na face quente com pasta térmica. Quem segura tudo é uma abraçadeira de nylon: dois furinhos de 5 mm, um de cada lado do furo grande, e ela laça o dissipador e aperta o conjunto contra o MDF. Um filete de cola quente na borda da pastilha veda a fresta. Medidas olhando o armário de frente. Do jeito que o manual de montagem está, o vão da eletrônica fica fechado depois da cola, então os furos precisam ser feitos antes. Se a caixa já estiver colada, dá para furar pela frente, com a gaveta tirada.
 
 ## Antes de ligar na tomada
 
