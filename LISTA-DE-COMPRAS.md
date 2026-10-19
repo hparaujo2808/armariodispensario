@@ -9,7 +9,8 @@ rogi: Os preços são uma faixa de referência de lojas online brasileiras, só 
 | Qtd | Peça | Para quê | Faixa (R$) |
 |---|---|---|---|
 | 1 | Arduino Mega 2560 R3 (compatível serve) + cabo USB | O cérebro: lê o teclado, mostra no LCD, decide quando abrir | 80 a 130 |
-| 1 | Display LCD 16x2 **com módulo I2C já soldado** (PCF8574) | Mostra `Digite a senha` e os `*` na porta | 25 a 40 |
+| 1 | Display LCD 16x1, sem I2C (**o grupo já tem**) | Mostra `Digite a senha` e os `*` na porta, em uma linha | 0 |
+| 1 | Potenciômetro de 10 kΩ e resistor de 220 Ω (vêm no kit) | Contraste e luz de fundo do LCD | 0 a 3 |
 | 1 | Teclado matricial de membrana 4x4 | O pinpad da porta | 8 a 15 |
 | 1 | Buzzer **ativo** 5 V | Bipe de tecla, de senha certa e de senha errada | 3 a 6 |
 
@@ -48,10 +49,11 @@ rogi: O grupo decidiu em 16/10 não comprar cooler, por dinheiro e por tempo. A 
 | 3 m + 3 m | Fio de 1,5 mm² (vermelho e preto) | Fonte, pastilhas e trava. Fio de jumper não aguenta a corrente da Peltier | 15 a 30 |
 | 1 kit | Jumpers macho-macho e macho-fêmea | Ligações do Arduino | 15 a 25 |
 | 1 | Protoboard 830 pontos | Testar antes de fixar no armário | 15 a 25 |
-| 1 pacote | Bornes KF301 ou conectores Wago | Emendar os fios grossos sem solda | 10 a 15 |
 | — | Termo-retrátil, fita isolante, abraçadeiras | Acabamento e segurança | 10 a 20 |
 
-**Total estimado:** de R$ 340 a R$ 680, menos o que já vier no kit.
+**Total estimado:** de R$ 305 a R$ 625, menos o que já vier no kit.
+
+rogi: Não tem bornes (decisão de 19/10, por tempo e dinheiro). O 12 V passa de um COM do relé para o outro e o GND vai direto nos parafusos V− da fonte, dois fios por parafuso. O passo a passo está em `docs/LIGACOES.md`.
 
 ## Versão mais barata
 
@@ -59,6 +61,6 @@ rogi: Se o orçamento apertar, troquem as pastilhas por duas TEC1-12703 (uns 3 A
 
 ## Cuidados
 
-- **A fonte colmeia tem os bornes de tomada (127/220 V) expostos.** Conferir a chave seletora de tensão antes de ligar, ligar o cabo de força com ela desligada da tomada e não encostar nos bornes com ela ligada. Na primeira vez, de preferência com o professor junto.
+- **A fonte colmeia tem os terminais da tomada (127/220 V) expostos.** Conferir a chave seletora de tensão antes de ligar, ligar o cabo de força com ela desligada da tomada e não encostar neles com ela ligada. Na primeira vez, de preferência com o professor junto.
 - **Nunca ligar a Peltier sem o dissipador preso nela, com pasta térmica.** Sem cooler, ligar só pelo tempo da demonstração.
 - **A trava solenoide esquenta se ficar ligada muito tempo.** O código só energiza a trava pelos segundos de abertura.

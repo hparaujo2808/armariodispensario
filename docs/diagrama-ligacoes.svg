@@ -19,10 +19,18 @@
 <text x="236" y="465" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D9</text>
 <rect x="245" y="535" width="10" height="10" fill="#141414"/>
 <text x="236" y="545" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D10</text>
-<rect x="245" y="655" width="10" height="10" fill="#141414"/>
-<text x="236" y="665" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D20 SDA</text>
-<rect x="245" y="695" width="10" height="10" fill="#141414"/>
-<text x="236" y="705" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D21 SCL</text>
+<rect x="245" y="639" width="10" height="10" fill="#141414"/>
+<text x="236" y="649" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D38</text>
+<rect x="245" y="661" width="10" height="10" fill="#141414"/>
+<text x="236" y="671" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D40</text>
+<rect x="245" y="683" width="10" height="10" fill="#141414"/>
+<text x="236" y="693" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D42</text>
+<rect x="245" y="705" width="10" height="10" fill="#141414"/>
+<text x="236" y="715" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D44</text>
+<rect x="245" y="727" width="10" height="10" fill="#141414"/>
+<text x="236" y="737" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D46</text>
+<rect x="245" y="749" width="10" height="10" fill="#141414"/>
+<text x="236" y="759" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D48</text>
 <rect x="245" y="801" width="10" height="10" fill="#141414"/>
 <text x="236" y="811" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D22</text>
 <rect x="245" y="837" width="10" height="10" fill="#141414"/>
@@ -152,28 +160,41 @@
 <circle cx="1060" cy="392" r="4.5" fill="#5b6862"/>
 <circle cx="1258" cy="392" r="4.5" fill="#5b6862"/>
 <text x="1152" y="328" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#1f2a26" text-anchor="middle">diodo 1N4007 (faixa no +)</text>
-<polyline points="255,110 300,110 300,636 700,636" fill="none" stroke="#2e8b57" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,660 700,660" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,700 700,700" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="700" y="622" width="260" height="116" rx="6" fill="#1e5a2f" stroke="none" stroke-width="1.5"/>
-<rect x="748" y="642" width="196" height="70" rx="3" fill="#9fc23a" stroke="none" stroke-width="1.5"/>
-<text x="756" y="670" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Digite a senha</text>
-<text x="756" y="698" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Senha: ____</text>
-<rect x="695" y="631" width="10" height="10" fill="#141414"/>
-<text x="711" y="640" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">VCC</text>
-<rect x="695" y="655" width="10" height="10" fill="#141414"/>
-<text x="711" y="664" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">SDA</text>
-<rect x="695" y="695" width="10" height="10" fill="#141414"/>
-<text x="711" y="704" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">SCL</text>
-<rect x="955" y="675" width="10" height="10" fill="#141414"/>
-<polyline points="965,680 990,680" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="990" y1="680" x2="990" y2="690" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="981.0" y1="690" x2="999.0" y2="690" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="984.0" y1="694" x2="996.0" y2="694" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="987.0" y1="698" x2="993.0" y2="698" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="830" y="614" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x2 com I2C (na porta)</text>
+<polyline points="255,110 300,110 300,620 700,620" fill="none" stroke="#2e8b57" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,644 700,644" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,666 700,666" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,688 700,688" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,710 700,710" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,732 700,732" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,754 700,754" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="700" y="606" width="260" height="158" rx="6" fill="#1e5a2f" stroke="none" stroke-width="1.5"/>
+<rect x="695" y="615" width="10" height="10" fill="#141414"/>
+<text x="711" y="624" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">VCC</text>
+<rect x="695" y="639" width="10" height="10" fill="#141414"/>
+<text x="711" y="648" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">RS</text>
+<rect x="695" y="661" width="10" height="10" fill="#141414"/>
+<text x="711" y="670" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">E</text>
+<rect x="695" y="683" width="10" height="10" fill="#141414"/>
+<text x="711" y="692" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D4</text>
+<rect x="695" y="705" width="10" height="10" fill="#141414"/>
+<text x="711" y="714" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D5</text>
+<rect x="695" y="727" width="10" height="10" fill="#141414"/>
+<text x="711" y="736" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D6</text>
+<rect x="695" y="749" width="10" height="10" fill="#141414"/>
+<text x="711" y="758" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D7</text>
+<rect x="752" y="632" width="196" height="40" rx="3" fill="#9fc23a" stroke="none" stroke-width="1.5"/>
+<text x="760" y="658" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Digite a senha</text>
+<text x="756" y="700" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#cfe9d6" text-anchor="start">RW, VSS e K no GND · A no 5V por 220 Ω</text>
+<text x="756" y="716" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#cfe9d6" text-anchor="start">V0 no meio do potenciômetro de 10 kΩ</text>
+<rect x="955" y="695" width="10" height="10" fill="#141414"/>
+<polyline points="965,700 990,700" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="990" y1="700" x2="990" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
+<line x1="981.0" y1="710" x2="999.0" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
+<line x1="984.0" y1="714" x2="996.0" y2="714" stroke="#1e1e1e" stroke-width="2.5"/>
+<line x1="987.0" y1="718" x2="993.0" y2="718" stroke="#1e1e1e" stroke-width="2.5"/>
+<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x1 sem I2C (na porta)</text>
 <rect x="700" y="788" width="280" height="302" rx="8" fill="#1c1d1f" stroke="none" stroke-width="1.5"/>
-<text x="840" y="778" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
+<text x="840" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
 <polyline points="255,806 700,806" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="695" y="801" width="10" height="10" fill="#141414"/>
 <text x="712" y="810" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">L1</text>
@@ -230,26 +251,26 @@
 <text x="886" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">#</text>
 <rect x="916" y="1014" width="44" height="56" rx="5" fill="#b8352b" stroke="none" stroke-width="1.5"/>
 <text x="938" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">D</text>
-<text x="1050" y="660" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="start">Legenda</text>
-<polyline points="1050,680 1084,680" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="684" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V (fonte, Vin do Mega, COM dos relés)</text>
-<polyline points="1050,704 1084,704" fill="none" stroke="#a3221d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="708" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V chaveado pelo relé (vai para a carga)</text>
-<polyline points="1050,728 1084,728" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="732" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">5 V</text>
-<polyline points="1050,752 1084,752" fill="none" stroke="#1e1e1e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="756" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">GND · o símbolo de terra é o mesmo ponto em tudo</text>
-<polyline points="1050,776 1084,776" fill="none" stroke="#8e5cc7" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">controle dos relés (D8, D9, D10)</text>
-<polyline points="1050,800 1084,800" fill="none" stroke="#2f7fd1" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="804" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">LCD I2C (SDA e SCL)</text>
-<polyline points="1050,824 1084,824" fill="none" stroke="#e8892a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="828" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
-<polyline points="1050,848 1084,848" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="852" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
-<polyline points="1050,872 1084,872" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="876" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
-<text x="1050" y="916" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
-<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
-<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
+<text x="1050" y="680" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="start">Legenda</text>
+<polyline points="1050,700 1084,700" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="704" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V (fonte, Vin do Mega, COM dos relés)</text>
+<polyline points="1050,724 1084,724" fill="none" stroke="#a3221d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="728" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V chaveado pelo relé (vai para a carga)</text>
+<polyline points="1050,748 1084,748" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="752" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">5 V</text>
+<polyline points="1050,772 1084,772" fill="none" stroke="#1e1e1e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="776" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">GND · o símbolo de terra é o mesmo ponto em tudo</text>
+<polyline points="1050,796 1084,796" fill="none" stroke="#8e5cc7" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="800" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">controle dos relés (D8, D9, D10)</text>
+<polyline points="1050,820 1084,820" fill="none" stroke="#2f7fd1" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="824" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">LCD em paralelo (RS, E, D4 a D7)</text>
+<polyline points="1050,844 1084,844" fill="none" stroke="#e8892a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="848" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
+<polyline points="1050,868 1084,868" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="872" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
+<polyline points="1050,892 1084,892" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="896" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
+<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
+<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
+<text x="1050" y="976" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
 </svg>

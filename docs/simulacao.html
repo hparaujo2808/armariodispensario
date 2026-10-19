@@ -96,7 +96,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 aside.painel { display: grid; gap: 14px; min-width: 0; }
 .bloco { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 12px; min-width: 0; }
 
-/* LCD 16x2 HD44780: 16 colunas, matriz de 5x8 pontos por caractere */
+/* LCD 16x1 HD44780: uma linha de 16 colunas, matriz de 5x8 pontos por caractere */
 .lcd-moldura { background: #1e5a2f; border-radius: 6px; padding: 10px 12px; box-shadow: inset 0 0 0 3px #164524; }
 .lcd { background: var(--lcd-bg); border-radius: 3px; padding: 8px 8px; display: grid; gap: 4px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
 .lcd .linha { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
@@ -269,10 +269,18 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <text x="236" y="465" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D9</text>
 <rect x="245" y="535" width="10" height="10" fill="#141414"/>
 <text x="236" y="545" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D10</text>
-<rect x="245" y="655" width="10" height="10" fill="#141414"/>
-<text x="236" y="665" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D20 SDA</text>
-<rect x="245" y="695" width="10" height="10" fill="#141414"/>
-<text x="236" y="705" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D21 SCL</text>
+<rect x="245" y="639" width="10" height="10" fill="#141414"/>
+<text x="236" y="649" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D38</text>
+<rect x="245" y="661" width="10" height="10" fill="#141414"/>
+<text x="236" y="671" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D40</text>
+<rect x="245" y="683" width="10" height="10" fill="#141414"/>
+<text x="236" y="693" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D42</text>
+<rect x="245" y="705" width="10" height="10" fill="#141414"/>
+<text x="236" y="715" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D44</text>
+<rect x="245" y="727" width="10" height="10" fill="#141414"/>
+<text x="236" y="737" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D46</text>
+<rect x="245" y="749" width="10" height="10" fill="#141414"/>
+<text x="236" y="759" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D48</text>
 <rect x="245" y="801" width="10" height="10" fill="#141414"/>
 <text x="236" y="811" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D22</text>
 <rect x="245" y="837" width="10" height="10" fill="#141414"/>
@@ -402,28 +410,41 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <circle cx="1060" cy="392" r="4.5" fill="#5b6862"/>
 <circle cx="1258" cy="392" r="4.5" fill="#5b6862"/>
 <text x="1152" y="328" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#1f2a26" text-anchor="middle">diodo 1N4007 (faixa no +)</text>
-<polyline points="255,110 300,110 300,636 700,636" fill="none" stroke="#2e8b57" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,660 700,660" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,700 700,700" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="700" y="622" width="260" height="116" rx="6" fill="#1e5a2f" stroke="none" stroke-width="1.5"/>
-<rect x="748" y="642" width="196" height="70" rx="3" fill="#9fc23a" stroke="none" stroke-width="1.5"/>
-<text x="756" y="670" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Digite a senha</text>
-<text x="756" y="698" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Senha: ____</text>
-<rect x="695" y="631" width="10" height="10" fill="#141414"/>
-<text x="711" y="640" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">VCC</text>
-<rect x="695" y="655" width="10" height="10" fill="#141414"/>
-<text x="711" y="664" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">SDA</text>
-<rect x="695" y="695" width="10" height="10" fill="#141414"/>
-<text x="711" y="704" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">SCL</text>
-<rect x="955" y="675" width="10" height="10" fill="#141414"/>
-<polyline points="965,680 990,680" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="990" y1="680" x2="990" y2="690" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="981.0" y1="690" x2="999.0" y2="690" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="984.0" y1="694" x2="996.0" y2="694" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="987.0" y1="698" x2="993.0" y2="698" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="830" y="614" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x2 com I2C (na porta)</text>
+<polyline points="255,110 300,110 300,620 700,620" fill="none" stroke="#2e8b57" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,644 700,644" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,666 700,666" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,688 700,688" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,710 700,710" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,732 700,732" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="255,754 700,754" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="700" y="606" width="260" height="158" rx="6" fill="#1e5a2f" stroke="none" stroke-width="1.5"/>
+<rect x="695" y="615" width="10" height="10" fill="#141414"/>
+<text x="711" y="624" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">VCC</text>
+<rect x="695" y="639" width="10" height="10" fill="#141414"/>
+<text x="711" y="648" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">RS</text>
+<rect x="695" y="661" width="10" height="10" fill="#141414"/>
+<text x="711" y="670" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">E</text>
+<rect x="695" y="683" width="10" height="10" fill="#141414"/>
+<text x="711" y="692" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D4</text>
+<rect x="695" y="705" width="10" height="10" fill="#141414"/>
+<text x="711" y="714" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D5</text>
+<rect x="695" y="727" width="10" height="10" fill="#141414"/>
+<text x="711" y="736" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D6</text>
+<rect x="695" y="749" width="10" height="10" fill="#141414"/>
+<text x="711" y="758" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D7</text>
+<rect x="752" y="632" width="196" height="40" rx="3" fill="#9fc23a" stroke="none" stroke-width="1.5"/>
+<text x="760" y="658" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Digite a senha</text>
+<text x="756" y="700" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#cfe9d6" text-anchor="start">RW, VSS e K no GND · A no 5V por 220 Ω</text>
+<text x="756" y="716" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#cfe9d6" text-anchor="start">V0 no meio do potenciômetro de 10 kΩ</text>
+<rect x="955" y="695" width="10" height="10" fill="#141414"/>
+<polyline points="965,700 990,700" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="990" y1="700" x2="990" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
+<line x1="981.0" y1="710" x2="999.0" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
+<line x1="984.0" y1="714" x2="996.0" y2="714" stroke="#1e1e1e" stroke-width="2.5"/>
+<line x1="987.0" y1="718" x2="993.0" y2="718" stroke="#1e1e1e" stroke-width="2.5"/>
+<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x1 sem I2C (na porta)</text>
 <rect x="700" y="788" width="280" height="302" rx="8" fill="#1c1d1f" stroke="none" stroke-width="1.5"/>
-<text x="840" y="778" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
+<text x="840" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
 <polyline points="255,806 700,806" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="695" y="801" width="10" height="10" fill="#141414"/>
 <text x="712" y="810" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">L1</text>
@@ -480,39 +501,39 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <text x="886" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">#</text>
 <rect x="916" y="1014" width="44" height="56" rx="5" fill="#b8352b" stroke="none" stroke-width="1.5"/>
 <text x="938" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">D</text>
-<text x="1050" y="660" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="start">Legenda</text>
-<polyline points="1050,680 1084,680" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="684" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V (fonte, Vin do Mega, COM dos relés)</text>
-<polyline points="1050,704 1084,704" fill="none" stroke="#a3221d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="708" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V chaveado pelo relé (vai para a carga)</text>
-<polyline points="1050,728 1084,728" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="732" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">5 V</text>
-<polyline points="1050,752 1084,752" fill="none" stroke="#1e1e1e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="756" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">GND · o símbolo de terra é o mesmo ponto em tudo</text>
-<polyline points="1050,776 1084,776" fill="none" stroke="#8e5cc7" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">controle dos relés (D8, D9, D10)</text>
-<polyline points="1050,800 1084,800" fill="none" stroke="#2f7fd1" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="804" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">LCD I2C (SDA e SCL)</text>
-<polyline points="1050,824 1084,824" fill="none" stroke="#e8892a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="828" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
-<polyline points="1050,848 1084,848" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="852" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
-<polyline points="1050,872 1084,872" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="876" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
-<text x="1050" y="916" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
-<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
-<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
+<text x="1050" y="680" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="start">Legenda</text>
+<polyline points="1050,700 1084,700" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="704" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V (fonte, Vin do Mega, COM dos relés)</text>
+<polyline points="1050,724 1084,724" fill="none" stroke="#a3221d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="728" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V chaveado pelo relé (vai para a carga)</text>
+<polyline points="1050,748 1084,748" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="752" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">5 V</text>
+<polyline points="1050,772 1084,772" fill="none" stroke="#1e1e1e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="776" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">GND · o símbolo de terra é o mesmo ponto em tudo</text>
+<polyline points="1050,796 1084,796" fill="none" stroke="#8e5cc7" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="800" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">controle dos relés (D8, D9, D10)</text>
+<polyline points="1050,820 1084,820" fill="none" stroke="#2f7fd1" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="824" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">LCD em paralelo (RS, E, D4 a D7)</text>
+<polyline points="1050,844 1084,844" fill="none" stroke="#e8892a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="848" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
+<polyline points="1050,868 1084,868" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="872" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
+<polyline points="1050,892 1084,892" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1096" y="896" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
+<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
+<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
+<text x="1050" y="976" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
 </svg></div>
     <div class="tabela-wrap">
       <table class="cabos">
         <thead><tr><th>Cabo</th><th>Liga</th><th>Fios</th><th>Bitola</th><th>Caminho</th></tr></thead>
         <tbody>
           <tr><td><button type="button" class="cabo-btn" data-cabo="teclado" aria-pressed="false"><i style="background:#e8892a"></i>Teclado</button></td><td>Teclado 4x4 → Mega 22 a 36 (pares)</td><td class="n">8</td><td>cabo de rede 1</td><td>Por dentro da porta até a dobradiça, laço de folga, furo na lateral esquerda, lateral por dentro (embaixo da prateleira de cima) até o fundo falso, furo, Arduino</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD I2C → Mega 20 (SDA), 21 (SCL), 5 V, GND · buzzer → Mega 7</td><td class="n">6 de 8</td><td>cabo de rede 2</td><td>O mesmo caminho do teclado, lado a lado. Sobram 2 fios de reserva</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD 16x1 → Mega 38 (RS), 40 (E), 42 a 48 (D4 a D7), 5 V, GND · buzzer → Mega 7</td><td class="n">8 + 1</td><td>cabo de rede 2 + 1 fio de 0,5 mm² do buzzer</td><td>O mesmo caminho do teclado, lado a lado. O − do buzzer pega o GND do LCD dentro da caixa da porta</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="trava" aria-pressed="false"><i style="background:#d23b2b"></i>Trava</button></td><td>Trava → relé 1 (COM e NA) e GND</td><td class="n">2</td><td>0,5 mm²</td><td>Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 soldado nos terminais da trava</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha → relés 2 e 3</td><td class="n">2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 15 A → bornes → COM dos relés, LM2596, Vin do Mega</td><td class="n">1 por ramal</td><td>1,5 mm²</td><td>Só no vão de trás</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="gnd" aria-pressed="false"><i style="background:#262626"></i>GND</button></td><td>Fonte → bornes → todos os negativos (Mega, LM2596, relés, trava, Peltier)</td><td class="n">1 por ramal</td><td>1,5 mm²</td><td>Só no vão de trás. Os GND da fonte e do Mega precisam estar ligados juntos</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 15 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso; do COM 3 pro IN+ do LM2596, e dele pro Vin do Mega</td><td class="n">1 por trecho</td><td>1,5 mm² (0,5 mm² pro LM2596 e Vin)</td><td>Só no vão de trás. Sem bornes: dois fios por parafuso, pontas torcidas juntas</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="gnd" aria-pressed="false"><i style="background:#262626"></i>GND</button></td><td>Direto nos parafusos V− da fonte, 2 por parafuso: Peltier C1 e C2 · trava e IN− do LM2596 · GND do Mega</td><td class="n">1 por carga</td><td>1,5 mm²</td><td>Só no vão de trás. Os GND da fonte e do Mega precisam estar ligados juntos</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="v5" aria-pressed="false"><i style="background:#2e8b57"></i>5 V dos relés</button></td><td>LM2596 (ajustado em 5 V) → VCC do módulo de relés</td><td class="n">1</td><td>0,5 mm²</td><td>Só no vão de trás</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="controle" aria-pressed="false"><i style="background:#8e5cc7"></i>Controle</button></td><td>Mega 8, 9, 10 → IN1, IN2, IN3 dos relés</td><td class="n">3</td><td>jumper</td><td>Só no vão de trás, Arduino e relés lado a lado</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="forca" aria-pressed="false"><i style="background:#7d868c"></i>Tomada</button></td><td>Tomada → fonte (fase, neutro, terra)</td><td class="n">3</td><td>cabo de força</td><td>Furo no traseiro, embaixo à esquerda, direto na fonte</td></tr>
@@ -529,7 +550,8 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
               <tr><td class="k">7</td><td>Buzzer</td></tr>
               <tr><td class="k">8 · 9 · 10</td><td>Relé 1 trava · relé 2 Peltier C1 · relé 3 Peltier C2</td></tr>
               <tr><td class="k">11</td><td>Relé 4, livre</td></tr>
-              <tr><td class="k">20 · 21</td><td>SDA e SCL do LCD</td></tr>
+              <tr><td class="k">38 · 40</td><td>RS e E do LCD</td></tr>
+              <tr><td class="k">42 · 44 · 46 · 48</td><td>D4 a D7 do LCD</td></tr>
               <tr><td class="k">22 · 24 · 26 · 28</td><td>Linhas do teclado</td></tr>
               <tr><td class="k">30 · 32 · 34 · 36</td><td>Colunas do teclado</td></tr>
               <tr><td class="k">Vin · GND</td><td>12 V da fonte e GND comum</td></tr>
@@ -570,10 +592,10 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
             <tr><td>Dobradiças</td><td>2, na lateral esquerda, a 120 mm do topo e da base.</td></tr>
             <tr><td>Puxador</td><td>Do lado direito, a 440 mm de altura.</td></tr>
             <tr><td>Puxadores das gavetas</td><td>Rasgo ou furo na frente da gaveta, nada saltado para fora. A porta fecha por cima das gavetas e bateria em qualquer puxador.</td></tr>
-            <tr><td>LCD</td><td>Janela de 71 × 24 mm, centro a 690 mm de altura. A placa do módulo (80 × 36 mm) fica por dentro.</td></tr>
+            <tr><td>LCD</td><td>16x1 sem I2C. Janela de 71 × 24 mm, centro a 690 mm de altura: a tela de uma linha aparece inteira nela. A placa do módulo (80 × 36 mm), o potenciômetro de contraste e o resistor da luz de fundo ficam por dentro.</td></tr>
             <tr><td>Teclado</td><td>Membrana adesiva colada por fora, logo abaixo do LCD. Rasgo de 22 × 2 mm para o cabo flat passar.</td></tr>
             <tr><td>Batente da trava</td><td>Cantoneira em L por dentro da porta, na altura da lingueta (600 mm), com janela de 12 × 20 mm.</td></tr>
-            <tr><td>Fios da porta</td><td>14 fios (8 do teclado, 4 do LCD, 2 do buzzer). Dois cabos de rede resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
+            <tr><td>Fios da porta</td><td>17 fios (8 do teclado, 8 do LCD, 1 do buzzer, que divide o GND do LCD). Dois cabos de rede e um fio solto resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
             <tr><td>Buzzer</td><td>Na caixa do LCD, por fora. Dentro do vão de trás ninguém ouviria.</td></tr>
           </tbody>
         </table>
@@ -661,33 +683,37 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     serial.scrollTop = serial.scrollHeight;
   }
 
-  /* ---------------- LCD 16x2 ---------------- */
+  /* ---------------- LCD 16x1 ---------------- */
   const lcdEl = $("lcd");
   const celulas = [];
-  for (let r = 0; r < 2; r++) {
+  for (let r = 0; r < 1; r++) {
     const linha = document.createElement("div"); linha.className = "linha";
     const row = [];
     for (let c = 0; c < 16; c++) { const d = document.createElement("span"); d.className = "c"; linha.appendChild(d); row.push(d); }
     lcdEl.appendChild(linha); celulas.push(row);
   }
-  let lcdAtual = ["", ""];
-  function lcd(l1, l2) {
-    const a = (l1 || "").padEnd(16).slice(0, 16), b = (l2 || "").padEnd(16).slice(0, 16);
-    if (a === lcdAtual[0] && b === lcdAtual[1]) return;
-    lcdAtual = [a, b];
-    [a, b].forEach((txt, r) => { for (let c = 0; c < 16; c++) celulas[r][c].textContent = txt[c] === " " ? " " : txt[c]; });
-    lcdEl.setAttribute("aria-label", a.trim() + ". " + b.trim());
+  let lcdAtual = [""];
+  function lcd(txt) {
+    const a = (txt || "").padEnd(16).slice(0, 16);
+    if (a === lcdAtual[0]) return;
+    lcdAtual = [a];
+    for (let c = 0; c < 16; c++) celulas[0][c].textContent = a[c] === " " ? " " : a[c];
+    lcdEl.setAttribute("aria-label", a.trim());
     desenharLcd3d();
   }
-  function mensagem(l1, l2, ms) { st.msg = [l1, l2]; st.msgAte = performance.now() + ms; }
+  // uma linha só: cada mensagem cabe em 16 caracteres
+  function mensagem(txt, ms) { st.msg = txt; st.msgAte = performance.now() + ms; }
 
   function telaBase(agora) {
     if (st.msg && agora < st.msgAte) return st.msg;
     st.msg = null;
-    if (agora < st.bloqueioAte) return ["Bloqueado", "Aguarde " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s"];
-    if (st.sessao && st.trava) return ["Acesso liberado", "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s"];
-    if (st.sessao) return ["C1:" + (st.frio.C1 ? "LIG" : "DES") + " C2:" + (st.frio.C2 ? "LIG" : "DES"), "D = encerrar"];
-    return ["Digite a senha", "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length)];
+    // telas que não cabem numa linha alternam a cada 1,5 s
+    const vez = Math.floor(agora / 1500) % 2;
+    if (agora < st.bloqueioAte) return "Bloqueado " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s";
+    if (st.sessao && st.trava) return vez ? "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s" : "Acesso liberado";
+    if (st.sessao) return vez ? "D = encerrar" : "C1:" + (st.frio.C1 ? "LIG" : "DES") + " C2:" + (st.frio.C2 ? "LIG" : "DES");
+    if (!st.entrada.length) return "Digite a senha";
+    return "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length);
   }
 
   /* ---------------- teclado 4x4 ---------------- */
@@ -716,7 +742,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     if (st.trava) setTrava(false, motivo);
     st.sessao = false; st.erros = 0;
     log("Sessao encerrada (" + motivo + ")");
-    mensagem("Sessao encerrada", "Feche a porta", 2000);
+    mensagem("Sessao encerrada", 2000);
     bip(SOM.ok);
   }
 
@@ -730,21 +756,21 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     st.ultimaTecla = agora;
     if (k === "D") {
       if (st.sessao) encerrar("tecla D");
-      else mensagem("Ja trancado", "", 1200);
+      else mensagem("Ja trancado", 1200);
       return;
     }
     if (k === "A" || k === "B") {
       const g = k === "A" ? "C1" : "C2";
-      if (!st.sessao) { mensagem("Digite a senha", "para usar A e B", 1500); return; }
+      if (!st.sessao) { mensagem("Digite a senha", 1500); return; }
       setFrio(g, !st.frio[g]);
-      mensagem("Frio gaveta " + g, st.frio[g] ? "Ligado" : "Desligado", 1300);
+      mensagem("Frio " + g + (st.frio[g] ? " ligado" : " deslig."), 1300);
       return;
     }
-    if (k === "C") { mensagem("Tecla C", "sem funcao ainda", 1200); return; }
+    if (k === "C") { mensagem("C sem funcao", 1200); return; }
     if (st.sessao) return; // durante a sessão os números não fazem nada
     if (k === "*") { st.entrada = st.entrada.slice(0, -1); st.msg = null; return; }
     if (k === "#") {
-      if (st.entrada.length < 4) { mensagem("Senha incompleta", "Use 4 digitos", 1400); return; }
+      if (st.entrada.length < 4) { mensagem("Senha incompleta", 1400); return; }
       if (st.entrada === SENHA) {
         st.entrada = ""; st.erros = 0; st.sessao = true; st.msg = null; st.ultimaTecla = agora;
         setTrava(true, "senha correta");
@@ -758,7 +784,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           log("Teclado bloqueado por 30 s");
           bip(SOM.bloqueio);
         } else {
-          mensagem("Senha incorreta", "Tentativa " + st.erros + " de 3", 1600);
+          mensagem("Senha errada " + st.erros + "/3", 1600);
           bip(SOM.erro);
         }
       }
@@ -782,14 +808,14 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     if (st.portaAlvo === 0) {
       if (!st.trava) {
         st.tremeAte = agora + 450; bip([80]);
-        mensagem("Porta trancada", "Digite a senha", 1500);
+        mensagem("Porta trancada", 1500);
         log("Puxaram a porta trancada: lingueta segurou");
         return;
       }
       st.portaAlvo = 100;
     } else {
       const aberta = GAVETAS.find((g) => st.gav[g].alvo > 0 || st.gav[g].pos > 0.02);
-      if (aberta) { mensagem("Feche a gaveta", aberta, 1500); bip([80]); return; }
+      if (aberta) { mensagem("Feche gaveta " + aberta, 1500); bip([80]); return; }
       st.portaAlvo = 0;
     }
   }
@@ -806,7 +832,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     gavEl.appendChild(b); gavBtn[g] = b;
   });
   function mexerGaveta(g) {
-    if (st.portaAng < 70) { mensagem("Abra a porta", "primeiro", 1200); return; }
+    if (st.portaAng < 70) { mensagem("Abra a porta", 1200); return; }
     st.gav[g].alvo = st.gav[g].alvo ? 0 : 1;
   }
 
@@ -1008,9 +1034,8 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     nome(caixa(comp, 101.5, 53, 3, -150, 640, ZE, verde, false), "Arduino Mega 2560", "lê o teclado, mostra no LCD e liga os relés");
     nome(caixa(comp, 75, 55, 16, 0, 640, ZE + 8, azul, false), "Módulo relé 4 canais", "1 trava · 2 Peltier C1 · 3 Peltier C2 · 4 livre");
     nome(caixa(comp, 43, 21, 12, -260, 470, ZE + 6, azul, false), "Regulador LM2596", "12 V → 5 V para os relés");
-    nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 20 A", "alimenta tudo; bornes de tomada expostos");
+    nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 20 A", "alimenta tudo; terminais da tomada (127/220 V) expostos");
     nome(caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false), "Porta-fusível 15 A", "na linha de 12 V");
-    nome(caixa(comp, 40, 14, 18, -55, 560, -338, new THREE.MeshStandardMaterial({ color: 0x3f8f5a }), false), "Bornes de distribuição", "emendam 12 V e GND sem solda");
     // Peltier sem cooler e sem recorte (16/10): furo de 38 mm no fundo falso, pastilha tampando por trás, dissipador passivo
     function peltier(id, y) {
       const furo40 = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 3.4, 40), new THREE.MeshStandardMaterial({ color: 0xdcdcdc, roughness: 0.6 }));
@@ -1036,11 +1061,11 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     [404, 476].forEach((y) => nome(caixa(porta, 10, 8, 12, 838, y, 10, escuro, false), "Puxador da porta"));
     // caixa do LCD + teclado
     nome(caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true), "Caixa do LCD e do teclado", "o buzzer fica nela");
-    const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 176;
+    const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 110;
     const lcdTex = new THREE.CanvasTexture(lcdCanvas); lcdTex.anisotropy = 4;
-    const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(71, 24.5), new THREE.MeshBasicMaterial({ map: lcdTex }));
-    lcdTela.position.set(760, 690, 16.2); porta.add(nome(lcdTela, "Display LCD 16x2 I2C", "pinos 20 (SDA) e 21 (SCL)"));
-    nome(caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false), "Display LCD 16x2 I2C", "pinos 20 (SDA) e 21 (SCL)");
+    const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(64.5, 14), new THREE.MeshBasicMaterial({ map: lcdTex }));
+    lcdTela.position.set(760, 690, 16.2); porta.add(nome(lcdTela, "Display LCD 16x1", "sem I2C: pinos 38 (RS), 40 (E), 42 a 48 (D4 a D7)"));
+    nome(caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false), "Display LCD 16x1", "potenciômetro de contraste e resistor de 220 Ω atrás da placa");
     const tecCanvas = document.createElement("canvas"); tecCanvas.width = 276; tecCanvas.height = 304;
     (function () {
       const x = tecCanvas.getContext("2d");
@@ -1076,7 +1101,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     function registrar(id, mat) { (CABOS[id] = CABOS[id] || { mats: [] }).mats.push(mat); }
     const NOME_CABO = {
       teclado: ["Cabo do teclado", "cabo de rede 1, 8 fios"],
-      lcd: ["Cabo do LCD e do buzzer", "cabo de rede 2, 6 de 8 fios"],
+      lcd: ["Cabo do LCD e do buzzer", "cabo de rede 2 (8 fios do LCD) + 1 fio do buzzer"],
       trava: ["Fio da trava", "0,5 mm², relé 1"],
       peltier: ["Fio da Peltier", "1,5 mm², relés 2 e 3"],
       forca: ["Cabo de força", "tomada → fonte"],
@@ -1137,12 +1162,15 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     cabo("peltier", [[180, 101, -150], [210, 101, -205], [210, 595, -330], [30, 600, -339]], COR.peltier, 3.5);
     // energia: tomada, 12 V com fusível, GND, 5 V do LM2596, controle dos relés
     cabo("forca", [[-337, 28, -250], [-345, 28, -300], [-345, 28, -360], [-345, 20, -460], [-345, 2, -620]], COR.forca, 3.5);
-    cabo("v12", [[-122, 40, -250], [-75, 40, -300], [-45, 40, -300], [-45, 40, -334], [-45, 553, -334]], COR.v12, 3);
-    cabo("v12", [[-45, 567, -334], [10, 590, -334]], COR.v12, 3);
-    cabo("v12", [[-60, 560, -334], [-150, 520, -339], [-238, 470, -339]], COR.v12, 2.2);
-    cabo("v12", [[-60, 567, -334], [-120, 600, -340], [-200, 620, -341]], COR.v12, 2.2);
-    cabo("gnd", [[-122, 25, -240], [-65, 25, -322], [-65, 25, -340], [-65, 553, -340]], COR.gnd, 3);
-    cabo("gnd", [[-65, 567, -340], [0, 585, -340]], COR.gnd, 3);
+    // sem bornes: 12 V do fusível direto no COM 1, COM 1 → 2 → 3 por pedaços de fio, COM 3 → LM2596 → Vin
+    cabo("v12", [[-122, 40, -250], [-75, 40, -300], [-45, 40, -300], [-45, 40, -334], [-45, 600, -334], [-30, 618, -334]], COR.v12, 3);
+    cabo("v12", [[-30, 618, -333], [30, 618, -333]], COR.v12, 2.2);
+    cabo("v12", [[30, 616, -334], [-120, 520, -339], [-238, 470, -339]], COR.v12, 2.2);
+    cabo("v12", [[-250, 481, -339], [-215, 560, -341], [-195, 618, -341]], COR.v12, 2.2);
+    // GND direto nos parafusos V− da fonte, dois fios por parafuso
+    cabo("gnd", [[-122, 25, -240], [-65, 25, -322], [-65, 25, -340], [-65, 585, -340], [0, 590, -340]], COR.gnd, 3);
+    cabo("gnd", [[-122, 20, -235], [-200, 60, -300], [-262, 459, -339]], COR.gnd, 1.8);
+    cabo("gnd", [[-122, 30, -245], [-110, 300, -341], [-130, 614, -341]], COR.gnd, 1.8);
     cabo("v5", [[-238, 470, -337], [-180, 540, -337], [-35, 590, -337]], COR.v5, 1.8);
     cabo("controle", [[-100, 645, -341], [-38, 645, -339]], COR.controle, 1.8);
     cabo("controle", [[-100, 635, -341], [-38, 635, -339]], COR.controle, 1.8);
@@ -1157,9 +1185,9 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 
     function desenharLcdTela() {
       const x = lcdCanvas.getContext("2d");
-      x.fillStyle = "#9fc23a"; x.fillRect(0, 0, 512, 176);
+      x.fillStyle = "#9fc23a"; x.fillRect(0, 0, 512, 110);
       x.fillStyle = "#1f2a12"; x.font = "800 58px Doto, 'IBM Plex Mono', monospace"; x.textBaseline = "middle";
-      lcdAtual.forEach((l, r) => { for (let c = 0; c < 16; c++) x.fillText(l[c] || " ", 14 + c * 30.4, 50 + r * 78); });
+      const l = lcdAtual[0]; for (let c = 0; c < 16; c++) x.fillText(l[c] || " ", 14 + c * 30.4, 57);
       lcdTex.needsUpdate = true;
     }
 
@@ -1336,7 +1364,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     GAVETAS.forEach((g) => { const o = st.gav[g]; o.pos += (o.alvo - o.pos) * Math.min(1, dt * (reduzir ? 60 : 5)); if (Math.abs(o.alvo - o.pos) < 0.001) o.pos = o.alvo; });
 
     const tela = telaBase(agora);
-    lcd(tela[0], tela[1]);
+    lcd(tela);
     Object.values(botoes).forEach((b) => { b.disabled = agora < st.bloqueioAte; });
     painel();
     desenharCorte();

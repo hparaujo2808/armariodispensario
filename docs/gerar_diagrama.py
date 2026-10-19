@@ -57,7 +57,10 @@ AX, AY, AW, AH = 40, 80, 210, 1040
 caixa(AX, AY, AW, AH, "#0b8a8a", 12)
 texto(AX + AW / 2, AY + 22, "posição dos pinos simplificada", 11, "#d8f3f1", "middle")
 texto(AX + 70, AY + AH / 2, "ARDUINO MEGA 2560", 30, "#ffffff", "middle", 800, rot=-90)
-P = {"5V": 110, "GND": 140, "Vin": 210, "D7": 310, "D8": 380, "D9": 460, "D10": 540, "D20 SDA": 660, "D21 SCL": 700}
+P = {"5V": 110, "GND": 140, "Vin": 210, "D7": 310, "D8": 380, "D9": 460, "D10": 540}
+LCDP = [("D38", "RS"), ("D40", "E"), ("D42", "D4"), ("D44", "D5"), ("D46", "D6"), ("D48", "D7")]
+for i, (n, _) in enumerate(LCDP):
+    P[n] = 644 + i * 22
 TECL = ["D22", "D24", "D26", "D28", "D30", "D32", "D34", "D36"]
 for i, n in enumerate(TECL):
     P[n] = 806 + i * 36
@@ -147,23 +150,25 @@ fio([(1168, y - 46), (1258, y - 46), (1258, y)], "#5b6862", 2.5)
 ponto(1060, y, "#5b6862"); ponto(1258, y, "#5b6862")
 texto(1152, y - 64, "diodo 1N4007 (faixa no +)", 11, anc="middle", peso=600)
 
-# ---------------- LCD 16x2 I2C ----------------
-fio([(PX, 110), (300, 110), (300, 636), (700, 636)], C["v5"])
-fio([(PX, 660), (700, 660)], C["lcd"])
-fio([(PX, 700), (700, 700)], C["lcd2"])
-caixa(700, 622, 260, 116, "#1e5a2f", 6)
-caixa(748, 642, 196, 70, "#9fc23a", 3)
-texto(756, 670, "Digite a senha", 16, "#1f2a12", fam=MONO, peso=500)
-texto(756, 698, "Senha: ____", 16, "#1f2a12", fam=MONO, peso=500)
-for n, yy in (("VCC", 636), ("SDA", 660), ("SCL", 700)):
+# ---------------- LCD 16x1 sem I2C (paralelo, 4 bits) ----------------
+fio([(PX, 110), (300, 110), (300, 620), (700, 620)], C["v5"])
+for i, (n, pin) in enumerate(LCDP):
+    yy = P[n]
+    fio([(PX, yy), (700, yy)], C["lcd"] if i % 2 == 0 else C["lcd2"])
+caixa(700, 606, 260, 158, "#1e5a2f", 6)
+for n, yy in (("VCC", 620),) + tuple((pin, P[n]) for n, pin in LCDP):
     pino(700, yy); texto(711, yy + 4, n, 9.5, "#cfe9d6", peso=700)
-pino(960, 680); fio([(965, 680), (990, 680)], C["gnd"]); terra(990, 680)
-texto(830, 614, "LCD 16x2 com I2C (na porta)", 12, anc="middle", peso=600)
+caixa(752, 632, 196, 40, "#9fc23a", 3)
+texto(760, 658, "Digite a senha", 16, "#1f2a12", fam=MONO, peso=500)
+texto(756, 700, "RW, VSS e K no GND · A no 5V por 220 Ω", 10, "#cfe9d6")
+texto(756, 716, "V0 no meio do potenciômetro de 10 kΩ", 10, "#cfe9d6")
+pino(960, 700); fio([(965, 700), (990, 700)], C["gnd"]); terra(990, 700)
+texto(830, 600, "LCD 16x1 sem I2C (na porta)", 12, anc="middle", peso=600)
 
 # ---------------- teclado 4x4 ----------------
 KX, KY = 700, 788
 caixa(KX, KY, 280, 302, "#1c1d1f", 8)
-texto(KX + 140, KY - 10, "teclado 4x4 de membrana (na porta)", 12, anc="middle", peso=600)
+texto(KX + 140, KY - 8, "teclado 4x4 de membrana (na porta)", 12, anc="middle", peso=600)
 nomes = ["L1", "L2", "L3", "L4", "C1", "C2", "C3", "C4"]
 for i, n in enumerate(TECL):
     yy = P[n]
@@ -177,7 +182,7 @@ for i, k in enumerate(TEC):
     texto(cx + 22, cy + 35, k, 18, "#f2f2ee", "middle", 700)
 
 # ---------------- legenda ----------------
-LX, LY = 1050, 660
+LX, LY = 1050, 680
 texto(LX, LY, "Legenda", 14, peso=700)
 leg = [
     (C["v12"], "12 V (fonte, Vin do Mega, COM dos relés)"),
@@ -185,7 +190,7 @@ leg = [
     (C["v5"], "5 V"),
     (C["gnd"], "GND · o símbolo de terra é o mesmo ponto em tudo"),
     (C["rele"], "controle dos relés (D8, D9, D10)"),
-    (C["lcd"], "LCD I2C (SDA e SCL)"),
+    (C["lcd"], "LCD em paralelo (RS, E, D4 a D7)"),
     (C["lin"], "teclado: linhas"),
     (C["col"], "teclado: colunas"),
     (C["buz"], "buzzer"),
