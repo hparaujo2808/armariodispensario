@@ -1,6 +1,6 @@
 # Lista de compras
 
-rogi: Tudo o que a eletrônica do protótipo precisa: senha, display, tranca e as duas gavetas frias. Antes de comprar, confiram o kit de Arduino do grupo. Mega, protoboard, jumpers, buzzer e às vezes o LCD e o teclado já vêm nele.
+rogi: Tudo o que a eletrônica do protótipo precisa: senha, display, tranca e as duas gavetas frias. Desde 21/10 o grupo já tem a parte da porta inteira: Arduino Mega, LCD, teclado e buzzer. Antes de comprar o resto, confiram o kit: protoboard, jumpers, potenciômetro e resistor costumam vir nele.
 
 rogi: Os preços são uma faixa de referência de lojas online brasileiras, só pra ter noção do total. Mudam toda semana, então confiram na hora de comprar.
 
@@ -8,11 +8,11 @@ rogi: Os preços são uma faixa de referência de lojas online brasileiras, só 
 
 | Qtd | Peça | Para quê | Faixa (R$) |
 |---|---|---|---|
-| 1 | Arduino Mega 2560 R3 (compatível serve) + cabo USB | O cérebro: lê o teclado, mostra no LCD, decide quando abrir | 80 a 130 |
+| 1 | Arduino Mega 2560 R3 (compatível serve) + cabo USB (**o grupo já tem**) | O cérebro: lê o teclado, mostra no LCD, decide quando abrir | 0 |
 | 1 | Display LCD 16x1, sem I2C (**o grupo já tem**) | Mostra `Digite a senha` e os `*` na porta, em uma linha | 0 |
 | 1 | Potenciômetro de 10 kΩ e resistor de 220 Ω (vêm no kit) | Contraste e luz de fundo do LCD | 0 a 3 |
-| 1 | Teclado matricial de membrana 4x4 | O pinpad da porta | 8 a 15 |
-| 1 | Buzzer **ativo** 5 V | Bipe de tecla, de senha certa e de senha errada | 3 a 6 |
+| 1 | Teclado matricial de membrana 4x4 (**o grupo já tem**) | O pinpad da porta | 0 |
+| 1 | Buzzer (**o grupo já tem**) | Bipe de tecla, de senha certa e de senha errada | 0 |
 
 ## Tranca
 
@@ -51,7 +51,7 @@ rogi: O grupo decidiu em 16/10 não comprar cooler, por dinheiro e por tempo. A 
 | 1 | Protoboard 830 pontos | Testar antes de fixar no armário | 15 a 25 |
 | — | Termo-retrátil, fita isolante, abraçadeiras | Acabamento e segurança | 10 a 20 |
 
-**Total estimado:** de R$ 305 a R$ 625, menos o que já vier no kit.
+**Total estimado:** de R$ 214 a R$ 474 (Mega, LCD, teclado e buzzer já estão com o grupo desde 21/10).
 
 rogi: Não tem bornes (decisão de 19/10, por tempo e dinheiro). O 12 V passa de um COM do relé para o outro e o GND vai direto nos parafusos V− da fonte, dois fios por parafuso. O passo a passo está em `docs/LIGACOES.md`.
 
