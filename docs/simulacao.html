@@ -298,7 +298,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <rect x="245" y="1053" width="10" height="10" fill="#141414"/>
 <text x="236" y="1063" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D36</text>
 <rect x="1170" y="70" width="230" height="70" rx="4" fill="#aab2b7" stroke="#7d868c" stroke-width="1.5"/>
-<text x="1285" y="101" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1f2a26" text-anchor="middle">FONTE 12 V 20 A</text>
+<text x="1285" y="101" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1f2a26" text-anchor="middle">FONTE 12 V 10 A</text>
 <text x="1285" y="121" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3d4844" text-anchor="middle">chaveada (colmeia)</text>
 <rect x="1215" y="135" width="10" height="10" fill="#141414"/>
 <text x="1210" y="158" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d0312d" text-anchor="end">+12V</text>
@@ -308,7 +308,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <text x="1470" y="96" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#5b6862" text-anchor="end">tomada</text>
 <polyline points="1220,145 1220,210" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="1211" y="160" width="18" height="34" rx="3" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1200" y="182" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2a26" text-anchor="end">fusível 15 A</text>
+<text x="1200" y="182" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2a26" text-anchor="end">fusível 10 A</text>
 <polyline points="255,210 1220,210" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="560" y="202" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#d0312d" text-anchor="middle">12 V</text>
 <circle cx="1000" cy="210" r="4.5" fill="#d0312d"/>
@@ -532,7 +532,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD 16x1 → Mega 38 (RS), 40 (E), 42 a 48 (D4 a D7), 5 V, GND · buzzer → Mega 7</td><td class="n">8 + 1</td><td>cabo de rede 2 + 1 fio de 0,5 mm² do buzzer</td><td>O mesmo caminho do teclado, lado a lado. O − do buzzer pega o GND do LCD dentro da caixa da porta</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="trava" aria-pressed="false"><i style="background:#d23b2b"></i>Trava</button></td><td>Trava → relé 1 (COM e NA) e GND</td><td class="n">2</td><td>0,5 mm²</td><td>Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 soldado nos terminais da trava</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha → relés 2 e 3</td><td class="n">2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 15 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso; do COM 3 pro IN+ do LM2596, e dele pro Vin do Mega</td><td class="n">1 por trecho</td><td>1,5 mm² (0,5 mm² pro LM2596 e Vin)</td><td>Só no vão de trás. Sem bornes: dois fios por parafuso, pontas torcidas juntas</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 10 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso; do COM 3 pro IN+ do LM2596, e dele pro Vin do Mega</td><td class="n">1 por trecho</td><td>1,5 mm² (0,5 mm² pro LM2596 e Vin)</td><td>Só no vão de trás. Sem bornes: dois fios por parafuso, pontas torcidas juntas</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="gnd" aria-pressed="false"><i style="background:#262626"></i>GND</button></td><td>Direto nos parafusos V− da fonte, 2 por parafuso: Peltier C1 e C2 · trava e IN− do LM2596 · GND do Mega</td><td class="n">1 por carga</td><td>1,5 mm²</td><td>Só no vão de trás. Os GND da fonte e do Mega precisam estar ligados juntos</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="v5" aria-pressed="false"><i style="background:#2e8b57"></i>5 V dos relés</button></td><td>LM2596 (ajustado em 5 V) → VCC do módulo de relés</td><td class="n">1</td><td>0,5 mm²</td><td>Só no vão de trás</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="controle" aria-pressed="false"><i style="background:#8e5cc7"></i>Controle</button></td><td>Mega 8, 9, 10 → IN1, IN2, IN3 dos relés</td><td class="n">3</td><td>jumper</td><td>Só no vão de trás, Arduino e relés lado a lado</td></tr>
@@ -1034,14 +1034,14 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     nome(caixa(comp, 101.5, 53, 3, -150, 640, ZE, verde, false), "Arduino Mega 2560", "lê o teclado, mostra no LCD e liga os relés");
     nome(caixa(comp, 75, 55, 16, 0, 640, ZE + 8, azul, false), "Módulo relé 4 canais", "1 trava · 2 Peltier C1 · 3 Peltier C2 · 4 livre");
     nome(caixa(comp, 43, 21, 12, -260, 470, ZE + 6, azul, false), "Regulador LM2596", "12 V → 5 V para os relés");
-    nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 20 A", "alimenta tudo; terminais da tomada (127/220 V) expostos");
-    nome(caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false), "Porta-fusível 15 A", "na linha de 12 V");
+    nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 10 A", "alimenta tudo; terminais da tomada (127/220 V) expostos");
+    nome(caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false), "Porta-fusível 10 A", "na linha de 12 V");
     // Peltier sem cooler e sem recorte (16/10): furo de 38 mm no fundo falso, pastilha tampando por trás, dissipador passivo
     function peltier(id, y) {
       const furo40 = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 3.4, 40), new THREE.MeshStandardMaterial({ color: 0xdcdcdc, roughness: 0.6 }));
       furo40.rotation.x = Math.PI / 2; furo40.position.set(155, y, FF);
       comp.add(nome(furo40, "Furo de 38 mm atrás da gaveta " + id, "serra copo no fundo falso; aparece a face fria da pastilha"));
-      nome(caixa(comp, 40, 40, 4, 155, y, FF - 3.5, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false), "Pastilha Peltier TEC1-12706 da gaveta " + id, "no vão de trás, tampando o furo de 38 mm; face fria virada para a gaveta, presa por abraçadeira");
+      nome(caixa(comp, 40, 40, 4, 155, y, FF - 3.5, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false), "Pastilha Peltier TEC1-12703 da gaveta " + id, "no vão de trás, tampando o furo de 38 mm; face fria virada para a gaveta, presa por abraçadeira");
       nome(caixa(comp, 80, 80, 36, 155, y, FF - 24, prata, false), "Dissipador de alumínio da Peltier " + id, "lado quente, sem cooler; pasta térmica entre ele e a pastilha");
     }
     peltier("C1", 298); peltier("C2", 101);

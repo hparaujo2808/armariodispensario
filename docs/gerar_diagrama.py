@@ -71,7 +71,7 @@ PX = AX + AW + 5
 
 # ---------------- fonte, fusível e barramento de 12 V ----------------
 caixa(1170, 70, 230, 70, "#aab2b7", 4, "#7d868c")
-texto(1285, 101, "FONTE 12 V 20 A", 15, "#1f2a26", "middle", 700)
+texto(1285, 101, "FONTE 12 V 10 A", 15, "#1f2a26", "middle", 700)
 texto(1285, 121, "chaveada (colmeia)", 11.5, "#3d4844", "middle")
 pino(1220, 140); texto(1210, 158, "+12V", 11, "#d0312d", "end", 700)
 pino(1360, 140); texto(1370, 158, "GND", 11, "#1e1e1e", "start", 700)
@@ -79,7 +79,7 @@ fio([(1400, 105), (1470, 105)], C["ac"], 4)
 texto(1470, 96, "tomada", 11, "#5b6862", "end")
 fio([(1220, 145), (1220, 210)], C["v12"], 4)
 caixa(1211, 160, 18, 34, "#ffffff", 3, "#1e1e1e")
-texto(1200, 182, "fusível 15 A", 11.5, "#1f2a26", "end")
+texto(1200, 182, "fusível 10 A", 11.5, "#1f2a26", "end")
 fio([(PX, 210), (1220, 210)], C["v12"], 4)
 texto(560, 202, "12 V", 12, "#d0312d", "middle", 700)
 ponto(1000, 210, C["v12"]); ponto(1050, 210, C["v12"])

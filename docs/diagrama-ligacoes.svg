@@ -48,7 +48,7 @@
 <rect x="245" y="1053" width="10" height="10" fill="#141414"/>
 <text x="236" y="1063" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D36</text>
 <rect x="1170" y="70" width="230" height="70" rx="4" fill="#aab2b7" stroke="#7d868c" stroke-width="1.5"/>
-<text x="1285" y="101" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1f2a26" text-anchor="middle">FONTE 12 V 20 A</text>
+<text x="1285" y="101" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1f2a26" text-anchor="middle">FONTE 12 V 10 A</text>
 <text x="1285" y="121" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3d4844" text-anchor="middle">chaveada (colmeia)</text>
 <rect x="1215" y="135" width="10" height="10" fill="#141414"/>
 <text x="1210" y="158" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d0312d" text-anchor="end">+12V</text>
@@ -58,7 +58,7 @@
 <text x="1470" y="96" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#5b6862" text-anchor="end">tomada</text>
 <polyline points="1220,145 1220,210" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="1211" y="160" width="18" height="34" rx="3" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1200" y="182" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2a26" text-anchor="end">fusível 15 A</text>
+<text x="1200" y="182" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2a26" text-anchor="end">fusível 10 A</text>
 <polyline points="255,210 1220,210" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="560" y="202" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#d0312d" text-anchor="middle">12 V</text>
 <circle cx="1000" cy="210" r="4.5" fill="#d0312d"/>

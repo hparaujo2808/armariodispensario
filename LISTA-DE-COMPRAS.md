@@ -1,66 +1,61 @@
 # Lista de compras
 
-rogi: Tudo o que a eletrônica do protótipo precisa: senha, display, tranca e as duas gavetas frias. Desde 21/10 o grupo já tem a parte da porta inteira: Arduino Mega, LCD, teclado e buzzer. Antes de comprar o resto, confiram o kit: protoboard, jumpers, potenciômetro e resistor costumam vir nele.
+rogi: Tudo o que falta comprar para a tranca e as duas gavetas frias, com o link do produto exato. A parte da porta o grupo já tem desde 21/10: Arduino Mega, LCD, teclado e buzzer. Protoboard, jumpers, potenciômetro e resistor costumam vir no kit, então confiram antes.
 
-rogi: Os preços são uma faixa de referência de lojas online brasileiras, só pra ter noção do total. Mudam toda semana, então confiram na hora de comprar.
+rogi: Links e preços conferidos em 21/10/2026. Preço muda toda semana e estoque acaba, então olhem de novo na hora de fechar o carrinho. Se um item sumir, a coluna "o que procurar" diz o que serve no lugar.
 
-## Controle e porta
+## Já temos
 
-| Qtd | Peça | Para quê | Faixa (R$) |
-|---|---|---|---|
-| 1 | Arduino Mega 2560 R3 (compatível serve) + cabo USB (**o grupo já tem**) | O cérebro: lê o teclado, mostra no LCD, decide quando abrir | 0 |
-| 1 | Display LCD 16x1, sem I2C (**o grupo já tem**) | Mostra `Digite a senha` e os `*` na porta, em uma linha | 0 |
-| 1 | Potenciômetro de 10 kΩ e resistor de 220 Ω (vêm no kit) | Contraste e luz de fundo do LCD | 0 a 3 |
-| 1 | Teclado matricial de membrana 4x4 (**o grupo já tem**) | O pinpad da porta | 0 |
-| 1 | Buzzer (**o grupo já tem**) | Bipe de tecla, de senha certa e de senha errada | 0 |
+| Peça | Observação |
+|---|---|
+| Arduino Mega 2560 + cabo USB | |
+| Display LCD 16x1, sem I2C | Potenciômetro de 10 kΩ e resistor de 220 Ω vêm do kit |
+| Teclado de membrana 4x4 | |
+| Buzzer | Conferir se é ativo: ligado direto em 5 V e GND, ele apita sozinho |
 
-## Tranca
+## Carrinho 1: Eletrogate
 
-| Qtd | Peça | Para quê | Faixa (R$) |
-|---|---|---|---|
-| 1 | Trava solenoide 12 V de **lingueta chanfrada** (não a de pino reto) | Segura a porta, recolhe quando recebe 12 V e tranca sozinha quando a porta fecha | 35 a 70 |
-| 2 | Diodo 1N4007 | Protege o circuito do pico de tensão quando a trava desliga (1 vai na trava, 1 é reserva) | 1 a 2 |
+rogi: Seis itens na mesma loja, um frete só.
 
-## Frio (duas gavetas)
+| Qtd | Peça | Link | Preço (21/10) | O que procurar se acabar |
+|---|---|---|---|---|
+| 1 | Mini trava elétrica solenoide FE-91, 12 V 0,5 A | [eletrogate.com/mini-trava-eletrica-solenoide](https://www.eletrogate.com/mini-trava-eletrica-solenoide) | R$ 48,90 | Trava 12 V de **lingueta chanfrada** (a que tem um lado inclinado), nunca a de pino reto |
+| 1 | Módulo relé 4 canais 5 V com optoacoplador, 10 A | [eletrogate.com/modulo-rele-4-canais-5v](https://www.eletrogate.com/modulo-rele-4-canais-5v) | R$ 22,90 | Relé 5 V, contato 10 A, que **liga com sinal LOW** (esse liga) |
+| 1 | Regulador step-down LM2596 | [eletrogate.com/modulo-regulador-de-tensao-step-down-lm2596](https://www.eletrogate.com/modulo-regulador-de-tensao-step-down-lm2596) | R$ 8,90 | Qualquer LM2596 que receba 12 V e ajuste para 5 V |
+| 1 | Porta-fusível de meio de fio 5x20 | [eletrogate.com/porta-fusivel-meio-de-fio-5x20](https://www.eletrogate.com/porta-fusivel-meio-de-fio-5x20) | R$ 1,90 | Porta-fusível 5x20 de meio de fio |
+| 2 | Fusível de vidro 5x20 **10 A** (1 de reserva) | [eletrogate.com/fusivel-de-vidro-5x20-10a](https://www.eletrogate.com/fusivel-de-vidro-5x20-10a) | R$ 0,35 cada | Fusível 5x20 de 10 A |
+| 1 pct | Diodo 1N4007 (pacote com 10) | [eletrogate.com/diodo-retificador-1n4007-10-unidades](https://www.eletrogate.com/diodo-retificador-1n4007-10-unidades) | R$ 1,00 | Qualquer 1N4004 a 1N4007 |
 
-| Qtd | Peça | Para quê | Faixa (R$) |
-|---|---|---|---|
-| 2 | Pastilha Peltier TEC1-12706 | Um lado gela, o outro esquenta. Uma por gaveta | 15 a 30 cada |
-| 2 | Dissipador de alumínio, **sem cooler** (o de um processador velho serve, só o metal) | Tira o calor do lado quente. **Sem ele a pastilha queima em segundos** | 0 a 25 cada |
-| 1 | Pasta térmica | Entre a pastilha e os dissipadores | 10 a 20 |
-| 1 | Serra copo de 38 mm para madeira (se ninguém tiver) | Os dois furos das Peltier no fundo falso. Encaixa em furadeira comum | 10 a 25 |
+**Subtotal:** R$ 84,30 + frete.
 
-rogi: O grupo decidiu em 16/10 não comprar cooler, por dinheiro e por tempo. A pastilha continua precisando de um pedaço de alumínio no lado quente: é ele que segura o calor que ela bombeia, e uma TEC1-12706 solta uns 70 W ali. Sem ventoinha esse dissipador perde calor devagar, então o frio fica mais fraco e a pastilha deve ficar ligada só na hora de mostrar, alguns minutos. Se a mão não aguentar ficar encostada no dissipador, desliga.
+rogi: Sobre os relés: o módulo de 4 canais sai mais barato que três de 1 canal e já vem numa placa só, então é o que vale comprar. Só três canais são usados (trava, gaveta C1 e gaveta C2), e o quarto fica sobrando. Se ainda assim comprarem módulos de 1 canal, precisam ser três, todos de 5 V com contato de 10 A, com o jumper `H/L` em **L**.
 
-## Energia e acionamento
+## Carrinho 2: Usinainfo
 
-| Qtd | Peça | Para quê | Faixa (R$) |
-|---|---|---|---|
-| 1 | Fonte chaveada 12 V 20 A ("fonte colmeia") | Alimenta tudo. As duas pastilhas sozinhas puxam uns 12 A | 60 a 110 |
-| 1 | Cabo de força com plugue de tomada | A fonte colmeia não vem com cabo | 10 a 20 |
-| 1 | Módulo relé 4 canais 5 V, com optoacoplador, contatos de 10 A | O Arduino liga a energia forte por ele: trava, Peltier 1, Peltier 2 e 1 sobrando | 20 a 35 |
-| 1 | Regulador step-down LM2596 (12 V → 5 V) | Alimenta os relés sem esquentar o regulador do Arduino | 8 a 15 |
-| 1 | Porta-fusível com fusível de 15 A | Corta a linha de 12 V se der curto | 10 a 15 |
+| Qtd | Peça | Link | Preço (21/10) | O que procurar se acabar |
+|---|---|---|---|---|
+| 1 | Fonte chaveada colmeia 12 V **10 A** 120 W, bivolt automática | [usinainfo.com.br/…/fonte-chaveada-colmeia-12v-10a-120w-bivolt](https://www.usinainfo.com.br/fonte-colmeia/fonte-chaveada-colmeia-12v-10a-120w-bivolt-fn12012-2610.html) | R$ 61,55 no Pix | Fonte colmeia 12 V de 10 A ou mais |
+| 1 | Cabo de força tripolar 1,8 m 10 A | [usinainfo.com.br/…/cabo-de-forca-tripolar](https://www.usinainfo.com.br/outros-cabos/cabo-de-forca-tripolar-16m-250v-10a-c13-8038.html) | conferir | Qualquer cabo de força com plugue de tomada. A ponta de encaixe (C13) é cortada e os 3 fios vão nos parafusos L, N e terra da fonte |
+| 2 | Dissipador de alumínio 65 × 46 × 24 mm | [usinainfo.com.br/…/dissipador-65x46x24mm](https://www.usinainfo.com.br/dissipador-de-calor/dissipador-de-calor-em-aluminio-65x46x24mm-6181.html) | ~R$ 9 cada | **Melhor ainda: o dissipador de processador de um PC velho** (só o metal). Qualquer alumínio maior que 40 × 40 mm serve, quanto maior melhor |
+| 1 | Pasta térmica | [usinainfo.com.br/pasta-termica-343](https://www.usinainfo.com.br/pasta-termica-343) | ~R$ 10 | Qualquer pasta térmica de processador |
 
-## Fios e montagem
+## Avulsos
 
-| Qtd | Peça | Para quê | Faixa (R$) |
-|---|---|---|---|
-| 3 m + 3 m | Fio de 1,5 mm² (vermelho e preto) | Fonte, pastilhas e trava. Fio de jumper não aguenta a corrente da Peltier | 15 a 30 |
-| 1 kit | Jumpers macho-macho e macho-fêmea | Ligações do Arduino | 15 a 25 |
-| 1 | Protoboard 830 pontos | Testar antes de fixar no armário | 15 a 25 |
-| — | Termo-retrátil, fita isolante, abraçadeiras | Acabamento e segurança | 10 a 20 |
+| Qtd | Peça | Link | Preço (21/10) | O que procurar se acabar |
+|---|---|---|---|---|
+| 2 | Pastilha Peltier **TEC1-12703 40 × 40 mm** | [mixtou.com.br/…/tec1-12703-40x40mm](https://www.mixtou.com.br/pastilha-termoeletrica-peltier-tec1-12703-40x40mm-15-5v-27w-1/p) | R$ 41 a 51 cada | TEC1-12703 de **40 × 40**. A de 30 × 30 não tampa o furo de 38 mm |
+| 1 | Serra copo 38 mm Stamaco (madeira, encaixa em furadeira comum) | [leroymerlin.com.br/serra-copo-bi-metal-38mm-1355-stamaco](https://www.leroymerlin.com.br/serra-copo-bi-metal-38mm-1355-stamaco_91032263) | conferir | Pular se alguém do grupo já tiver uma |
+| 3 m + 3 m | Cabo flexível 1,5 mm², vermelho e preto | loja de material elétrico do bairro, vendido por metro | ~R$ 2 o metro | Rolo de 100 m não compensa. Fio de jumper não aguenta a corrente da Peltier |
+| — | Termo-retrátil, fita isolante, abraçadeiras | qualquer loja | R$ 10 a 20 | |
 
-**Total estimado:** de R$ 214 a R$ 474 (Mega, LCD, teclado e buzzer já estão com o grupo desde 21/10).
+**Total estimado:** de R$ 300 a R$ 360 somando tudo, sem frete.
+
+rogi: Este é o kit sem cooler, decidido em 16/10. A TEC1-12703 puxa uns 3 A e solta metade do calor da 12706, por isso o dissipador sem ventoinha dá conta por mais tempo e a fonte de 10 A sobra: duas pastilhas (6 A), a trava (0,5 A) e o Mega com os relés (menos de 0,5 A) somam uns 7 A. O fusível de 10 A fica acima disso e abaixo do limite da fonte. O frio é fraco, mas mostra o funcionamento. Liguem só pelo tempo da demonstração. Se a mão não aguentar ficar encostada no dissipador, desliguem.
 
 rogi: Não tem bornes (decisão de 19/10, por tempo e dinheiro). O 12 V passa de um COM do relé para o outro e o GND vai direto nos parafusos V− da fonte, dois fios por parafuso. O passo a passo está em `docs/LIGACOES.md`.
 
-## Versão mais barata
-
-rogi: Se o orçamento apertar, troquem as pastilhas por duas TEC1-12703 (uns 3 A cada) e a fonte por uma de 12 V 10 A. Sem cooler essa é a troca que mais vale a pena: a 12703 solta metade do calor da 12706, e o dissipador passivo dá conta por mais tempo. O frio fica mais fraco, mas mostra o funcionamento. O resto da lista continua igual.
-
 ## Cuidados
 
-- **A fonte colmeia tem os terminais da tomada (127/220 V) expostos.** Conferir a chave seletora de tensão antes de ligar, ligar o cabo de força com ela desligada da tomada e não encostar neles com ela ligada. Na primeira vez, de preferência com o professor junto.
+- **A fonte colmeia tem os terminais da tomada (127/220 V) expostos.** Ligar o cabo de força com ela desligada da tomada e não encostar neles com ela ligada. Na primeira vez, de preferência com o professor junto.
 - **Nunca ligar a Peltier sem o dissipador preso nela, com pasta térmica.** Sem cooler, ligar só pelo tempo da demonstração.
 - **A trava solenoide esquenta se ficar ligada muito tempo.** O código só energiza a trava pelos segundos de abertura.

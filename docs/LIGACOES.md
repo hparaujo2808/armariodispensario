@@ -36,7 +36,7 @@ rogi: O LCD é um 16x1 sem placa I2C, ligado em paralelo com 4 bits de dados (D0
 | Buzzer | Buzzer + → 7 (o − vai no GND do LCD, dentro da caixa da porta) | 1 | 0,5 mm² (sobra do fio da trava) | Junto dos dois cabos de rede |
 | Trava | Trava → NA do relé 1 e GND | 2 | 0,5 mm² | Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 nos terminais da trava, faixa no + |
 | Peltier C1 e C2 | Pastilha → NA dos relés 2 e 3 e GND | 2 cada | 1,5 mm² | A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente |
-| 12 V | Fonte → fusível 15 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso. No COM 3 entra também o fio do IN+ do LM2596, e o Vin do Mega sai do IN+ do LM2596 | 1 por trecho | 1,5 mm² até os COM, 0,5 mm² pro LM2596 e o Vin | Só no vão de trás |
+| 12 V | Fonte → fusível 10 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso. No COM 3 entra também o fio do IN+ do LM2596, e o Vin do Mega sai do IN+ do LM2596 | 1 por trecho | 1,5 mm² até os COM, 0,5 mm² pro LM2596 e o Vin | Só no vão de trás |
 | GND | Direto nos parafusos V− da fonte, 2 fios por parafuso: Peltier C1 e C2 no 1º, trava e IN− do LM2596 no 2º, GND do Mega no 3º | 1 por carga | 1,5 mm² (0,5 mm² pro Mega) | Só no vão de trás. GND da fonte e do Mega ligados juntos |
 | 5 V dos relés | LM2596 (ajustado em 5,0 V) → VCC do módulo de relés | 1 | 0,5 mm² | Só no vão de trás |
 | Controle | Mega 8, 9, 10 → IN1, IN2, IN3 | 3 | jumper | Só no vão de trás |
