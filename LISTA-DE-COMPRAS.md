@@ -25,8 +25,9 @@ rogi: Seis itens na mesma loja, um frete só.
 | 1 | Porta-fusível de meio de fio 5x20 | [eletrogate.com/porta-fusivel-meio-de-fio-5x20](https://www.eletrogate.com/porta-fusivel-meio-de-fio-5x20) | R$ 1,90 | Porta-fusível 5x20 de meio de fio |
 | 2 | Fusível de vidro 5x20 **10 A** (1 de reserva) | [eletrogate.com/fusivel-de-vidro-5x20-10a](https://www.eletrogate.com/fusivel-de-vidro-5x20-10a) | R$ 0,35 cada | Fusível 5x20 de 10 A |
 | 1 pct | Diodo 1N4007 (pacote com 10) | [eletrogate.com/diodo-retificador-1n4007-10-unidades](https://www.eletrogate.com/diodo-retificador-1n4007-10-unidades) | R$ 1,00 | Qualquer 1N4004 a 1N4007 |
+| 1 pct | Jumpers macho-fêmea 20 cm (pacote com 40) | [eletrogate.com/jumpers-macho-femea-40-unidades-de-20-cm](https://www.eletrogate.com/jumpers-macho-femea-40-unidades-de-20-cm) | R$ 8,60 | Pular se o kit do grupo já tiver. Ligam Mega 8, 9 e 10 nos IN dos relés |
 
-**Subtotal:** R$ 84,30 + frete.
+**Subtotal:** R$ 92,90 + frete.
 
 rogi: Sobre os relés: o módulo de 4 canais sai mais barato que três de 1 canal e já vem numa placa só, então é o que vale comprar. Só três canais são usados (trava, gaveta C1 e gaveta C2), e o quarto fica sobrando. Se ainda assim comprarem módulos de 1 canal, precisam ser três, todos de 5 V com contato de 10 A, com o jumper `H/L` em **L**.
 
@@ -45,10 +46,12 @@ rogi: Sobre os relés: o módulo de 4 canais sai mais barato que três de 1 cana
 |---|---|---|---|---|
 | 2 | Pastilha Peltier **TEC1-12703 40 × 40 mm** | [mixtou.com.br/…/tec1-12703-40x40mm](https://www.mixtou.com.br/pastilha-termoeletrica-peltier-tec1-12703-40x40mm-15-5v-27w-1/p) | R$ 41 a 51 cada | TEC1-12703 de **40 × 40**. A de 30 × 30 não tampa o furo de 38 mm |
 | 1 | Serra copo 38 mm Stamaco (madeira, encaixa em furadeira comum) | [leroymerlin.com.br/serra-copo-bi-metal-38mm-1355-stamaco](https://www.leroymerlin.com.br/serra-copo-bi-metal-38mm-1355-stamaco_91032263) | conferir | Pular se alguém do grupo já tiver uma |
-| 3 m + 3 m | Cabo flexível 1,5 mm², vermelho e preto | loja de material elétrico do bairro, vendido por metro | ~R$ 2 o metro | Rolo de 100 m não compensa. Fio de jumper não aguenta a corrente da Peltier |
+| 3 m + 3 m | Cabo flexível 1,5 mm², vermelho e preto | loja de material elétrico do bairro, vendido por metro | ~R$ 2 o metro | Fonte, fusível, COM dos relés, Peltier e GND. Rolo de 100 m não compensa. Fio de jumper não aguenta a corrente da Peltier |
+| 5 m + 5 m | Cabo flexível 0,5 mm², vermelho e preto | mesma loja, por metro | ~R$ 1 o metro | Trava, buzzer, LM2596, 5 V dos relés e Vin/GND do Mega |
+| 2 × 2,5 m | Cabo de rede (UTP Cat5e, 8 fios) | mesma loja ou de informática, por metro | ~R$ 2 o metro | Um para o teclado, um para o LCD, da porta até o fundo falso. Cabo velho de internet serve, cortando os plugues |
 | — | Termo-retrátil, fita isolante, abraçadeiras | qualquer loja | R$ 10 a 20 | |
 
-**Total estimado:** de R$ 300 a R$ 360 somando tudo, sem frete.
+**Total estimado:** de R$ 320 a R$ 380 somando tudo, sem frete.
 
 rogi: Este é o kit sem cooler, decidido em 16/10. A TEC1-12703 puxa uns 3 A e solta metade do calor da 12706, por isso o dissipador sem ventoinha dá conta por mais tempo e a fonte de 10 A sobra: duas pastilhas (6 A), a trava (0,5 A) e o Mega com os relés (menos de 0,5 A) somam uns 7 A. O fusível de 10 A fica acima disso e abaixo do limite da fonte. O frio é fraco, mas mostra o funcionamento. Liguem só pelo tempo da demonstração. Se a mão não aguentar ficar encostada no dissipador, desliguem.
 
