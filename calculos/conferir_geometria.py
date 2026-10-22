@@ -3,7 +3,7 @@ simulação usam, e aponta onde eles não batem.
 
     python calculos/conferir_geometria.py [pasta/do/gerador]
 
-Por padrão lê referencias_externas/ARMARIO_V2.3/gerador/config.py.
+Por padrão lê armario/gerador/config.py.
 Coordenadas: olhando o armário de frente, a partir do canto externo de baixo
 à esquerda. X para a direita, Y para o fundo, Z para cima. Em mm.
 """
@@ -13,7 +13,7 @@ import os
 import sys
 
 RAIZ = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
-pasta = sys.argv[1] if len(sys.argv) > 1 else os.path.join(RAIZ, "referencias_externas", "ARMARIO_V2.3", "gerador")
+pasta = sys.argv[1] if len(sys.argv) > 1 else os.path.join(RAIZ, "armario", "gerador")
 sys.path.insert(0, pasta)
 import config as c  # noqa: E402
 
