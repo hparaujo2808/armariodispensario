@@ -12,6 +12,7 @@ rogi: Links e preços conferidos em 21/10/2026. Preço muda toda semana e estoqu
 | Display LCD 16x1, sem I2C | Mostra `Digite a senha` e os `*` na porta | Potenciômetro de 10 kΩ e resistor de 220 Ω vêm do kit |
 | Teclado de membrana 4x4 | Onde a enfermeira digita a senha; A/B ligam o frio, D encerra | |
 | Buzzer | Bipe de tecla, de senha certa e de senha errada | Conferir se é ativo: ligado direto em 5 V e GND, ele apita sozinho |
+| Webcam USB (de alguém do grupo) | Filma quem está na porta, do compartimento de cima | Qualquer uma que funcione no notebook. Se ninguém tiver, uma 720p simples de uns R$ 40 serve |
 
 ## Carrinho 1: Eletrogate
 
@@ -39,6 +40,7 @@ rogi: Sobre os relés: o módulo de 4 canais sai mais barato que três de 1 cana
 | 1 | Cabo de força tripolar 1,8 m 10 A | Liga a fonte na tomada (ela não vem com cabo) | [usinainfo.com.br/…/cabo-de-forca-tripolar](https://www.usinainfo.com.br/outros-cabos/cabo-de-forca-tripolar-16m-250v-10a-c13-8038.html) | conferir | Qualquer cabo de força com plugue de tomada. A ponta de encaixe (C13) é cortada e os 3 fios vão nos parafusos L, N e terra da fonte |
 | 2 | Dissipador de alumínio 65 × 46 × 24 mm | Tira o calor do lado quente da Peltier. Sem ele a pastilha queima em segundos | [usinainfo.com.br/…/dissipador-65x46x24mm](https://www.usinainfo.com.br/dissipador-de-calor/dissipador-de-calor-em-aluminio-65x46x24mm-6181.html) | ~R$ 9 cada | **Melhor ainda: o dissipador de processador de um PC velho** (só o metal). Qualquer alumínio maior que 40 × 40 mm serve, quanto maior melhor |
 | 1 | Pasta térmica | Entre a pastilha e o dissipador, para o calor passar | [usinainfo.com.br/pasta-termica-343](https://www.usinainfo.com.br/pasta-termica-343) | ~R$ 10 | Qualquer pasta térmica de processador |
+| 1 | Cabo extensor USB 2.0 macho × fêmea, 2 m | Leva o cabo da webcam do armário até o notebook | [usinainfo.com.br/…/cabo-extensor-usb-20-macho-x-femea-2m](https://www.usinainfo.com.br/cabo-usb/cabo-extensor-usb-20-macho-x-femea-2m-3295.html) | ~R$ 10 | Qualquer extensor USB macho × fêmea. Pular se o cabo da webcam já alcançar o notebook |
 
 ## Avulsos
 

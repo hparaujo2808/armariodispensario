@@ -12,6 +12,7 @@ rogi: Tudo roda local num Arduino Mega, sem internet e sem servidor. A senha é 
 4. Senha errada: bipe longo e a contagem de erros sobe. No terceiro erro seguido o teclado trava por 30 s, com contagem regressiva no display.
 5. Ela abre a porta, usa as gavetas e fecha. A lingueta da trava é chanfrada e tranca sozinha quando a porta encosta. A tecla `D` encerra a sessão (corta a trava se ainda estiver solta e bloqueia as teclas do frio). Sem tecla nenhuma por 60 s, a sessão encerra sozinha.
 6. As pastilhas Peltier das duas gavetas frias ligam e desligam pelas teclas `A` (C1) e `B` (C2), só durante a sessão.
+7. Durante tudo isso, a webcam do compartimento de cima filma quem está na frente da porta, por um furo na altura do topo, e o notebook mostra a imagem.
 
 ## Hardware
 
@@ -22,10 +23,13 @@ rogi: Tudo roda local num Arduino Mega, sem internet e sem servidor. A senha é 
 | Tranca | Trava solenoide 12 V, acionada por relé |
 | Frio | 2 pastilhas Peltier TEC1-12703 com dissipador de alumínio (sem cooler), acionadas por relé |
 | Energia | Fonte chaveada 12 V 10 A + regulador 12 V → 5 V para os relés |
+| Câmera | Webcam USB no compartimento de cima, olhando para quem está na porta, ligada num notebook do lado de fora (independente do Arduino) |
 
 O que comprar, com quantidade e para que serve cada peça: [LISTA-DE-COMPRAS.md](LISTA-DE-COMPRAS.md).
 
-Simulação do armário pronto, com a porta, o pinpad, o LCD, a trava e as gavetas frias: abra `docs/simulacao.html` no navegador.
+**Simulação 3D, direto no navegador (para o grupo todo):** https://raw.githack.com/hparaujo2808/armariodispensario/main/docs/simulacao.html
+
+O armário pronto, com a porta, o pinpad, o LCD, a trava, as gavetas frias e a câmera. Digitar a senha, abrir a porta, puxar as gavetas, passar o mouse numa peça para ver o nome. O link sempre mostra a versão mais nova do `main`. Também abre baixando o repo e dando dois cliques em `docs/simulacao.html`.
 
 Como cada peça se liga, por onde passa cada fio e os furos para fazer antes da cola: [docs/LIGACOES.md](docs/LIGACOES.md).
 
@@ -50,6 +54,7 @@ Como cada peça se liga, por onde passa cada fio e os furos para fazer antes da 
 - [ ] Código: tranca e fechamento
 - [ ] Código: liga e desliga das pastilhas
 - [ ] Simulação no Wokwi
+- [ ] Câmera: furos e fixação no compartimento de cima
 - [ ] Montagem no armário
 
-Fora do escopo por enquanto: o dispensador por gravidade e a câmera do compartimento de cima.
+Fora do escopo por enquanto: o dispensador por gravidade.

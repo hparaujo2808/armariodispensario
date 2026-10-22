@@ -244,7 +244,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 
   <section class="fiacao" aria-labelledby="t-fios">
     <div class="texto">
-      <span class="eyebrow">9 CABOS · 4 FUROS</span>
+      <span class="eyebrow">10 CABOS · 7 FUROS</span>
       <h2 id="t-fios">Por onde passa cada fio</h2>
       <p>rogi: Todo fio termina no vão de trás, entre o fundo falso e o traseiro, onde ficam o Arduino, os relés e a fonte. Os da porta são os únicos que se mexem. Saem da caixa do LCD por um rasgo, correm por dentro da porta até a dobradiça, fazem um laço de folga por fora e entram pela lateral esquerda. No diagrama está o circuito. Na tabela, clique num cabo para ver só ele no 3D.</p>
     </div>
@@ -537,6 +537,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
           <tr><td><button type="button" class="cabo-btn" data-cabo="v5" aria-pressed="false"><i style="background:#2e8b57"></i>5 V dos relés</button></td><td>LM2596 (ajustado em 5 V) → VCC do módulo de relés</td><td class="n">1</td><td>0,5 mm²</td><td>Só no vão de trás</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="controle" aria-pressed="false"><i style="background:#8e5cc7"></i>Controle</button></td><td>Mega 8, 9, 10 → IN1, IN2, IN3 dos relés</td><td class="n">3</td><td>jumper</td><td>Só no vão de trás, Arduino e relés lado a lado</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="forca" aria-pressed="false"><i style="background:#7d868c"></i>Tomada</button></td><td>Tomada → fonte (fase, neutro, terra)</td><td class="n">3</td><td>cabo de força</td><td>Furo no traseiro, embaixo à esquerda, direto na fonte</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="camera" aria-pressed="false"><i style="background:#1d9bb0"></i>Câmera</button></td><td>Webcam USB → notebook, fora do armário</td><td class="n">1</td><td>cabo USB da webcam (+ extensor de 2 m)</td><td>Piso do compartimento de cima, furo de 16 mm no fundo falso, vão de trás, furo de 16 mm no traseiro, notebook</td></tr>
         </tbody>
       </table>
     </div>
@@ -572,10 +573,12 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
               <tr><td>Traseiro</td><td class="n">28 mm, a 95 mm da esquerda</td><td>Cabo de força</td></tr>
               <tr><td>Fundo falso</td><td class="n">Ø 38 mm, centro a 298 mm de altura e 595 mm da esquerda</td><td>Peltier da gaveta C1</td></tr>
               <tr><td>Fundo falso</td><td class="n">Ø 38 mm, centro a 101 mm de altura e 595 mm da esquerda</td><td>Peltier da gaveta C2</td></tr>
+              <tr><td>Fundo falso</td><td class="n">Ø 16 mm, 835 mm de altura, no centro</td><td>Cabo USB da câmera</td></tr>
+              <tr><td>Traseiro</td><td class="n">Ø 16 mm, 835 mm de altura, no centro</td><td>Cabo USB da câmera</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="nota">Furos de 10 mm, menos os dois das Peltier, que são de 38 mm com serra copo. Nada de recorte: o MDF já está todo cortado. A pastilha fica no vão de trás tampando o furo, com a face fria virada para a gaveta, e uma abraçadeira por dois furinhos de 5 mm aperta o dissipador contra ela. Medidas olhando o armário de frente.</p>
+        <p class="nota">Furos de 10 mm, menos os dois das Peltier, que são de 38 mm com serra copo, e os dois da câmera, de 16 mm para o plugue USB passar (esses dá para fazer com a caixa já colada). Nada de recorte: o MDF já está todo cortado. A pastilha fica no vão de trás tampando o furo, com a face fria virada para a gaveta, e uma abraçadeira por dois furinhos de 5 mm aperta o dissipador contra ela. Medidas olhando o armário de frente.</p>
       </div>
     </div>
   </section>
@@ -597,6 +600,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
             <tr><td>Batente da trava</td><td>Cantoneira em L por dentro da porta, na altura da lingueta (600 mm), com janela de 12 × 20 mm.</td></tr>
             <tr><td>Fios da porta</td><td>17 fios (8 do teclado, 8 do LCD, 1 do buzzer, que divide o GND do LCD). Dois cabos de rede e um fio solto resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
             <tr><td>Buzzer</td><td>Na caixa do LCD, por fora. Dentro do vão de trás ninguém ouviria.</td></tr>
+            <tr><td>Câmera</td><td>Furo de 15 mm a 835 mm de altura, no meio da largura, na frente da lente da webcam do compartimento de cima. Marcar com a webcam ligada, onde a lente fica centralizada.</td></tr>
           </tbody>
         </table>
       </div>
@@ -1060,6 +1064,8 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     puxador.userData = { tipo: "porta", nome: "Puxador da porta", detalhe: "clique para abrir" }; clicaveis.push(puxador);
     [404, 476].forEach((y) => nome(caixa(porta, 10, 8, 12, 838, y, 10, escuro, false), "Puxador da porta"));
     // caixa do LCD + teclado
+    const furoLente = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 6.6, 24), new THREE.MeshBasicMaterial({ color: 0x111111 }));
+    furoLente.rotation.x = Math.PI / 2; furoLente.position.set(440, 835, 3); porta.add(nome(furoLente, "Furo da câmera", "15 mm, a 835 mm de altura; a webcam enxerga por ele com a porta fechada"));
     nome(caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true), "Caixa do LCD e do teclado", "o buzzer fica nela");
     const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 110;
     const lcdTex = new THREE.CanvasTexture(lcdCanvas); lcdTex.anisotropy = 4;
@@ -1109,6 +1115,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       gnd: ["GND", "terra comum da fonte e do Mega"],
       v5: ["5 V dos relés", "saída do LM2596"],
       controle: ["Controle dos relés", "pinos 8, 9 e 10 do Mega"],
+      camera: ["Cabo USB da câmera", "webcam → notebook, fora do armário; não passa pelo Arduino"],
     };
     function cabo(id, pts, cor, raio, pai) {
       const mat = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.5, transparent: true, opacity: 1 });
@@ -1123,13 +1130,27 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
       if (eixo === "x") f.rotation.z = Math.PI / 2; else f.rotation.x = Math.PI / 2;
       f.position.set(x, y, z); corpoArm.add(nome(f, "Furo de 10 mm", para + "; fazer antes da cola"));
     }
-    const COR = { teclado: 0xe8892a, lcd: 0x2f7fd1, trava: 0xd23b2b, peltier: 0xb3261e, v12: 0xe24a3b, gnd: 0x262626, v5: 0x2e8b57, controle: 0x8e5cc7, forca: 0x7d868c };
+    const COR = { teclado: 0xe8892a, lcd: 0x2f7fd1, trava: 0xd23b2b, peltier: 0xb3261e, v12: 0xe24a3b, gnd: 0x262626, v5: 0x2e8b57, controle: 0x8e5cc7, forca: 0x7d868c, camera: 0x1d9bb0 };
 
     // furos que precisam ser feitos antes da cola
     furo(-438.5, 660, 322, "x", "lateral esquerda, cabos da porta");
     furo(-428, 660, FF, "z", "fundo falso, cabos da porta");
     furo(430, 600, FF, "z", "fundo falso, fio da trava");
     furo(-345, 28, -348.5, "z", "traseiro, cabo de força");
+
+    // câmera (22/10): webcam USB no compartimento de cima, olhando pra fora por um furo na porta, cabo até o notebook
+    [[0, 835, FF, "fundo falso"], [0, 835, -348.5, "traseiro"]].forEach(([x, y, z, onde]) => {
+      const f = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 6, 20), furoMat);
+      f.rotation.x = Math.PI / 2; f.position.set(x, y, z);
+      corpoArm.add(nome(f, "Furo de 16 mm", onde + ", cabo USB da câmera; o plugue tem 12 mm"));
+    });
+    const pretoCam = new THREE.MeshStandardMaterial({ color: 0x1b1c1e, roughness: 0.5 });
+    nome(caixa(corpoArm, 30, 24, 20, 0, 808, FRENTE - 30, pretoCam, false), "Suporte da webcam", "preso no piso do compartimento da câmera com dupla face");
+    nome(caixa(corpoArm, 90, 30, 25, 0, 835, FRENTE - 30, pretoCam, false), "Webcam USB", "olha para quem está na porta pelo furo de 15 mm; ligada no notebook, não no Arduino");
+    const lente = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 4, 24), new THREE.MeshStandardMaterial({ color: 0x223a5e, roughness: 0.15, metalness: 0.4 }));
+    lente.rotation.x = Math.PI / 2; lente.position.set(0, 835, FRENTE - 15.5);
+    corpoArm.add(nome(lente, "Lente da webcam", "alinhada com o furo de 15 mm da porta"));
+    cabo("camera", [[0, 830, FRENTE - 43], [0, 800, FRENTE - 70], [0, 800, -100], [0, 835, -130], [0, 835, -348], [0, 835, -440]], COR.camera, 2.5);
 
     // porta: teclado (cabo de rede 1) e LCD + buzzer (cabo de rede 2) por dentro da folha até a dobradiça
     cabo("teclado", [[760, 600, 4], [760, 600, -3], [760, 655, -3], [30, 655, -3], [12, 655, -6]], COR.teclado, 3, fiosPorta);

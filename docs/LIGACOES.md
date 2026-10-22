@@ -41,6 +41,7 @@ rogi: O LCD é um 16x1 sem placa I2C, ligado em paralelo com 4 bits de dados (D0
 | 5 V dos relés | LM2596 (ajustado em 5,0 V) → VCC do módulo de relés | 1 | 0,5 mm² | Só no vão de trás |
 | Controle | Mega 8, 9, 10 → IN1, IN2, IN3 | 3 | jumper | Só no vão de trás |
 | Tomada | Tomada → fonte (fase, neutro, terra) | 3 | cabo de força | Furo no traseiro, embaixo à esquerda |
+| Câmera | Webcam USB → notebook, fora do armário | 1 | o próprio cabo USB da webcam (+ extensor de 2 m) | Compartimento de cima até o fundo falso, furo de 16 mm, sobe no vão de trás, furo de 16 mm no traseiro, notebook |
 
 rogi: Não há sensor de porta. A lingueta chanfrada tranca sozinha quando a porta fecha, e quem encerra a sessão é a tecla D do teclado (ou 60 s sem apertar nada).
 
@@ -54,8 +55,25 @@ rogi: Não há sensor de porta. A lingueta chanfrada tranca sozinha quando a por
 | Traseiro | 28 mm de altura, 95 mm da esquerda | Cabo de força |
 | Fundo falso | Ø 38 mm, centro a 298 mm de altura e 595 mm da esquerda | Peltier da gaveta C1 |
 | Fundo falso | Ø 38 mm, centro a 101 mm de altura e 595 mm da esquerda | Peltier da gaveta C2 |
+| Fundo falso | Ø 16 mm, 835 mm de altura, 440 mm da esquerda (centro) | Cabo USB da câmera |
+| Traseiro | Ø 16 mm, 835 mm de altura, 440 mm da esquerda (centro) | Cabo USB da câmera |
+| Porta (nova) | Ø 15 mm, 835 mm de altura, 440 mm da esquerda | Lente da câmera |
 
-rogi: Os furos são de 10 mm, menos os dois das Peltier: esses são de 38 mm, feitos com serra copo na furadeira. O MDF já está todo cortado, então não há recorte nenhum. A pastilha fica no vão de trás, tampando o furo (38 mm deixa 1 mm de borda pra ela vedar), com a face fria virada para a gaveta e o dissipador encostado na face quente com pasta térmica. Quem segura tudo é uma abraçadeira de nylon: dois furinhos de 5 mm, um de cada lado do furo grande, e ela laça o dissipador e aperta o conjunto contra o MDF. Um filete de cola quente na borda da pastilha veda a fresta. Medidas olhando o armário de frente. Do jeito que o manual de montagem está, o vão da eletrônica fica fechado depois da cola, então os furos precisam ser feitos antes. Se a caixa já estiver colada, dá para furar pela frente, com a gaveta tirada.
+rogi: Os furos são de 10 mm, menos os dois das Peltier e os três da câmera. Os da câmera são de 16 mm (o plugue USB tem 12 mm e precisa passar) e de 15 mm na porta para a lente. Os das Peltier são de 38 mm, feitos com serra copo na furadeira. O MDF já está todo cortado, então não há recorte nenhum. A pastilha fica no vão de trás, tampando o furo (38 mm deixa 1 mm de borda pra ela vedar), com a face fria virada para a gaveta e o dissipador encostado na face quente com pasta térmica. Quem segura tudo é uma abraçadeira de nylon: dois furinhos de 5 mm, um de cada lado do furo grande, e ela laça o dissipador e aperta o conjunto contra o MDF. Um filete de cola quente na borda da pastilha veda a fresta. Medidas olhando o armário de frente. Do jeito que o manual de montagem está, o vão da eletrônica fica fechado depois da cola, então os furos precisam ser feitos antes. Se a caixa já estiver colada, dá para furar pela frente, com a gaveta tirada.
+
+## Câmera
+
+rogi: Uma webcam USB comum, ligada num notebook do lado de fora. Ela não conversa com o Arduino: só filma quem chega na porta, e o notebook mostra a imagem na apresentação.
+
+| Item | Como fica |
+|---|---|
+| Lugar | Compartimento de cima (piso a 794 mm, uns 80 mm de vão até o tampo), encostada na frente, no meio da largura |
+| Para onde olha | Para fora, para quem está na frente do teclado. Com a porta fechada, enxerga por um furo de 15 mm na porta, a 835 mm de altura; com a porta aberta, vê direto |
+| Fixação | Fita dupla face ou abraçadeira no piso do compartimento, com a lente alinhada ao furo da porta e a 1 ou 2 cm dele |
+| Cabo | Corre pelo piso do compartimento até o fundo falso, passa por um furo de 16 mm, cruza o vão de trás e sai por um furo de 16 mm no traseiro, na mesma altura. Se não alcançar o notebook, um extensor USB de 2 m resolve |
+| Energia | Vem pelo próprio USB do notebook. Nada da fonte de 12 V |
+
+rogi: Os furos da câmera podem ser feitos com a caixa já colada: o do fundo falso pela frente, com a porta aberta e a mão dentro do compartimento de cima; o do traseiro por fora. Antes de furar a porta, ponham a webcam no lugar, liguem no notebook e marquem o furo onde a lente fica centralizada na imagem.
 
 ## Antes de ligar na tomada
 
