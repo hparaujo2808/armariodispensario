@@ -1,0 +1,7 @@
+# Simulação no Wokwi (extensão do VS Code). Antes, compile o firmware:
+#   arduino-cli compile --fqbn arduino:avr:mega --output-dir firmware/armario_dispensador/build firmware/armario_dispensador
+# O diagram.json é gerado por hardware/gerar.py a partir de hardware/pinos.yaml.
+[wokwi]
+version = 1
+firmware = "../firmware/armario_dispensador/build/armario_dispensador.ino.hex"
+elf = "../firmware/armario_dispensador/build/armario_dispensador.ino.elf"

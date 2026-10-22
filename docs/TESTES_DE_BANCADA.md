@@ -44,7 +44,7 @@ Mega ligado pela USB do notebook. GND do Mega ao GND do módulo de relés (um ju
 
 | # | O que fazer | Esperado | Medido | Se der diferente |
 |---|---|---|---|---|
-| 3.1 | Gravar o firmware de teste de pinos (Fase 3, `firmware/`). Apertar o reset do Mega 10 vezes | Nenhum relé estala | | Algum estala: o firmware faz `pinMode` antes de `digitalWrite(HIGH)`. Corrigir antes de seguir (auditoria, item 3) |
+| 3.1 | Gravar o firmware (`firmware/LEIA_ME.md`). Apertar o reset do Mega 10 vezes | Nenhum relé estala | | Algum estala: o firmware faz `pinMode` antes de `digitalWrite(HIGH)`. Corrigir antes de seguir (auditoria, item 3) |
 | 3.2 | Abrir e fechar o Monitor Serial 10 vezes | Nenhum relé estala | | Idem |
 | 3.3 | Tirar e pôr o cabo USB 5 vezes | Nenhum relé estala | | Idem |
 | 3.4 | Corrente do Mega na USB (adaptador USB com bornes ou multímetro em série no 5 V do cabo), com LCD aceso e AS608 ligado | 0,15 a 0,35 A [est] | | Acima de 0,45 A: perto do limite da USB (0,5 A). Tirar a luz de fundo do LCD do 5 V do Mega |
@@ -98,14 +98,14 @@ Repetir para a segunda pastilha.
 
 | # | O que fazer | Esperado | Medido | Se der diferente |
 |---|---|---|---|---|
-| 8.1 | Firmware: simular sensor do cooler a 61 °C (comando de teste da Fase 3) | Relés 2 e 3 desligam, alarme no LCD | | Corrigir o firmware |
-| 8.2 | Firmware: desligar o fio de dados dos DS18B20 | Peltier desligadas, alarme de sensor | | Corrigir o firmware |
+| 8.1 | Com as Peltier ligadas, pôr o DS18B20 de um cooler num copo de água quente da torneira (> 60 °C, conferir com termômetro) | Relés 2 e 3 desligam; evento `CORTE_QUENTE` no notebook; só religam abaixo de 45 °C | | Conferir o mapa dos sensores (`SET mapa=`) |
+| 8.2 | Soltar o fio de dados (amarelo) dos DS18B20 | Peltier desligadas; evento `SENSOR_FALHA` | | Corrigir o firmware |
 | 8.3 | **Não** testar o fusível térmico queimando: ele não volta. Conferir a continuidade (0.3), que a luva de crimpar não sai puxando com a mão e que ele está encostado na base do cooler | — | | |
 | 8.4 | Intertravamento: pedir abertura da trava com as duas Peltier ligadas | Relés 2 e 3 desligam antes do relé 1 ligar; voltam depois (segunda Peltier 2 s após a primeira) | | Corrigir o firmware |
 
 ## Passo 9 — Tudo junto no armário, 30 minutos
 
-Baia fria montada e fechada com a tampa isolada. Porta do armário fechada. Ambiente anotado. Notebook registrando as temperaturas (o firmware manda `TEMP` a cada 10 s).
+Baia fria montada e fechada com a tampa isolada. Porta do armário fechada. Ambiente anotado. Notebook registrando as temperaturas (o firmware manda `TEMP` a cada 2 s).
 
 | # | O que medir | Esperado | Medido | Se der diferente |
 |---|---|---|---|---|

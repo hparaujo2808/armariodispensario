@@ -10,6 +10,7 @@ Saídas:
     docs/LIGACOES.md        (só os trechos entre <!-- gerado:... --> e <!-- /gerado:... -->)
     docs/diagrama-ligacoes.svg
     docs/diagrama-potencia.svg
+    simulacao/diagram.json   (Wokwi: relés viram LEDs, reed vira chave, 12 V vira potenciômetro)
 """
 from __future__ import annotations
 
@@ -30,6 +31,7 @@ PINOS_H = os.path.join(RAIZ, "firmware", "armario_dispensador", "pinos.h")
 LIGACOES = os.path.join(RAIZ, "docs", "LIGACOES.md")
 SVG_SINAIS = os.path.join(RAIZ, "docs", "diagrama-ligacoes.svg")
 SVG_POTENCIA = os.path.join(RAIZ, "docs", "diagrama-potencia.svg")
+SIM_DIAGRAMA = os.path.join(RAIZ, "simulacao", "diagram.json")
 
 # Recursos dos pinos do Mega 2560 [ds] docs.arduino.cc/hardware/mega-2560
 MEGA_PWM = set(range(2, 14)) | {44, 45, 46}
@@ -345,6 +347,76 @@ def svg_potencia(potencia: dict) -> tuple[str, set[str]]:
     return "\n".join(el) + "\n", desenhados
 
 
+# ------------------------------------------------------------- simulação --
+# Onde cada pino do pinos.yaml chega na simulação do Wokwi. Todo pino do YAML
+# precisa estar aqui (gerar.py recusa se faltar) — é assim que a simulação
+# fica conferida contra a fonte única.
+SIM_PINOS = {
+    "RELE_TRAVA": ("r1", "2"), "RELE_PELTIER_1": ("r2", "2"), "RELE_PELTIER_2": ("r3", "2"), "RELE_LIVRE": ("r4", "2"),
+    "BUZZER": ("bz1", "2"), "SENSOR_PORTA": ("reed", "2"),
+    "DIGITAL_TX": (None, None), "DIGITAL_RX": (None, None),     # o Wokwi não tem o AS608: o firmware segue só com senha
+    "LCD_RS": ("lcd1", "RS"), "LCD_E": ("lcd1", "E"), "LCD_D4": ("lcd1", "D4"), "LCD_D5": ("lcd1", "D5"),
+    "LCD_D6": ("lcd1", "D6"), "LCD_D7": ("lcd1", "D7"),
+    "TECLADO_L1": ("kp1", "R1"), "TECLADO_L2": ("kp1", "R2"), "TECLADO_L3": ("kp1", "R3"), "TECLADO_L4": ("kp1", "R4"),
+    "TECLADO_C1": ("kp1", "C1"), "TECLADO_C2": ("kp1", "C2"), "TECLADO_C3": ("kp1", "C3"), "TECLADO_C4": ("kp1", "C4"),
+    "ONEWIRE": ("t1", "DQ"), "MEDE_12V": ("pot12", "SIG"),
+}
+
+
+def gerar_simulacao(pinos: dict) -> str:
+    import json
+    faltam = [p["nome"] for p in pinos["pinos"] if p["nome"] not in SIM_PINOS]
+    if faltam:
+        raise SystemExit(f"pinos sem lugar na simulação (SIM_PINOS em hardware/gerar.py): {faltam}")
+    partes = [
+        {"type": "wokwi-arduino-mega", "id": "mega", "top": 0, "left": 0, "attrs": {}},
+        {"type": "wokwi-lcd1602", "id": "lcd1", "top": -230, "left": 40, "attrs": {}},
+        {"type": "wokwi-membrane-keypad", "id": "kp1", "top": -420, "left": 420, "attrs": {}},
+        {"type": "wokwi-buzzer", "id": "bz1", "top": -140, "left": 400, "attrs": {"volume": "0.2"}},
+        {"type": "wokwi-slide-switch", "id": "reed", "top": -130, "left": 520, "attrs": {"value": "1"}},
+        {"type": "wokwi-potentiometer", "id": "pot12", "top": 250, "left": 520, "attrs": {"value": "780"}},
+        {"type": "wokwi-resistor", "id": "rpu", "top": 250, "left": 300, "rotate": 90, "attrs": {"value": "4700"}},
+    ]
+    nomes_rele = {"r1": "trava", "r2": "Peltier 1", "r3": "Peltier 2", "r4": "livre"}
+    for i, (rid, cor) in enumerate((("r1", "red"), ("r2", "blue"), ("r3", "blue"), ("r4", "white")), 1):
+        partes.append({"type": "wokwi-led", "id": f"led{i}", "top": 220, "left": 20 + 70 * i,
+                       "attrs": {"color": cor, "label": nomes_rele[rid]}})
+        partes.append({"type": "wokwi-resistor", "id": rid, "top": 300, "left": 20 + 70 * i, "rotate": 90,
+                       "attrs": {"value": "220"}})
+    for i, temp in enumerate(("5.4", "38", "38"), 1):
+        partes.append({"type": "wokwi-ds18b20", "id": f"t{i}", "top": 330, "left": 300 + 70 * i,
+                       "attrs": {"temperature": temp}})
+    con = []
+    def ligar(a, b, cor="green"):
+        con.append([a, b, cor, []])
+    for p in pinos["pinos"]:
+        parte, pino = SIM_PINOS[p["nome"]]
+        if parte:
+            ligar(f"mega:{p['pino']}", f"{parte}:{pino}")
+    # LEDs dos relés: acendem com o pino em LOW (o módulo de relés real liga em LOW)
+    for i in range(1, 5):
+        ligar("mega:5V", f"led{i}:A", "red")
+        ligar(f"led{i}:C", f"r{i}:1", "black")
+    for pino in ("VSS", "RW", "K", "V0"):
+        ligar(f"lcd1:{pino}", "mega:GND.1", "black")
+    for pino in ("VDD", "A"):
+        ligar(f"lcd1:{pino}", "mega:5V", "red")
+    ligar("bz1:1", "mega:GND.1", "black")
+    ligar("reed:1", "mega:GND.1", "black")               # chave para a esquerda = porta fechada
+    for i in (1, 2, 3):
+        ligar(f"t{i}:GND", "mega:GND.2", "black")
+        ligar(f"t{i}:VCC", "mega:5V", "red")
+        if i > 1:
+            ligar(f"t{i}:DQ", "t1:DQ")
+    ligar("rpu:1", "mega:5V", "red")
+    ligar("rpu:2", "t1:DQ")
+    ligar("pot12:GND", "mega:GND.2", "black")
+    ligar("pot12:VCC", "mega:5V", "red")
+    diag = {"version": 1, "author": "gerado por hardware/gerar.py", "editor": "wokwi", "parts": partes,
+            "connections": con, "dependencies": {}}
+    return json.dumps(diag, indent=2, ensure_ascii=False) + "\n"
+
+
 # ---------------------------------------------------------------- principal --
 def saidas() -> dict[str, str]:
     pinos, potencia = carregar()
@@ -359,7 +431,8 @@ def saidas() -> dict[str, str]:
         lig = f.read()
     lig = aplicar_blocos(lig, {"pinos": bloco_pinos(pinos), "potencia": bloco_potencia(potencia),
                                 "furos": FUROS.bloco_markdown()})
-    return {PINOS_H: gerar_pinos_h(pinos), LIGACOES: lig, SVG_SINAIS: svg_sinais(pinos), SVG_POTENCIA: svg_p}
+    return {PINOS_H: gerar_pinos_h(pinos), LIGACOES: lig, SVG_SINAIS: svg_sinais(pinos), SVG_POTENCIA: svg_p,
+            SIM_DIAGRAMA: gerar_simulacao(pinos)}
 
 
 def main():

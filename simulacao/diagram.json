@@ -1,0 +1,475 @@
+{
+  "version": 1,
+  "author": "gerado por hardware/gerar.py",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-mega",
+      "id": "mega",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": -230,
+      "left": 40,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-membrane-keypad",
+      "id": "kp1",
+      "top": -420,
+      "left": 420,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": -140,
+      "left": 400,
+      "attrs": {
+        "volume": "0.2"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "reed",
+      "top": -130,
+      "left": 520,
+      "attrs": {
+        "value": "1"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot12",
+      "top": 250,
+      "left": 520,
+      "attrs": {
+        "value": "780"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rpu",
+      "top": 250,
+      "left": 300,
+      "rotate": 90,
+      "attrs": {
+        "value": "4700"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 220,
+      "left": 90,
+      "attrs": {
+        "color": "red",
+        "label": "trava"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 300,
+      "left": 90,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 220,
+      "left": 160,
+      "attrs": {
+        "color": "blue",
+        "label": "Peltier 1"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 300,
+      "left": 160,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": 220,
+      "left": 230,
+      "attrs": {
+        "color": "blue",
+        "label": "Peltier 2"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 300,
+      "left": 230,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led4",
+      "top": 220,
+      "left": 300,
+      "attrs": {
+        "color": "white",
+        "label": "livre"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r4",
+      "top": 300,
+      "left": 300,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-ds18b20",
+      "id": "t1",
+      "top": 330,
+      "left": 370,
+      "attrs": {
+        "temperature": "5.4"
+      }
+    },
+    {
+      "type": "wokwi-ds18b20",
+      "id": "t2",
+      "top": 330,
+      "left": 440,
+      "attrs": {
+        "temperature": "38"
+      }
+    },
+    {
+      "type": "wokwi-ds18b20",
+      "id": "t3",
+      "top": 330,
+      "left": 510,
+      "attrs": {
+        "temperature": "38"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "mega:8",
+      "r1:2",
+      "green",
+      []
+    ],
+    [
+      "mega:9",
+      "r2:2",
+      "green",
+      []
+    ],
+    [
+      "mega:10",
+      "r3:2",
+      "green",
+      []
+    ],
+    [
+      "mega:11",
+      "r4:2",
+      "green",
+      []
+    ],
+    [
+      "mega:7",
+      "bz1:2",
+      "green",
+      []
+    ],
+    [
+      "mega:3",
+      "reed:2",
+      "green",
+      []
+    ],
+    [
+      "mega:38",
+      "lcd1:RS",
+      "green",
+      []
+    ],
+    [
+      "mega:40",
+      "lcd1:E",
+      "green",
+      []
+    ],
+    [
+      "mega:42",
+      "lcd1:D4",
+      "green",
+      []
+    ],
+    [
+      "mega:44",
+      "lcd1:D5",
+      "green",
+      []
+    ],
+    [
+      "mega:46",
+      "lcd1:D6",
+      "green",
+      []
+    ],
+    [
+      "mega:48",
+      "lcd1:D7",
+      "green",
+      []
+    ],
+    [
+      "mega:22",
+      "kp1:R1",
+      "green",
+      []
+    ],
+    [
+      "mega:24",
+      "kp1:R2",
+      "green",
+      []
+    ],
+    [
+      "mega:26",
+      "kp1:R3",
+      "green",
+      []
+    ],
+    [
+      "mega:28",
+      "kp1:R4",
+      "green",
+      []
+    ],
+    [
+      "mega:30",
+      "kp1:C1",
+      "green",
+      []
+    ],
+    [
+      "mega:32",
+      "kp1:C2",
+      "green",
+      []
+    ],
+    [
+      "mega:34",
+      "kp1:C3",
+      "green",
+      []
+    ],
+    [
+      "mega:36",
+      "kp1:C4",
+      "green",
+      []
+    ],
+    [
+      "mega:4",
+      "t1:DQ",
+      "green",
+      []
+    ],
+    [
+      "mega:A0",
+      "pot12:SIG",
+      "green",
+      []
+    ],
+    [
+      "mega:5V",
+      "led1:A",
+      "red",
+      []
+    ],
+    [
+      "led1:C",
+      "r1:1",
+      "black",
+      []
+    ],
+    [
+      "mega:5V",
+      "led2:A",
+      "red",
+      []
+    ],
+    [
+      "led2:C",
+      "r2:1",
+      "black",
+      []
+    ],
+    [
+      "mega:5V",
+      "led3:A",
+      "red",
+      []
+    ],
+    [
+      "led3:C",
+      "r3:1",
+      "black",
+      []
+    ],
+    [
+      "mega:5V",
+      "led4:A",
+      "red",
+      []
+    ],
+    [
+      "led4:C",
+      "r4:1",
+      "black",
+      []
+    ],
+    [
+      "lcd1:VSS",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd1:RW",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd1:K",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd1:V0",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd1:VDD",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "lcd1:A",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "bz1:1",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "reed:1",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "t1:GND",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "t1:VCC",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "t2:GND",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "t2:VCC",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "t2:DQ",
+      "t1:DQ",
+      "green",
+      []
+    ],
+    [
+      "t3:GND",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "t3:VCC",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "t3:DQ",
+      "t1:DQ",
+      "green",
+      []
+    ],
+    [
+      "rpu:1",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "rpu:2",
+      "t1:DQ",
+      "green",
+      []
+    ],
+    [
+      "pot12:GND",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "pot12:VCC",
+      "mega:5V",
+      "red",
+      []
+    ]
+  ],
+  "dependencies": {}
+}
