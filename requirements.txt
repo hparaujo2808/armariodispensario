@@ -1,0 +1,6 @@
+# Gerador do armário (armario/gerador) e scripts de calculos/
+ezdxf==1.4.5
+shapely==2.2.0
+matplotlib==3.11.2
+# Testes
+pytest==9.1.1

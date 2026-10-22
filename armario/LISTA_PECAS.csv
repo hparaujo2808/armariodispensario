@@ -1,0 +1,70 @@
+﻿codigo;nome;grupo;largura_mm;altura_mm;quantidade
+LAT_E;Lateral esquerda;carcaça;700.0;880.0;1
+LAT_D;Lateral direita;carcaça;700.0;880.0;1
+BASE;Base;carcaça;880.0;700.0;1
+TAMPO;Tampo;carcaça;880.0;700.0;1
+FUNDO;Traseiro;carcaça;880.0;874.0;1
+FUNDO_FALSO;Fundo falso;carcaça;880.0;874.0;1
+P_CAM;Piso do compartimento da câmera;prateleiras;880.0;497.0;1
+PRAT_1;Prateleira livre 1;prateleiras;880.0;497.0;1
+PRAT_2;Prateleira livre 2;prateleiras;880.0;497.0;1
+TETO_GAV;Prateleira 3 / teto do gaveteiro;prateleiras;880.0;497.0;1
+NERV_P_CAM_1;Nervura sob P_CAM linha 1;nervuras;874.0;38.0;1
+NERV_P_CAM_2;Nervura sob P_CAM linha 2;nervuras;874.0;38.0;1
+NERV_P_CAM_3;Nervura sob P_CAM linha 3;nervuras;874.0;38.0;1
+NERV_PRAT_1_1;Nervura sob PRAT_1 linha 1;nervuras;874.0;38.0;1
+NERV_PRAT_1_2;Nervura sob PRAT_1 linha 2;nervuras;874.0;38.0;1
+NERV_PRAT_1_3;Nervura sob PRAT_1 linha 3;nervuras;874.0;38.0;1
+NERV_PRAT_2_1;Nervura sob PRAT_2 linha 1;nervuras;874.0;38.0;1
+NERV_PRAT_2_2;Nervura sob PRAT_2 linha 2;nervuras;874.0;38.0;1
+NERV_PRAT_2_3;Nervura sob PRAT_2 linha 3;nervuras;874.0;38.0;1
+DIV_AB;Divisória gaveteiro A-B;gaveteiro;494.0;396.0;1
+DIV_BC;Divisória gaveteiro B-C;gaveteiro;494.0;396.0;1
+DIV_DISP;Divisória gaveteiro-dispensador;gaveteiro;494.0;396.0;1
+A1_FRENTE;Gaveta A1 frente;gavetas;317.0;96.0;1
+A1_TRAS;Gaveta A1 traseira;gavetas;317.0;96.0;1
+A1_LAT_E;Gaveta A1 lateral esquerda;gavetas;463.0;96.0;1
+A1_LAT_D;Gaveta A1 lateral direita;gavetas;463.0;96.0;1
+A1_FUNDO;Gaveta A1 fundo;gavetas;315.0;461.0;1
+A2_FRENTE;Gaveta A2 frente;gavetas;317.0;96.0;1
+A2_TRAS;Gaveta A2 traseira;gavetas;317.0;96.0;1
+A2_LAT_E;Gaveta A2 lateral esquerda;gavetas;463.0;96.0;1
+A2_LAT_D;Gaveta A2 lateral direita;gavetas;463.0;96.0;1
+A2_FUNDO;Gaveta A2 fundo;gavetas;315.0;461.0;1
+A3_FRENTE;Gaveta A3 frente;gavetas;317.0;96.0;1
+A3_TRAS;Gaveta A3 traseira;gavetas;317.0;96.0;1
+A3_LAT_E;Gaveta A3 lateral esquerda;gavetas;463.0;96.0;1
+A3_LAT_D;Gaveta A3 lateral direita;gavetas;463.0;96.0;1
+A3_FUNDO;Gaveta A3 fundo;gavetas;315.0;461.0;1
+A4_FRENTE;Gaveta A4 frente;gavetas;317.0;96.0;1
+A4_TRAS;Gaveta A4 traseira;gavetas;317.0;96.0;1
+A4_LAT_E;Gaveta A4 lateral esquerda;gavetas;463.0;96.0;1
+A4_LAT_D;Gaveta A4 lateral direita;gavetas;463.0;96.0;1
+A4_FUNDO;Gaveta A4 fundo;gavetas;315.0;461.0;1
+B1_FRENTE;Gaveta B1 frente;gavetas;136.0;195.0;1
+B1_TRAS;Gaveta B1 traseira;gavetas;136.0;195.0;1
+B1_LAT_E;Gaveta B1 lateral esquerda;gavetas;463.0;195.0;1
+B1_LAT_D;Gaveta B1 lateral direita;gavetas;463.0;195.0;1
+B1_FUNDO;Gaveta B1 fundo;gavetas;134.0;461.0;1
+B2_FRENTE;Gaveta B2 frente;gavetas;136.0;195.0;1
+B2_TRAS;Gaveta B2 traseira;gavetas;136.0;195.0;1
+B2_LAT_E;Gaveta B2 lateral esquerda;gavetas;463.0;195.0;1
+B2_LAT_D;Gaveta B2 lateral direita;gavetas;463.0;195.0;1
+B2_FUNDO;Gaveta B2 fundo;gavetas;134.0;461.0;1
+C1_FRENTE;Gaveta C1 frente;gavetas;136.0;195.0;1
+C1_TRAS;Gaveta C1 traseira;gavetas;136.0;195.0;1
+C1_LAT_E;Gaveta C1 lateral esquerda;gavetas;463.0;195.0;1
+C1_LAT_D;Gaveta C1 lateral direita;gavetas;463.0;195.0;1
+C1_FUNDO;Gaveta C1 fundo;gavetas;134.0;461.0;1
+C2_FRENTE;Gaveta C2 frente;gavetas;136.0;195.0;1
+C2_TRAS;Gaveta C2 traseira;gavetas;136.0;195.0;1
+C2_LAT_E;Gaveta C2 lateral esquerda;gavetas;463.0;195.0;1
+C2_LAT_D;Gaveta C2 lateral direita;gavetas;463.0;195.0;1
+C2_FUNDO;Gaveta C2 fundo;gavetas;134.0;461.0;1
+DISP_LATERAL;Lateral do dispensador (rampa);dispensador;494.0;333.0;2
+DISP_PISTA;Pista inclinada do dispensador;dispensador;192.0;497.6;1
+DISP_RETENTOR;Retentor frontal do dispensador;dispensador;192.0;284.6;1
+DISP_APOIO;Tira de apoio da pista;dispensador;470.0;12.0;2
+CUPOM_KERF;Cupom de teste de kerf 3mm;cupom;120.0;60.0;1
+CUPOM_QC_M;Cupom finger-joint macho;cupom;71.0;60.0;1
+CUPOM_QC_F;Cupom finger-joint fêmea;cupom;60.0;60.0;1
