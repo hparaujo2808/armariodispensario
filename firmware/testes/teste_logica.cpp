@@ -91,6 +91,10 @@ TESTE(protocolo_evento) {
   CHECA(corpo_evento(r, corpo, sizeof corpo) > 0);
   CHECA(std::strcmp(corpo, "EV seq=12 t=AUTH_OK u=3 v=1 ms=34567 b=3") == 0);
   CHECA(empacotar(corpo, linha, sizeof linha) > 0);
+  // mesmos vetores de tests/test_app.py: o CRC do C e o do Python precisam bater
+  CHECA(std::strcmp(linha, "$EV seq=12 t=AUTH_OK u=3 v=1 ms=34567 b=3*35\n") == 0);
+  CHECA(empacotar("LIB id=5 u=3", linha, sizeof linha) > 0);
+  CHECA(std::strcmp(linha, "$LIB id=5 u=3*8D\n") == 0);
 }
 
 // ---------------------------------------------------------------- memória --

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispensário</title>
+<style>
+  :root { --bg:#f4f6f8; --card:#fff; --tx:#1d2733; --mut:#5d6b7a; --pri:#0b6e4f; --pri2:#0e8a63; --warn:#b54708; --err:#b42318; --line:#d6dde4; --cold:#1f6feb; }
+  * { box-sizing:border-box; -webkit-user-select:none; user-select:none; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--tx); font:18px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; }
+  header { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:var(--pri); color:#fff; }
+  header b { font-size:20px; }
+  #alarmes { display:none; background:var(--err); color:#fff; padding:8px 18px; font-weight:600; }
+  main { height:calc(100% - 56px - 40px - 70px); padding:14px 18px; overflow:auto; }
+  footer { height:40px; display:flex; gap:22px; align-items:center; padding:0 18px; color:var(--mut); font-size:15px; border-top:1px solid var(--line); background:#fff; }
+  .msg { font-size:22px; margin:4px 0 14px; }
+  .grande { font-size:30px; font-weight:700; margin:16px 0; text-align:center; }
+  .centro { text-align:center; }
+  button { font:inherit; border:0; border-radius:10px; padding:14px 22px; background:var(--pri); color:#fff; font-weight:600; min-height:56px; touch-action:manipulation; }
+  button:active { background:var(--pri2); }
+  button.sec { background:#e3e8ee; color:var(--tx); }
+  button.perigo { background:var(--err); }
+  button:disabled { opacity:.45; }
+  .acoes { display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
+  .duas { display:grid; grid-template-columns: 1fr 340px; gap:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  input { font:inherit; font-size:26px; width:100%; padding:10px 12px; border:2px solid var(--line); border-radius:10px; letter-spacing:2px; }
+  input:focus { outline:none; border-color:var(--pri); }
+  .teclado { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .teclado button { font-size:26px; padding:0; min-height:62px; background:#e9eef3; color:var(--tx); }
+  .item { display:flex; justify-content:space-between; align-items:center; padding:10px 4px; border-bottom:1px solid var(--line); gap:10px; }
+  .item:last-child { border-bottom:0; }
+  .item .nome { font-weight:600; }
+  .chip { display:inline-block; padding:3px 10px; border-radius:999px; background:#e7f4ee; color:var(--pri); font-weight:700; font-size:15px; margin:2px 4px 0 0; }
+  .chip.frio { background:#e6efff; color:var(--cold); }
+  .chip.indisp { background:#fdecea; color:var(--err); }
+  .qtd { display:flex; align-items:center; gap:8px; }
+  .qtd button { min-height:48px; width:52px; padding:0; font-size:26px; }
+  .qtd span { min-width:36px; text-align:center; font-size:24px; font-weight:700; }
+  .digital { width:120px; height:120px; margin:12px auto; border-radius:50%; border:6px solid var(--pri); display:grid; place-items:center; font-size:56px; color:var(--pri); animation: pulsar 2s infinite; }
+  @keyframes pulsar { 50% { transform:scale(1.06); opacity:.8; } }
+  .erro { color:var(--err); font-weight:600; min-height:24px; }
+  .aviso { background:#fff4e5; border:1px solid #f5c58a; color:var(--warn); padding:10px 12px; border-radius:10px; margin-bottom:10px; }
+  table { width:100%; border-collapse:collapse; font-size:16px; }
+  td,th { padding:6px; border-bottom:1px solid var(--line); text-align:left; }
+</style>
+</head>
+<body>
+<header><b>Dispensário Eletrônico</b><span id="hdr"></span></header>
+<div id="alarmes"></div>
+<main id="tela"></main>
+<div id="sim" style="display:none;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 18px;background:#fff7e0;border-top:1px solid #f5c58a"></div>
+<footer><span id="ft-energia"></span><span id="ft-temp"></span><span id="ft-porta"></span><span id="ft-hora" style="margin-left:auto"></span></footer>
+
+<script>
+const API = "/api/kiosk";
+let E = null;                 // último estado recebido
+let telaAtual = "";           // evita redesenhar a tela enquanto o usuário digita
+let qtd = {};                 // quantidades em edição na confirmação
+let erro = "";
+
+const NOMES_ALARME = {
+  PORTA_ABERTA_TEMPO: "Porta aberta além do tempo", ABERTURA_NAO_AUTORIZADA: "Abertura não autorizada",
+  BLOQUEIO_POR_ERROS: "Teclado bloqueado por erros", FALHA_ENERGIA: "Sem 12 V no armário (trava e frio parados)",
+  TEMPERATURA_FORA_FAIXA: "Refrigerado fora da faixa", SOBRETEMPERATURA_DISSIPADOR: "Superaquecimento da refrigeração",
+  FALHA_SENSOR: "Falha de sensor de temperatura", FALHA_CAMERA: "Falha de câmera"
+};
+
+async function chamar(rota, corpo) {
+  erro = "";
+  try {
+    const r = await fetch(API + rota, { method: corpo === undefined ? "GET" : "POST",
+      headers: {"Content-Type": "application/json"}, body: corpo === undefined ? undefined : JSON.stringify(corpo) });
+    const d = await r.json();
+    if (!r.ok) { erro = d.detail || "Erro"; desenhar(true); return null; }
+    E = d; desenhar(true); return d;
+  } catch (e) { erro = "Sem comunicação com o controlador"; desenhar(true); return null; }
+}
+
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function teclado(alvo) {
+  const t = ["1","2","3","4","5","6","7","8","9","⌫","0","OK"];
+  return `<div class="teclado">${t.map(k => `<button data-tecla="${k}" data-alvo="${alvo}">${k}</button>`).join("")}</div>`;
+}
+
+function locais(it) {
+  if (!it.disponivel) return `<span class="chip indisp">Indisponível neste dispensário</span>`;
+  return it.locais.map(l => `<span class="chip ${it.refrigerado ? "frio" : ""}">${it.refrigerado ? "❄ " : ""}${esc(l.nome)}</span>`).join("");
+}
+
+function desenhar(forcar) {
+  if (!E) return;
+  const chave = E.estado + "|" + (E.itens || []).length + "|" + E.modo;
+  // rodapé e alarmes sempre
+  document.getElementById("hdr").textContent = E.usuario ? `${E.usuario.nome} (${E.usuario.perfil})` : "";
+  const al = document.getElementById("alarmes");
+  al.style.display = E.alarmes.length ? "block" : "none";
+  al.textContent = "⚠ " + E.alarmes.map(a => NOMES_ALARME[a] || a).join(" · ");
+  document.getElementById("ft-energia").textContent = (E.mega_online ? "🔌 Porta conectada" : "⛔ Porta sem comunicação") + " · " + (E.energia_rede ? "⚡ 12 V OK" : "🔋 Sem 12 V");
+  document.getElementById("ft-temp").textContent = E.temperatura_frio == null ? "❄ —" : `❄ ${E.temperatura_frio.toFixed(1)} °C`;
+  document.getElementById("ft-porta").textContent = E.porta_aberta ? "🚪 Porta ABERTA" : "🚪 Porta fechada";
+  if (!forcar && chave === telaAtual && !["LIBERADO","PORTA_ABERTA"].includes(E.estado)) {
+    const m = document.getElementById("msg"); if (m) m.textContent = E.mensagem; return;
+  }
+  telaAtual = chave;
+  const T = document.getElementById("tela");
+  const msg = `<div class="msg" id="msg">${esc(E.mensagem)}</div><div class="erro">${esc(erro)}</div>`;
+  const rec = E.recuperada ? `<div class="aviso">Esta operação foi interrompida por queda de energia e recuperada automaticamente.</div>` : "";
+
+  if (E.estado === "OCIOSO") {
+    T.innerHTML = `<div class="centro">${msg}<div class="digital">☝</div>
+      <div class="grande">Na porta: digital no leitor ou ID + # e senha + # no teclado</div>
+      ${E.mega_online ? "" : `<div class="aviso">Controlador da porta (Arduino) sem comunicação</div>`}</div>`;
+  } else if (E.estado === "AUTENTICADO") {
+    const p = E.usuario.perfil;
+    T.innerHTML = `${msg}<div class="duas"><div class="card">
+        <label>CPF ou código da receita do paciente</label><input id="ident" inputmode="numeric" autocomplete="off">
+        <div class="acoes">
+          ${["enfermagem","farmacia","admin"].includes(p) ? `<button id="b-cons">Consultar prescrição</button>` : ""}
+          ${["logistica","farmacia","admin"].includes(p) ? `<button id="b-rep" class="sec">Reposição de estoque</button>` : ""}
+          <button class="sec" id="b-canc">Sair</button>
+        </div></div><div class="card">${teclado("ident")}</div></div>`;
+    document.getElementById("ident").focus();
+    const bc = document.getElementById("b-cons"); if (bc) bc.onclick = () => chamar("/consultar", {identificador: document.getElementById("ident").value});
+    const br = document.getElementById("b-rep"); if (br) br.onclick = () => chamar("/reposicao", {});
+    document.getElementById("b-canc").onclick = () => chamar("/cancelar", {});
+  } else if (E.estado === "PRESCRICAO") {
+    const pac = E.paciente ? `<div class="card" style="margin-bottom:10px"><b>${esc(E.paciente.nome)}</b> · Leito ${esc(E.paciente.leito)} · ${esc(E.paciente.mascara)}${E.modo === "contingencia" ? " · <b>CONTINGÊNCIA</b>" : ""}</div>` : "";
+    const lista = E.itens.map(i => `<div class="item"><div><div class="nome">${esc(i.descricao)}</div>
+        <div>${locais(i)} ${i.posologia ? `<small>${esc(i.posologia)}</small>` : ""}</div></div>
+        <div class="grande" style="margin:0;font-size:26px">${i.qtd_retirar}<small style="font-size:15px;color:var(--mut)">/${i.qtd_prescrita}</small></div></div>`).join("");
+    const pode = E.itens.some(i => i.disponivel && i.qtd_retirar > 0);
+    T.innerHTML = `${msg}${pac}<div class="card">${lista}</div>
+      <div class="acoes"><button id="b-lib" ${pode && E.energia_rede ? "" : "disabled"}>🔓 Liberar porta</button><button class="sec" id="b-canc">Cancelar</button></div>`;
+    document.getElementById("b-lib").onclick = () => chamar("/liberar", {});
+    document.getElementById("b-canc").onclick = () => chamar("/cancelar", {});
+  } else if (E.estado === "LIBERADO") {
+    T.innerHTML = `<div class="centro">${msg}<div class="grande" style="font-size:44px">🔓 Abra a porta agora</div></div>`;
+  } else if (E.estado === "PORTA_ABERTA") {
+    const lista = E.modo === "reposicao" ? `<div class="grande">Abasteça os compartimentos e feche a porta</div>` :
+      `<div class="card">${E.itens.filter(i => i.qtd_retirar > 0).map(i => `<div class="item"><div><div class="nome">${esc(i.descricao)}</div>${locais(i)}</div>
+        <div class="grande" style="margin:0">${i.qtd_retirar}</div></div>`).join("")}</div>`;
+    T.innerHTML = `${rec}${msg}${lista}<div class="centro" style="margin-top:10px;color:var(--mut)">${E.gravando ? "📷 Gravando as câmeras" : "⚠ Câmeras sem gravar"}</div>`;
+  } else if (E.estado === "CONFIRMACAO") {
+    if (E.modo === "reposicao") {
+      if (!Object.keys(qtd).length) E.estoque_reposicao.forEach(e => qtd[e.compartimento + "|" + e.item] = 0);
+      T.innerHTML = `${rec}${msg}<div class="card"><table><tr><th>Compartimento</th><th>Item</th><th>Saldo</th><th>Repostos</th></tr>
+        ${E.estoque_reposicao.map(e => { const k = e.compartimento + "|" + e.item; return `<tr><td>${esc(e.compartimento_nome)}</td><td>${esc(e.item_nome)}</td>
+          <td>${e.quantidade}</td><td><div class="qtd"><button class="sec" data-k="${k}" data-d="-1">−</button><span id="q-${k}">${qtd[k]}</span>
+          <button class="sec" data-k="${k}" data-d="1">+</button><button class="sec" data-k="${k}" data-d="10">+10</button></div></td></tr>`; }).join("")}</table></div>
+        <div class="acoes"><button id="b-conf">Registrar reposição</button></div>`;
+    } else {
+      if (!Object.keys(qtd).length) E.itens.forEach(i => qtd[i.codigo] = i.qtd_retirar);
+      T.innerHTML = `${rec}${msg}<div class="card">${E.itens.map(i => `<div class="item"><div><div class="nome">${esc(i.descricao)}</div>
+          <small>Prescrito: ${i.qtd_prescrita} · Saldo: ${i.saldo}</small></div>
+          <div class="qtd"><button class="sec" data-k="${i.codigo}" data-d="-1" data-max="${i.saldo}">−</button><span id="q-${i.codigo}">${qtd[i.codigo]}</span>
+          <button class="sec" data-k="${i.codigo}" data-d="1" data-max="${i.saldo}">+</button></div></div>`).join("")}</div>
+        <div class="acoes"><button id="b-conf">✔ Confirmar retirada</button></div>`;
+    }
+    T.querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
+      const k = b.dataset.k, max = b.dataset.max ? +b.dataset.max : 9999;
+      qtd[k] = Math.max(0, Math.min(max, qtd[k] + (+b.dataset.d)));
+      document.getElementById("q-" + k).textContent = qtd[k];
+    });
+    document.getElementById("b-conf").onclick = async () => { const q = qtd; const r = await chamar("/confirmar", {quantidades: q}); if (r) qtd = {}; };
+  }
+  if (E.estado !== "CONFIRMACAO") qtd = {};
+  T.querySelectorAll("[data-tecla]").forEach(b => b.onclick = () => tecla(b.dataset.tecla, b.dataset.alvo));
+}
+
+let campoFoco = null;
+document.addEventListener("focusin", e => { if (e.target.tagName === "INPUT") campoFoco = e.target; });
+function tecla(k, alvo) {
+  const el = alvo === "auto" ? (campoFoco || document.getElementById("mat")) : document.getElementById(alvo);
+  if (!el) return;
+  if (k === "⌫") el.value = el.value.slice(0, -1);
+  else if (k === "OK") {
+    if (alvo === "ident") document.getElementById("b-cons")?.click();
+    else if (el.id === "mat") document.getElementById("sen").focus();
+    else entrar();
+  } else el.value += k;
+  el.focus();
+}
+// Botões de simulação: só aparecem com o Mega simulado (python -m app --sim)
+function simulacao() {
+  const P = document.getElementById("sim");
+  if (!E || !E.simulado) { P.style.display = "none"; return; }
+  P.style.display = "flex";
+  if (P.dataset.feito) return;
+  P.dataset.feito = "1";
+  P.innerHTML = `<b>Simulação da porta:</b>
+    <button class="sec" data-sim="d1">Digital da Ana (1)</button><button class="sec" data-sim="d2">Digital do Lucas (2)</button>
+    <button class="sec" data-sim="erro">Senha errada</button><button class="sec" data-sim="abre">Abrir porta</button>
+    <button class="sec" data-sim="fecha">Fechar porta</button><button class="sec" data-sim="quente">Baia a 9 °C</button>`;
+  P.querySelectorAll("[data-sim]").forEach(b => b.onclick = () => {
+    const k = b.dataset.sim;
+    if (k === "d1" || k === "d2") chamar("/sim/autenticar", {mega_id: k === "d1" ? 1 : 2});
+    else if (k === "erro") chamar("/sim/autenticar", {mega_id: 1, metodo: "senha", senha: "0000"});
+    else if (k === "abre" || k === "fecha") chamar("/sim/porta", {aberta: k === "abre"});
+    else fetch(API + "/sim/temperatura", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({baia: 9.0})});
+  });
+}
+
+async function atualizar() {
+  try { const r = await fetch(API + "/estado"); if (r.ok) { const novo = await r.json();
+    const mudou = !E || novo.estado !== E.estado; E = novo; if (mudou) erro = ""; desenhar(mudou); simulacao(); } } catch (e) {}
+  document.getElementById("ft-hora").textContent = new Date().toLocaleString("pt-BR");
+}
+setInterval(atualizar, 400);
+atualizar();
+</script>
+</body>
+</html>

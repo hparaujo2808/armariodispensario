@@ -5,3 +5,10 @@ matplotlib==3.11.2
 # Testes
 pytest==9.1.1
 PyYAML==6.0.3
+# App do notebook (python -m app)
+fastapi==0.160.0
+uvicorn==0.54.0
+httpx==0.28.1
+pyserial==3.5
+# Câmeras (opcional no modo --sim)
+opencv-python==4.12.0.88

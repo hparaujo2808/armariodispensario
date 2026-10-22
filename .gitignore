@@ -10,3 +10,6 @@ Thumbs.db
 desktop.ini
 referencias_externas/
 __pycache__/
+dados/
+dados_sim/
+.claude/

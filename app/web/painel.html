@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel do Dispensário</title>
+<style>
+  :root { --bg:#f5f7f9; --card:#fff; --tx:#1d2733; --mut:#5d6b7a; --pri:#0b6e4f; --err:#b42318; --warn:#b54708; --line:#dde3ea; --cold:#1f6feb; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--tx); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  header { display:flex; align-items:center; gap:16px; padding:12px 20px; background:var(--pri); color:#fff; flex-wrap:wrap; }
+  header b { font-size:18px; }
+  nav { display:flex; gap:4px; flex-wrap:wrap; }
+  nav button { background:transparent; color:#fff; border:1px solid rgba(255,255,255,.35); }
+  nav button.ativo { background:#fff; color:var(--pri); }
+  main { padding:18px 20px; max-width:1200px; margin:0 auto; }
+  button { font:inherit; border:0; border-radius:8px; padding:8px 14px; background:var(--pri); color:#fff; cursor:pointer; font-weight:600; }
+  button.sec { background:#e6ebf0; color:var(--tx); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; overflow:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--mut); font-weight:600; font-size:13px; }
+  .baixo { color:var(--err); font-weight:700; }
+  .frio { color:var(--cold); font-weight:700; }
+  input,select { font:inherit; padding:7px 9px; border:1px solid var(--line); border-radius:7px; }
+  .linha { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:10px; }
+  .linha label { display:flex; flex-direction:column; font-size:13px; color:var(--mut); gap:3px; }
+  .ok { color:var(--pri); font-weight:700; } .ruim { color:var(--err); font-weight:700; }
+  #login { max-width:360px; margin:60px auto; }
+  canvas { width:100%; height:260px; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:14px; }
+  .kpi { background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px; }
+  .kpi div:first-child { color:var(--mut); font-size:13px; } .kpi div:last-child { font-size:24px; font-weight:700; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#12171d; --card:#1b222b; --tx:#e6ebf0; --mut:#9aa7b4; --line:#2c3642; }
+    .kpi { background:var(--card); } button.sec { background:#2c3642; color:var(--tx); } input,select { background:#12171d; color:var(--tx); } }
+</style>
+</head>
+<body>
+<header><b>Painel do Dispensário</b><span id="disp"></span><nav id="nav" style="display:none"></nav><span id="quem" style="margin-left:auto"></span></header>
+<main id="m">
+  <div id="login" class="card">
+    <h3>Acesso (farmácia, logística, TI)</h3>
+    <div class="linha"><label>Matrícula<input id="lm"></label></div>
+    <div class="linha"><label>Senha<input id="ls" type="password"></label></div>
+    <button id="bl">Entrar</button> <span id="le" class="ruim"></span>
+  </div>
+</main>
+<script>
+let TOK = sessionStorage.getItem("tok"), PERFIL = sessionStorage.getItem("perfil");
+const fmt = t => t ? new Date(t * 1000).toLocaleString("pt-BR") : "";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function api(rota, metodo = "GET", corpo) {
+  const r = await fetch("/api" + rota, { method: metodo, headers: { "Authorization": "Bearer " + TOK, "Content-Type": "application/json" },
+    body: corpo ? JSON.stringify(corpo) : undefined });
+  if (r.status === 401) { sessionStorage.clear(); location.reload(); }
+  const d = await r.json(); if (!r.ok) throw new Error(d.detail || r.status); return d;
+}
+function tabela(cols, linhas) {
+  return `<table><tr>${cols.map(c => `<th>${c[0]}</th>`).join("")}</tr>${linhas.map(l => `<tr>${cols.map(c => `<td>${c[1](l)}</td>`).join("")}</tr>`).join("")}</table>`;
+}
+const ABAS = {
+  "Estoque": async () => {
+    const d = await api("/estoque"), n = await api("/notificacoes");
+    return `<div class="kpis"><div class="kpi"><div>Itens abaixo do mínimo</div><div class="${d.abaixo_minimo.length ? "baixo" : ""}">${d.abaixo_minimo.length}</div></div>
+      <div class="kpi"><div>Notificações</div><div>${n.length}</div></div><div class="kpi"><div>Posições ocupadas</div><div>${d.estoque.length}</div></div></div>
+      ${n.length ? `<div class="card"><h3>Notificações</h3>${tabela([["Data", x => fmt(x.ts)], ["Tipo", x => esc(x.tipo)], ["Mensagem", x => esc(x.mensagem)],
+        ["", x => `<button class="sec" onclick="lida(${x.id})">Marcar lida</button>`]], n)}</div>` : ""}
+      <div class="card"><h3>Estoque por compartimento (RF08)</h3>${tabela([["Compartimento", x => esc(x.compartimento_nome) + (x.climatizado ? ' <span class="frio">❄</span>' : "")],
+        ["Item", x => esc(x.item_nome)], ["Saldo", x => `<span class="${x.quantidade <= x.estoque_minimo ? "baixo" : ""}">${x.quantidade} ${esc(x.unidade)}</span>`],
+        ["Mínimo", x => x.estoque_minimo]], d.estoque)}</div>`;
+  },
+  "Retiradas": async () => {
+    const f = window._f || {}; const q = new URLSearchParams();
+    if (f.desde) q.set("desde", new Date(f.desde).getTime() / 1000); if (f.ate) q.set("ate", new Date(f.ate).getTime() / 1000 + 86399);
+    if (f.item) q.set("item", f.item); if (f.tipo) q.set("tipo", f.tipo);
+    const m = await api("/movimentos?" + q);
+    return `<div class="card"><div class="linha"><label>De<input type="date" id="fd" value="${f.desde || ""}"></label><label>Até<input type="date" id="fa" value="${f.ate || ""}"></label>
+      <label>Item (código)<input id="fi" value="${esc(f.item || "")}"></label><label>Tipo<select id="ft"><option value="">todos</option>
+      ${["retirada","reposicao","ajuste"].map(t => `<option ${f.tipo === t ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+      <button onclick="window._f={desde:fd.value,ate:fa.value,item:fi.value,tipo:ft.value};abrir('Retiradas')">Filtrar</button>
+      <button class="sec" onclick="csv()">Exportar CSV</button></div>
+      ${tabela([["Data/hora", x => fmt(x.ts)], ["Tipo", x => x.tipo], ["Usuário", x => esc(x.usuario_nome || "-")], ["Item", x => esc(x.item_nome || x.item)],
+        ["Compart.", x => x.compartimento], ["Qtd", x => x.quantidade], ["Saldo após", x => x.saldo_apos], ["Paciente (pseudônimo)", x => esc(x.paciente_ref || "")],
+        ["Prescrição", x => esc(x.prescricao_id || "")]], m)}</div>`;
+  },
+  "Temperatura": async () => {
+    const t = await api("/temperaturas?horas=24");
+    setTimeout(() => grafico(t), 0);
+    const f = v => v == null ? "—" : v.toFixed(1);
+    return `<div class="kpis"><div class="kpi"><div>Baia fria</div><div class="frio">${f(t.atual.baia)} °C</div></div>
+      <div class="kpi"><div>Cooler 1 / 2</div><div>${f(t.atual.cooler1)} / ${f(t.atual.cooler2)} °C</div></div>
+      <div class="kpi"><div>Peltier 1 / 2</div><div>${t.atual.peltier1 ? "ligada" : "desligada"} / ${t.atual.peltier2 ? "ligada" : "desligada"}</div></div>
+      <div class="kpi"><div>12 V</div><div>${t.atual.v12 ? t.atual.v12.toFixed(1) + " V" : "—"}</div></div></div>
+      <div class="card"><h3>Últimas 24 h (faixa ${t.faixa[0]}–${t.faixa[1]} °C)</h3><canvas id="cv" width="1100" height="260"></canvas></div>`;
+  },
+  "Auditoria": async () => {
+    const v = await api("/auditoria/verificar"), a = await api("/auditoria");
+    return `<div class="card">Integridade da trilha (HMAC encadeado): ${v.integra ? `<span class="ok">ÍNTEGRA</span> — ${v.registros} registros` :
+      `<span class="ruim">ADULTERADA a partir do registro ${v.primeiro_invalido}</span>`}</div>
+      <div class="card">${tabela([["#", x => x.id], ["Data/hora", x => fmt(x.ts)], ["Evento", x => esc(x.tipo)], ["Usuário", x => x.usuario_id ?? ""],
+        ["Sessão", x => esc(x.sessao_id || "")], ["Dados", x => `<code>${esc(JSON.stringify(x.dados)).slice(0, 140)}</code>`],
+        ["Mídia", x => x.midia.map(m => `<a href="#" onclick="verMidia('${esc(m.arquivo)}');return false">📷</a>`).join(" ")]], a)}</div>`;
+  },
+  "Configuração": async () => {
+    const it = await api("/itens"), cp = await api("/compartimentos"), es = await api("/estoque");
+    return `<div class="card"><h3>Item (RF10)</h3><div class="linha"><label>Código<input id="ic"></label><label>Nome<input id="inome" size="30"></label>
+      <label>Unidade<input id="iu" value="un" size="4"></label><label>Mínimo<input id="im" type="number" value="0" style="width:80px"></label>
+      <label>Refrigerado<select id="ir"><option value="0">não</option><option value="1">sim</option></select></label>
+      <button onclick="salvarItem()">Salvar item</button></div>
+      <h3>Alocar item em compartimento (RF12 validado)</h3><div class="linha"><label>Compartimento<select id="ac">${cp.map(c => `<option value="${c.id}">${esc(c.nome)}${c.climatizado ? " ❄" : ""}</option>`).join("")}</select></label>
+      <label>Item<select id="ai">${it.map(i => `<option value="${i.codigo}">${esc(i.nome)}${i.requer_refrigeracao ? " ❄" : ""}</option>`).join("")}</select></label>
+      <button onclick="alocar()">Alocar</button><span id="ce" class="ruim"></span></div></div>
+      <div class="card"><h3>Itens cadastrados</h3>${tabela([["Código", x => esc(x.codigo)], ["Nome", x => esc(x.nome)], ["Un.", x => esc(x.unidade)],
+        ["Refrigerado", x => x.requer_refrigeracao ? '<span class="frio">sim</span>' : "não"], ["Mínimo", x => x.estoque_minimo]], it)}</div>
+      <div class="card"><h3>Contingência (MV indisponível)</h3><button class="sec" onclick="conting(true)">Habilitar</button> <button class="sec" onclick="conting(false)">Desabilitar</button></div>`;
+  },
+  "Usuários": async () => {
+    const u = await api("/usuarios");
+    return `<div class="card"><h3>Novo usuário</h3><div class="linha"><label>Matrícula<input id="um"></label><label>Nome<input id="un" size="28"></label>
+      <label>Perfil<select id="up"><option>enfermagem</option><option>farmacia</option><option>logistica</option><option>admin</option></select></label>
+      <label>Senha do painel (opcional)<input id="us" type="password"></label><button onclick="criarUsuario()">Criar</button><span id="ue" class="ruim"></span></div></div>
+      <div class="card">${tabela([["Matrícula", x => esc(x.matricula)], ["Nome", x => esc(x.nome)], ["Perfil", x => x.perfil],
+        ["ID na porta", x => x.mega_id ?? "—"], ["Digital", x => x.digital_slot ?? "—"], ["Ativo", x => x.ativo ? "sim" : "não"],
+        ["", x => `<button class="sec" onclick="senhaPorta(${x.id})">Senha da porta</button> <button class="sec" onclick="digital(${x.id})">Cadastrar digital</button> <button class="sec" onclick="ativar(${x.id},${x.ativo ? "false" : "true"})">${x.ativo ? "Desativar" : "Ativar"}</button>`]], u)}</div>`;
+  },
+};
+const PERM = { farmacia: ["Estoque","Retiradas","Temperatura","Auditoria","Configuração","Usuários"], logistica: ["Estoque","Retiradas","Temperatura"],
+  admin: Object.keys(ABAS) };
+async function abrir(nome) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("ativo", b.textContent === nome));
+  try { document.getElementById("m").innerHTML = await ABAS[nome](); } catch (e) { document.getElementById("m").innerHTML = `<div class="card ruim">${esc(e.message)}</div>`; }
+}
+async function lida(id) { await api(`/notificacoes/${id}/lida`, "POST"); abrir("Estoque"); }
+async function salvarItem() { try { await api("/itens", "PUT", {codigo: ic.value, nome: inome.value, unidade: iu.value, estoque_minimo: +im.value, requer_refrigeracao: ir.value === "1"}); abrir("Configuração"); } catch (e) { ce.textContent = e.message; } }
+async function alocar() { try { await api("/alocacoes", "POST", {compartimento: ac.value, item: ai.value}); abrir("Configuração"); } catch (e) { ce.textContent = e.message; } }
+async function conting(a) { await api("/contingencia", "POST", {ativo: a}); alert("Contingência " + (a ? "habilitada" : "desabilitada")); }
+async function criarUsuario() { try { await api("/usuarios", "POST", {matricula: um.value, nome: un.value, perfil: up.value, senha: us.value || null}); abrir("Usuários"); } catch (e) { ue.textContent = e.message; } }
+async function digital(id) { try { await api(`/usuarios/${id}/digital`, "POST"); alert("Cadastro iniciado: o usuário encosta o dedo no leitor da porta, tira e encosta de novo (o LCD mostra os passos)."); } catch (e) { alert(e.message); } abrir("Usuários"); }
+async function senhaPorta(id) { const s = prompt("Senha da porta (4 a 8 dígitos). Fica guardada só como hash, no Arduino:"); if (!s) return; try { const r = await api(`/usuarios/${id}/senha_porta`, "POST", {senha: s}); alert("Pronto: na porta, este usuário digita " + r.mega_id + " # e a senha #"); } catch (e) { alert(e.message); } abrir("Usuários"); }
+async function ativar(id, a) { await api(`/usuarios/${id}/ativo`, "POST", {ativo: a}); abrir("Usuários"); }
+async function verMidia(arq) {
+  const r = await fetch("/api/midia/" + arq, { headers: { "Authorization": "Bearer " + TOK } });
+  if (!r.ok) { alert("mídia indisponível (expurgada pela política de retenção?)"); return; }
+  window.open(URL.createObjectURL(await r.blob()));
+}
+async function csv() {
+  const m = await api("/movimentos"); const cab = ["ts","tipo","usuario_nome","item","compartimento","quantidade","saldo_apos","paciente_ref","prescricao_id"];
+  const txt = [cab.join(";")].concat(m.map(x => cab.map(c => c === "ts" ? fmt(x.ts) : (x[c] ?? "")).join(";"))).join("\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + txt], {type: "text/csv"})); a.download = "movimentos.csv"; a.click();
+}
+function grafico(t) {
+  const c = document.getElementById("cv"); if (!c) return; const g = c.getContext("2d"), W = c.width, H = c.height, P = 36;
+  const h = t.historico.filter(x => x.frio != null); g.clearRect(0, 0, W, H);
+  if (h.length < 2) { g.fillStyle = "#888"; g.fillText("Sem dados suficientes ainda", P, H / 2); return; }
+  const t0 = h[0].ts, t1 = h[h.length - 1].ts, ymin = Math.min(0, ...h.map(x => x.frio)), ymax = Math.max(12, ...h.map(x => x.frio));
+  const X = ts => P + (W - 2 * P) * (ts - t0) / Math.max(1, t1 - t0), Y = v => H - P - (H - 2 * P) * (v - ymin) / (ymax - ymin);
+  g.fillStyle = "rgba(11,110,79,.10)"; g.fillRect(P, Y(t.faixa[1]), W - 2 * P, Y(t.faixa[0]) - Y(t.faixa[1]));
+  g.strokeStyle = "#1f6feb"; g.lineWidth = 2; g.beginPath(); h.forEach((x, i) => i ? g.lineTo(X(x.ts), Y(x.frio)) : g.moveTo(X(x.ts), Y(x.frio))); g.stroke();
+  g.fillStyle = "#888"; g.font = "12px system-ui"; [ymin, t.faixa[0], t.faixa[1], ymax].forEach(v => g.fillText(v.toFixed(0) + " °C", 2, Y(v) + 4));
+}
+async function iniciar() {
+  const s = await (await fetch("/api/status")).json(); document.getElementById("disp").textContent = `${s.dispensario} · ${s.setor}`;
+  if (!TOK) { document.getElementById("bl").onclick = async () => {
+      const r = await fetch("/api/auth/token", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({matricula: lm.value, senha: ls.value})});
+      const d = await r.json(); if (!r.ok) { le.textContent = d.detail; return; }
+      sessionStorage.setItem("tok", d.token); sessionStorage.setItem("perfil", d.perfil); sessionStorage.setItem("nome", d.nome); location.reload(); }; return; }
+  document.getElementById("quem").innerHTML = `${esc(sessionStorage.getItem("nome"))} <button class="sec" onclick="sessionStorage.clear();location.reload()">Sair</button>`;
+  const nav = document.getElementById("nav"); nav.style.display = "flex";
+  nav.innerHTML = PERM[PERFIL].map(a => `<button>${a}</button>`).join(""); nav.querySelectorAll("button").forEach(b => b.onclick = () => abrir(b.textContent));
+  abrir(PERM[PERFIL][0]);
+}
+iniciar();
+</script>
+</body>
+</html>
