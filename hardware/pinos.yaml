@@ -65,7 +65,7 @@ pinos:
 
   # --- frio e energia -----------------------------------------------------------
   - {nome: ONEWIRE, pino: 4, modo: barramento, liga_em: "DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V", cabo: sensores,
-     nota: "Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço"}
+     nota: "Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço. Até ~2 m de cabo"}
   - {nome: MEDE_12V, pino: A0, modo: analogico, grupo: medicao, liga_em: "Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND)", cabo: jumper,
      nota: "12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia"}
 
@@ -81,9 +81,9 @@ alimentacao_mega:
 
 # Cabos (o caminho físico está em docs/LIGACOES.md)
 cabos:
-  porta_1: {tipo: "cabo de rede 1 (8 fios)", vai: "porta -> Mega"}
-  porta_2: {tipo: "cabo de rede 2 (8 fios)", vai: "porta -> Mega"}
-  porta_3: {tipo: "cabo de rede 3 (8 fios, 3 sobrando)", vai: "porta -> Mega"}
-  reed: {tipo: "fio do próprio MC-38 + emenda de 0,5 mm²", vai: "batente da porta -> Mega"}
-  sensores: {tipo: "cabos dos DS18B20 (90 cm) + conector de alavanca", vai: "baia fria e coolers -> Mega"}
-  jumper: {tipo: "jumper macho-fêmea", vai: "dentro do vão de trás"}
+  porta_1: {tipo: "cabo de rede 1 (8 fios)", vai: "porta -> dobradiça -> caixa da eletrônica"}
+  porta_2: {tipo: "cabo de rede 2 (8 fios)", vai: "porta -> dobradiça -> caixa da eletrônica"}
+  porta_3: {tipo: "cabo de rede 3 (8 fios, 3 sobrando)", vai: "porta -> dobradiça -> caixa da eletrônica"}
+  reed: {tipo: "fio do próprio MC-38 + emenda de 0,5 mm²", vai: "lateral direita -> por fora -> caixa da eletrônica"}
+  sensores: {tipo: "cabos dos DS18B20 (90 cm) + emenda de 0,5 mm²", vai: "baia fria e coolers -> lateral esquerda por fora -> caixa da eletrônica"}
+  jumper: {tipo: "jumper macho-fêmea", vai: "dentro da caixa da eletrônica, no tampo"}

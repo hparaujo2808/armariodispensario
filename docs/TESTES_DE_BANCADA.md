@@ -83,7 +83,7 @@ Relé 1 com a trava e o diodo D3 (faixa no +). Multímetro em série na escala d
 
 ## Passo 7 — Uma Peltier com cooler, na mesa (2 minutos)
 
-Pastilha montada **fora do armário**: cooler + pasta + pastilha + pasta + espaçador + pasta + dissipador frio com a ventoinha, apertados pela prensa. Ventoinha do cooler girando **antes** de ligar a pastilha. DS18B20 (ou termômetro de cozinha) na base do cooler e outro no dissipador frio. Multímetro em série (10 A).
+Pastilha montada **fora do armário** (antes de ir para a lateral): cooler + pasta + pastilha + pasta + espaçador + pasta + dissipador frio com a ventoinha, apertados pela prensa. Ventoinha do cooler girando **antes** de ligar a pastilha. DS18B20 (ou termômetro de cozinha) na base do cooler e outro no dissipador frio. Multímetro em série (10 A).
 
 | # | O que medir | Esperado | Medido | Se der diferente |
 |---|---|---|---|---|
@@ -100,7 +100,8 @@ Repetir para a segunda pastilha.
 |---|---|---|---|---|
 | 8.1 | Firmware: simular sensor do cooler a 61 °C (comando de teste da Fase 3) | Relés 2 e 3 desligam, alarme no LCD | | Corrigir o firmware |
 | 8.2 | Firmware: desligar o fio de dados dos DS18B20 | Peltier desligadas, alarme de sensor | | Corrigir o firmware |
-| 8.3 | **Não** testar o fusível térmico queimando: ele não volta. Basta conferir a continuidade (0.3) e que está bem preso na base do cooler | — | | |
+| 8.3 | **Não** testar o fusível térmico queimando: ele não volta. Conferir a continuidade (0.3), que a luva de crimpar não sai puxando com a mão e que ele está encostado na base do cooler | — | | |
+| 8.4 | Intertravamento: pedir abertura da trava com as duas Peltier ligadas | Relés 2 e 3 desligam antes do relé 1 ligar; voltam depois (segunda Peltier 2 s após a primeira) | | Corrigir o firmware |
 
 ## Passo 9 — Tudo junto no armário, 30 minutos
 
@@ -110,8 +111,8 @@ Baia fria montada e fechada com a tampa isolada. Porta do armário fechada. Ambi
 |---|---|---|---|---|
 | 9.1 | Corrente total no F1 com as duas Peltier ligadas | 5,5 a 7,0 A [calc] | | Acima de 8 A: desligar e procurar a carga errada |
 | 9.2 | Temperatura da baia em 30 min | Cai pelo menos 10 K [calc aproximado: ~1000 J/K de massa fria e ~10 W líquidos dão ~0,6 K/min] | | Caiu menos de 5 K: isolamento com fresta, tampa mal vedada ou pastilha invertida |
-| 9.3 | Base dos coolers em 30 min | Abaixo de 50 °C [calc ~48 °C a 32 °C de ambiente] | | Acima de 55 °C: falta ar. Conferir os furos de entrada e saída e se há algo embaixo dos coolers |
-| 9.4 | Ar saindo pelos furos de cima do traseiro | Morno, nunca quente | | |
+| 9.3 | Base dos coolers em 30 min | Abaixo de 50 °C [calc ~46 °C a 32 °C de ambiente] | | Acima de 55 °C: falta ar. Conferir se a ventoinha sopra para cima e se nada tampa a grade do berço |
+| 9.4 | Ar saindo por cima dos coolers | Morno, nunca quente | | |
 | 9.5 | Deixar mais 30–60 min | A baia chega a 5 °C e as Peltier começam a ligar e desligar (histerese 4–6 °C) | | Não chega a 6 °C em 90 min com ambiente abaixo de 28 °C: refazer as contas com os valores medidos |
 
 ## Passo 10 — Queda de energia (RNF07.1)

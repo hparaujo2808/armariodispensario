@@ -1,14 +1,15 @@
-"""Furos feitos à mão nas peças já cortadas, calculados a partir do config.py
-da V2.3 e das decisões em docs/DECISOES.md. Também confere se algum furo
-cai em cima de rasgo, prateleira, nervura, borda ou outro furo.
+"""Furos feitos à mão nas peças já montadas, calculados a partir do config.py
+da V2.3 e de hardware/layout.py. Também confere se algum furo cai em cima de
+prateleira, nervura, corrediça, borda ou outro furo.
 
     python hardware/furos.py
 
-Coordenadas olhando o armário DE FRENTE, a partir do canto externo de baixo à
-esquerda, em mm: X para a direita, Y da frente para o fundo, Z para cima.
-- Laterais: posição em Y (distância da frente) e Z (altura).
-- Fundo falso e traseiro: posição em X e Z. Furando o traseiro por trás, a
-  medida a partir da borda esquerda de quem está atrás é 880 − X.
+Pior caso: armário todo colado. Por isso só há furos nas duas laterais, feitos
+POR FORA com os gabaritos cortados a laser (Fase 5). Nenhum furo no fundo
+falso nem no traseiro.
+
+Coordenadas na face de fora de cada lateral: Y = distância da borda da frente,
+Z = altura a partir de baixo (a lateral encosta na mesa).
 """
 from __future__ import annotations
 
@@ -16,68 +17,57 @@ import math
 import os
 import sys
 
-RAIZ = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, os.path.join(RAIZ, "armario", "gerador"))
-sys.path.insert(0, os.path.join(RAIZ, "calculos"))
-import config as c  # noqa: E402
+sys.path.insert(0, os.path.dirname(__file__))
+import layout as L  # noqa: E402
 
-T = c.MATERIAL_T
+c = L.c
+T = L.T
 
-# Faixas que um furo não pode tocar, por peça: (nome, eixo1 min, max, eixo2 min, max)
-# Laterais: eixo1 = Y, eixo2 = Z. Fundo falso e traseiro: eixo1 = X, eixo2 = Z.
-_rasgos_ff = [z for z in (c.TETO_GAV_Z, c.PRAT2_Z, c.PRAT1_Z, c.PCAM_Z)]
+_prateleiras = [c.TETO_GAV_Z, c.PRAT2_Z, c.PRAT1_Z, c.PCAM_Z]
+_nervuras = [(z - c.NERVURA_H, z) for z in (c.PRAT2_Z[0], c.PRAT1_Z[0], c.PCAM_Z[0])]
+_nerv_y = [c.SHELF_DEPTH * (i + 0.5) / c.N_NERVURAS_POR_PRATELEIRA for i in range(c.N_NERVURAS_POR_PRATELEIRA)]
+
+# O que está colado ou preso na face de DENTRO de cada lateral: (nome, y0, y1, z0, z1)
+_comum = ([(f"prateleira em Z {z0:.0f}", 0, c.SHELF_DEPTH, z0, z1) for z0, z1 in _prateleiras]
+          + [(f"nervura Y {y:.0f} Z {z0:.0f}", y - T / 2, y + T / 2, z0, z1) for y in _nerv_y for z0, z1 in _nervuras]
+          + [("fundo falso", c.FALSE_BACK_Y0, c.FALSE_BACK_Y1, 0, c.EXT_H),
+             ("traseiro", c.BACK_Y0, c.BACK_Y1, 0, c.EXT_H)])
 PROIBIDO = {
-    "fundo falso": [(f"rasgo da prateleira em Z {z0:.0f}", T, c.EXT_W - T, z0 - 1, z1 + 1) for z0, z1 in _rasgos_ff],
-    "lateral esquerda": [(f"prateleira em Z {z0:.0f}", 0, c.SHELF_DEPTH, z0, z1) for z0, z1 in _rasgos_ff]
-                        + [("fundo falso", c.FALSE_BACK_Y0, c.FALSE_BACK_Y1, 0, c.EXT_H)],
-    "traseiro": [],
+    "lateral esquerda": _comum + [(f"corrediça Z {a:.0f}–{b:.0f}", 3, 3 + c.DRAWER_SLIDE_LEN, a, b)
+                                  for a, b in L.faixas_corredicas()],
+    # perfil do dispensador colado na face interna da LAT_D (até 333 mm de altura)
+    "lateral direita": _comum + [("perfil do dispensador", 0, c.SHELF_DEPTH, 0, 334)],
 }
-PROIBIDO["lateral direita"] = PROIBIDO["lateral esquerda"]
-LIMITES = {  # (eixo1 min, max, eixo2 min, max) da peça, já descontando as peças vizinhas
-    "lateral esquerda": (0, c.EXT_D, c.BASE_Z[1], c.TOP_Z[0]),
-    "lateral direita": (0, c.EXT_D, c.BASE_Z[1], c.TOP_Z[0]),
-    "fundo falso": (T, c.EXT_W - T, c.BASE_Z[1], c.TOP_Z[0]),
-    "traseiro": (T, c.EXT_W - T, c.BASE_Z[1], c.TOP_Z[0]),
-}
+LIMITES = {p: (0, c.EXT_D, c.BASE_Z[1], c.TOP_Z[0]) for p in PROIBIDO}
 BORDA_MIN = 8.0
-ALMA_MIN = 10.0
-
-# Rotas de cabo por dentro das prateleiras: não podem cruzar as nervuras.
-NERVURAS_Z = [(z - c.NERVURA_H, z) for z in (c.PRAT2_Z[0], c.PRAT1_Z[0], c.PCAM_Z[0])]
+ALMA_MIN = 8.0
 
 
 def furos() -> list[dict]:
-    from vao_de_tras import X_PELTIER, Z_PELTIER   # mesma posição usada no cálculo dos coolers
     lista = []
 
-    def add(peca, a, b, diam, para, quadrado=False):
-        lista.append(dict(peca=peca, a=a, b=b, d=diam, para=para, quadrado=quadrado))
+    def add(peca, y, z, d, para, quadrado=False, ignora=()):
+        lista.append(dict(peca=peca, a=y, b=z, d=d, para=para, quadrado=quadrado, ignora=ignora))
 
-    # cabos da porta: 3 cabos de rede, um por furo, abaixo das nervuras da Prateleira 1
-    for z in (560.0, 580.0, 600.0):
-        add("lateral esquerda", 28.0, z, 10, "cabo de rede da porta (um por furo)")
-        add("fundo falso", 20.0, z, 10, "cabo de rede da porta (um por furo)")
-    # trava e reed (mesma rota pela lateral direita)
-    add("fundo falso", 860.0, 580.0, 10, "fios da trava e do reed")
-    # Peltier: furo quadrado de 40 mm e 4 furos da prensa (barra roscada M3) em volta
-    for x in X_PELTIER:
-        add("fundo falso", x, Z_PELTIER, 40, f"Peltier em X {x:.0f} (quadrado 40 × 40)", quadrado=True)
-        for dx in (-35, 35):
-            for dz in (-35, 35):
-                add("fundo falso", x + dx, Z_PELTIER + dz, 3.5, "prensa da Peltier (M3)")
-    # sensor da baia e fios das ventoinhas frias, entre as duas Peltier, em cima
-    add("fundo falso", (X_PELTIER[0] + X_PELTIER[1]) / 2, Z_PELTIER + 55, 10, "DS18B20 da baia e ventoinhas frias")
-    # câmera interna (cabo com plugue USB passa por furo de 38 mm)
-    add("fundo falso", 840.0, 460.0, 38, "cabo USB da câmera interna")
-    add("traseiro", 840.0, 460.0, 38, "cabo USB da câmera interna")
-    # cabo de força perto da fonte (fonte no lado direito do vão, em cima da base)
-    add("traseiro", 840.0, 28.0, 10, "cabo de força")
-    # ventilação (calculos/vao_de_tras.py)
-    for x in (75.0, 135.0, 215.0, 275.0):
-        for z in (164.0, 218.0):
-            add("traseiro", x, z, 38, "entrada de ar dos coolers")
-        for z in (382.0, 436.0):
-            add("traseiro", x, z, 38, "saída de ar dos coolers")
+    E, D = "lateral esquerda", "lateral direita"
+    for i, y in enumerate(L.PELTIER_Y, 1):
+        add(E, y, L.PELTIER_Z, L.FURO_PELTIER, f"Peltier {i} (quadrado)", quadrado=True)
+        for dy in (-L.PRENSA_DY, L.PRENSA_DY):
+            add(E, y + dy, L.PELTIER_Z, L.FURO_M3, f"prensa da Peltier {i} (M3)")
+        for dy in L.SUPORTE_PARAFUSOS_DY:
+            for z in L.SUPORTE_PARAFUSOS_Z:
+                add(E, y + dy, z, L.FURO_M4, f"suporte do cooler {i} (M4)")
+    y, z, d = L.FURO_FIOS_BAIA
+    add(E, y, z, d, "fios do DS18B20 da baia e das ventoinhas frias")
+    for z in (100.0, 185.0, 440.0, 600.0, 720.0, 840.0):
+        add(E, L.BLOCO_DOB_PARAFUSO_Y, z, L.FURO_M4, "bloco da dobradiça (M4)")
+
+    for dy in L.TRAVA_FUROS_DY:
+        add(D, dy, L.TRAVA_Z, L.FURO_M4, "fixação da trava (M4) [medir na trava]")
+    y, z, d = L.FURO_FIOS_TRAVA
+    add(D, y, z, d, "fios da trava e do reed")
+    y, z, d = L.CAMERA_INTERNA
+    add(D, y, z, d, "cabo USB da câmera interna (plugue passa)")
     return lista
 
 
@@ -93,40 +83,30 @@ def conferir(lista=None) -> list[str]:
         a0, a1, b0, b1 = _caixa(f)
         lim = LIMITES[f["peca"]]
         if a0 - lim[0] < BORDA_MIN or lim[1] - a1 < BORDA_MIN or b0 - lim[2] < BORDA_MIN or lim[3] - b1 < BORDA_MIN:
-            erros.append(f"{f['peca']} ({f['a']:.0f}, {f['b']:.0f}): menos de {BORDA_MIN:.0f} mm da borda útil")
+            erros.append(f"{f['peca']} (Y {f['a']:.0f}, Z {f['b']:.0f}): menos de {BORDA_MIN:.0f} mm da borda")
         for nome, p0, p1, q0, q1 in PROIBIDO[f["peca"]]:
             if a0 < p1 and a1 > p0 and b0 < q1 and b1 > q0:
-                erros.append(f"{f['peca']} ({f['a']:.0f}, {f['b']:.0f}) Ø{f['d']}: cai em {nome}")
+                erros.append(f"{f['peca']} (Y {f['a']:.0f}, Z {f['b']:.0f}) Ø{f['d']}: cai em {nome}")
     for i, f in enumerate(lista):
         for g in lista[i + 1:]:
             if f["peca"] != g["peca"]:
                 continue
             if f["quadrado"] or g["quadrado"]:
-                fa = _caixa(f)
-                ga = _caixa(g)
+                fa, ga = _caixa(f), _caixa(g)
                 gap = max(ga[0] - fa[1], fa[0] - ga[1], ga[2] - fa[3], fa[2] - ga[3])
             else:
                 gap = math.dist((f["a"], f["b"]), (g["a"], g["b"])) - (f["d"] + g["d"]) / 2
             if gap < ALMA_MIN:
-                erros.append(f"{f['peca']}: furos em ({f['a']:.0f}, {f['b']:.0f}) e ({g['a']:.0f}, {g['b']:.0f}) "
-                             f"com {gap:.0f} mm de MDF entre eles")
-    # rotas pelas laterais (Z do cabo) não cruzam nervuras
-    for z in (560.0, 580.0, 600.0, 470.0):
-        for z0, z1 in NERVURAS_Z:
-            if z0 - 5 < z < z1 + 5:
-                erros.append(f"rota de cabo a Z {z:.0f} cruza nervuras ({z0:.0f}–{z1:.0f})")
+                erros.append(f"{f['peca']}: furos em (Y {f['a']:.0f}, Z {f['b']:.0f}) e (Y {g['a']:.0f}, Z {g['b']:.0f}) "
+                             f"com {gap:.1f} mm de MDF entre eles")
     return erros
 
 
 def bloco_markdown() -> str:
-    linhas = ["| Peça | Posição | Tamanho | Para | Como medir |", "|---|---|---|---|---|"]
-    como = {"lateral esquerda": "Y da frente, Z da base", "lateral direita": "Y da frente, Z da base",
-            "fundo falso": "X da esquerda, Z da base, olhando de frente",
-            "traseiro": "X da esquerda olhando de frente (por trás: 880 − X), Z da base"}
+    linhas = ["| Lateral | Y (da frente) | Z (de baixo) | Tamanho | Para |", "|---|---:|---:|---|---|"]
     for f in furos():
-        eixo = "Y" if f["peca"].startswith("lateral") else "X"
-        tam = f"{f['d']:g} × {f['d']:g} mm" if f["quadrado"] else f"Ø {f['d']:g} mm".replace(".", ",")
-        linhas.append(f"| {f['peca']} | {eixo} {f['a']:.0f} · Z {f['b']:.0f} | {tam} | {f['para']} | {como[f['peca']]} |")
+        tam = f"{f['d']:g} × {f['d']:g} mm (quadrado)" if f["quadrado"] else f"Ø {f['d']:g} mm"
+        linhas.append(f"| {f['peca']} | {f['a']:.0f} | {f['b']:.0f} | {tam.replace('.', ',')} | {f['para']} |")
     return "\n".join(linhas)
 
 

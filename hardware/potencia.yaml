@@ -1,4 +1,7 @@
 # Fonte única da fiação de potência (12 V, 5 V dos relés e GND).
+# Fonte, fusíveis, relés, LM2596 e conectores ficam na caixa da eletrônica,
+# em cima do tampo. Peltier e ventoinhas dos coolers ficam por fora da lateral
+# esquerda; os fios sobem pela lateral até a caixa (~1,2 m).
 #
 #   python hardware/gerar.py   -> tabela de trechos e bitolas do docs/LIGACOES.md
 #                                 e docs/diagrama-potencia.svg
@@ -13,8 +16,8 @@ fusiveis:
   F1: {corrente_a: 10, tipo: "vidro 5x20 rápido, porta-fusível de meio de fio", onde: "logo no + da fonte"}
   F2: {corrente_a: 2, tipo: "vidro 5x20 rápido, porta-fusível de meio de fio", onde: "saída do barramento +12 V para o ramo fino",
        nota: "Se a bobina da trava medir ~6 Ω (2 A), trocar por fusível de 4 A"}
-  TF1: {corrente_a: 10, temperatura_c: 85, tipo: "fusível térmico, não rearmável", onde: "na base do cooler 1, com pasta térmica e abraçadeira de metal"}
-  TF2: {corrente_a: 10, temperatura_c: 85, tipo: "fusível térmico, não rearmável", onde: "na base do cooler 2"}
+  TF1: {corrente_a: 10, temperatura_c: 85, tipo: "fusível térmico, não rearmável", onde: "encostado na base do cooler 1 (pasta térmica, termo-retrátil no corpo, abraçadeira de metal); terminais emendados por luva de crimpar, sem solda"}
+  TF2: {corrente_a: 10, temperatura_c: 85, tipo: "fusível térmico, não rearmável", onde: "igual ao TF1, no cooler 2"}
 
 # Pontos de emenda (conectores de alavanca). No máximo 3 fios por conector de 3 vias.
 nos:
@@ -35,7 +38,8 @@ trechos:
   - {id: b12_rele2, de: "B12", para: "COM do relé 2", bitola_mm2: 1.5, corrente_a: 3.23, origem: "[calc] 3,05 + 0,18", protegido_por: F1}
   - {id: rele2_p1, de: "NA do relé 2", para: "P1", bitola_mm2: 1.5, corrente_a: 3.23, origem: "[calc]", protegido_por: F1}
   - {id: p1_tf1, de: "P1", para: "TF1", bitola_mm2: 1.5, corrente_a: 3.05, origem: "[calc] 12 V / 3,93 Ω", protegido_por: F1}
-  - {id: tf1_peltier1, de: "TF1", para: "Peltier 1 (+, vermelho)", bitola_mm2: 0, corrente_a: 3.05, origem: "[calc]", protegido_por: F1}
+  - {id: tf1_peltier1, de: "TF1", para: "Peltier 1 (+, vermelho)", bitola_mm2: 0, corrente_a: 3.05, origem: "[calc]", protegido_por: F1,
+     nota: "Queda nos 1,2 m de ida e volta em 1,5 mm²: 0,08 V [calc 2 × 0,0172 × 1,2 / 1,5 × 3,05]"}
   - {id: peltier1_gnd, de: "Peltier 1 (−, preto)", para: "GND (parafuso V− 1 da fonte)", bitola_mm2: 1.5, corrente_a: 3.05, origem: "[calc]", protegido_por: F1}
   - {id: p1_vf1, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s", de: "P1", para: "Ventoinha fria 1 (+)", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds] Eletrogate 180 mA", protegido_por: F1}
   - {id: vf1_gnd, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s", de: "Ventoinha fria 1 (−)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}

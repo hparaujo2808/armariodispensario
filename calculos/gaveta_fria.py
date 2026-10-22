@@ -50,14 +50,15 @@ PONTES = 1.25
 R_QUENTE = 0.35         # cooler de torre com ventoinha [est]
 R_FRIO = 1.2            # dissipador 65x46x24 + ventoinha 60 mm [est]
 LADO_ESPACADOR = 0.0381  # barra quadrada de 1 1/2"
-PROF_FRIO = 45.0        # mm ocupados no fundo pelo dissipador frio + ventoinha
+PROF_FRIO = 45.0        # mm ocupados pelo dissipador frio + ventoinha (na parede esquerda da baia)
+AR_QUENTE_ACIMA = 0.0   # K: coolers do lado de fora, no ar da sala (antes, vão de trás fechado: +2 K)
 FOLGA_BANDEJA = 3.0     # mm de folga da bandeja contra o isolamento, por lado
 PAREDE_BANDEJA = c.MATERIAL_T
 
 # ---- baias possíveis (medidas do config.py da V2.3) --------------------------
-# Z da baia: de 201 (logo acima da gaveta de baixo, que vai até 200) ao teto
-# do gaveteiro (399). Ver docs/AUDITORIA.md, seção 2.
-Z0, Z1 = 201.0, c.GAVETEIRO_Z[1]
+# Z da baia: do piso novo (205, acima da gaveta A2, que vai até 199,8, com
+# folga) ao teto do gaveteiro (399). Ver docs/DECISOES.md, 1.1.
+Z0, Z1 = 205.0, c.GAVETEIRO_Z[1]
 BAIAS = {
     "C2 (coluna C, em cima)": (c.COL_C_W, Z1 - Z0, c.SHELF_DEPTH),
     "A3+A4 (coluna A, em cima)": (c.COL_A_W, Z1 - Z0, c.SHELF_DEPTH),
@@ -69,7 +70,7 @@ def geometria(w, h, d, t):
     a_in = 2 * (wi * hi + wi * di + hi * di) / 1e6
     a_out = 2 * (w * h + w * d + h * d) / 1e6
     folga = 2 * (FOLGA_BANDEJA + PAREDE_BANDEJA)
-    bandeja = (wi - folga, hi - folga, di - PROF_FRIO - folga)   # medidas internas da bandeja
+    bandeja = (wi - PROF_FRIO - folga, hi - folga, di - folga)   # medidas internas da bandeja
     vol = max(bandeja[0], 0) * max(bandeja[1], 0) * max(bandeja[2], 0) / 1e6
     return dict(wi=wi, hi=hi, di=di, a_med=math.sqrt(a_in * a_out), bandeja=bandeja, vol_l=vol)
 
@@ -100,7 +101,7 @@ def equilibrio(g, t, t_amb, n=1):
     """Menor temperatura interna sustentável com n Peltier 100% ligadas,
     cada uma com seu cooler quente e seu dissipador frio."""
     r_frio = R_FRIO + r_espacador(t) + R_PASTA
-    t_ar_quente = t_amb + 2.0      # ar do vão de trás ventilado
+    t_ar_quente = t_amb + AR_QUENTE_ACIMA
     lo, hi = -30.0, t_amb
     for _ in range(60):
         t_in = (lo + hi) / 2

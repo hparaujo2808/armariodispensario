@@ -1,6 +1,8 @@
 # Ligações
 
-Como cada peça se liga e por onde passa cada fio dentro do armário. Vale para a arquitetura decidida em 22/10 (`docs/DECISOES.md`): Mega + notebook, baia fria na coluna A (no lugar de A3 e A4), duas TEC1-12703 com cooler.
+Como cada peça se liga e por onde passa cada fio. Vale para a arquitetura decidida em 22/10 (`docs/DECISOES.md`): Mega + notebook, baia fria na coluna A (no lugar de A3 e A4), duas TEC1-12703 atravessando a lateral esquerda com os coolers do lado de fora, e eletrônica numa caixa em cima do tampo.
+
+**Pior caso de montagem:** o armário pode estar todo colado. Nada aqui exige desmontar ou recortar peça cortada; todos os furos são nas laterais, feitos por fora com gabarito. O vão de trás não é usado.
 
 **De onde vêm as tabelas.** As tabelas de pinos, de potência e de furos são **geradas**:
 - pinos: `hardware/pinos.yaml`
@@ -21,13 +23,13 @@ O teste `pytest tests/test_pinos.py` falha se este documento, o `pinos.h` do fir
 
 | Lugar | O que fica lá |
 |---|---|
-| Porta (por dentro, numa caixa traseira) | LCD 16x2 com o potenciômetro de contraste e o resistor da luz de fundo, teclado 4x4, leitor de digital AS608, buzzer passivo |
-| Tampo, em cima, na frente, no meio | Webcam externa, olhando para quem está no teclado. O cabo vai por fora até o notebook, sem furo |
-| Lateral direita, por dentro, na frente | Trava (Z ~600) e reed do sensor de porta (Z ~560). O ímã do reed e o batente ficam na porta (Fase 5) |
-| Lateral direita, por dentro, Z ~470 | Webcam interna, olhando para as gavetas |
-| Coluna A, metade de cima (Z 201 a 399) | Baia fria: EPS de 50 mm, bandeja, 2 dissipadores frios com ventoinha, DS18B20 da baia |
-| Vão de trás, lado esquerdo (X 48 a 302, Z 238 a 336) | Os 2 coolers Hyper 212, com o fusível térmico e um DS18B20 na base de cada um. **Abaixo deles, até a base, nada**: é por onde o ar entra |
-| Vão de trás, lado direito (X > 450) | Fonte (deitada na base), placa de MDF colada no fundo falso com o Mega, o módulo de relés, o LM2596, os fusíveis F1 e F2 e os conectores de alavanca |
+| Porta | LCD 16x2, teclado 4x4, leitor de digital AS608 e buzzer passivo, com os fios correndo no canal interno da porta até a dobradiça (Fase 5) |
+| Tampo, na frente, no meio | Webcam externa, olhando para quem está no teclado. O cabo vai por fora até o notebook |
+| Tampo, atrás | **Caixa da eletrônica**: fonte, F1, F2, módulo de relés, LM2596, Mega e conectores de alavanca |
+| Lateral direita, por dentro, na frente | Trava (Z 600) e reed do sensor de porta (Z 560, num taquinho de MDF que leva o reed até a borda da frente). O ímã e o batente ficam na porta (Fase 5) |
+| Lateral direita, por dentro, Z 460 | Webcam interna, olhando para as gavetas |
+| Coluna A, metade de cima (Z 205 a 399) | Baia fria: EPS de 50 mm, bandeja, 2 dissipadores frios com ventoinha, DS18B20 da baia, bandejinhas da água |
+| Lateral esquerda, por fora | Dobradiça (no bloco de reforço, junto da frente); os 2 coolers Hyper 212 nos berços (Y 98 a 392, Z 238 a 336), cada um com fusível térmico e DS18B20 na base |
 | Fora do armário | Notebook (USB do Mega e das 2 webcams) |
 
 ## 2. Diagramas
@@ -65,7 +67,7 @@ O Mega é alimentado **pela USB do notebook**. O Vin fica sem nada. O módulo de
 | 32 | `PINO_TECLADO_C2` | entrada com pull-up, ativo em baixo | Coluna 2 (pino 6) | cabo de rede 1 (8 fios) |  |
 | 34 | `PINO_TECLADO_C3` | entrada com pull-up, ativo em baixo | Coluna 3 (pino 7) | cabo de rede 1 (8 fios) |  |
 | 36 | `PINO_TECLADO_C4` | entrada com pull-up, ativo em baixo | Coluna 4 (pino 8) | cabo de rede 1 (8 fios) |  |
-| 4 | `PINO_ONEWIRE` | 1-Wire | DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V | cabos dos DS18B20 (90 cm) + conector de alavanca | Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço |
+| 4 | `PINO_ONEWIRE` | 1-Wire | DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V | cabos dos DS18B20 (90 cm) + emenda de 0,5 mm² | Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço. Até ~2 m de cabo |
 | A0 | `PINO_MEDE_12V` | analógica | Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND) | jumper macho-fêmea | 12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia |
 
 | Do Mega | Liga em | Cabo | Observação |
@@ -96,7 +98,7 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 | `b12_rele2` | B12 | COM do relé 2 | 1,5 mm² | 3,23 A [calc] 3,05 + 0,18 | 10 A | F1 |  |
 | `rele2_p1` | NA do relé 2 | P1 | 1,5 mm² | 3,23 A [calc] | 10 A | F1 |  |
 | `p1_tf1` | P1 | TF1 | 1,5 mm² | 3,05 A [calc] 12 V / 3,93 Ω | 10 A | F1 |  |
-| `tf1_peltier1` | TF1 | Peltier 1 (+, vermelho) | do próprio componente | 3,05 A [calc] | — | F1 |  |
+| `tf1_peltier1` | TF1 | Peltier 1 (+, vermelho) | do próprio componente | 3,05 A [calc] | — | F1 | Queda nos 1,2 m de ida e volta em 1,5 mm²: 0,08 V [calc 2 × 0,0172 × 1,2 / 1,5 × 3,05] |
 | `peltier1_gnd` | Peltier 1 (−, preto) | GND (parafuso V− 1 da fonte) | 1,5 mm² | 3,05 A [calc] | 10 A | F1 |  |
 | `p1_vf1` | P1 | Ventoinha fria 1 (+) | 0,5 mm² | 0,18 A [ds] Eletrogate 180 mA | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s |
 | `vf1_gnd` | Ventoinha fria 1 (−) | GND | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s |
@@ -127,8 +129,8 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 |---|---|---|---|
 | F1 | 10 A | vidro 5x20 rápido, porta-fusível de meio de fio | logo no + da fonte |
 | F2 | 2 A | vidro 5x20 rápido, porta-fusível de meio de fio | saída do barramento +12 V para o ramo fino. Se a bobina da trava medir ~6 Ω (2 A), trocar por fusível de 4 A |
-| TF1 | 10 A, abre a 85 °C | fusível térmico, não rearmável | na base do cooler 1, com pasta térmica e abraçadeira de metal |
-| TF2 | 10 A, abre a 85 °C | fusível térmico, não rearmável | na base do cooler 2 |
+| TF1 | 10 A, abre a 85 °C | fusível térmico, não rearmável | encostado na base do cooler 1 (pasta térmica, termo-retrátil no corpo, abraçadeira de metal); terminais emendados por luva de crimpar, sem solda |
+| TF2 | 10 A, abre a 85 °C | fusível térmico, não rearmável | igual ao TF1, no cooler 2 |
 
 | Diodo | Tipo | Entre | Por quê |
 |---|---|---|---|
@@ -146,95 +148,92 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 | V5 | 5,0 V do LM2596 para o módulo de relés |
 <!-- /gerado:potencia -->
 
-### Como montar os barramentos (sem solda)
+### Como montar os barramentos (sem solda), dentro da caixa da eletrônica
 
 1. **+12 V (B12).** Fonte V+ → porta-fusível F1 → conector de alavanca de 3 vias. Daí, conectores de 3 vias em cadeia, ligados entre si por pedaços de fio de 1,5 mm². Cada conector recebe no máximo 3 fios. Do B12 saem os COM dos relés 2 e 3 (1,5 mm²), o F2 (1,5 mm²) e o divisor do 12 V.
 2. **Ramo fino (T12).** Saída do F2 → conector de 3 vias com as duas ventoinhas dos coolers → segundo conector com o COM do relé 1 e o IN+ do LM2596.
 3. **GND.** As Peltier voltam direto nos parafusos V− da fonte (um parafuso para cada). Todo o resto (ventoinhas, trava, LM2596, diodos) vai para uma cadeia de conectores de 3 vias, ligada no terceiro parafuso V− por fio de 1,5 mm².
 4. **GND do Mega.** **Um** jumper do GND do Mega ao GND do módulo de relés, e só ele. O 5 V do Mega não se liga a nada do lado de 12 V.
 5. **Ventoinhas dos coolers** (conector de 4 pinos): pino 1 = GND (preto), pino 2 = +12 V (amarelo ou vermelho). Os pinos 3 e 4 ficam soltos; sem sinal de PWM, a ventoinha gira no máximo. Encaixe um jumper fêmea em cada pino e leve a ponta macho até o conector de alavanca.
+6. **Fusível térmico:** os dois terminais vão para os fios por **luva de emenda crimpada** (alicate de crimpar), nunca solda.
 
 ## 5. Cabos e caminhos
 
+Tudo corre por fora do armário, preso com abraçadeiras em bases adesivas, até a caixa da eletrônica no tampo.
+
 | Cabo | Liga | Caminho |
 |---|---|---|
-| Cabos de rede 1, 2 e 3 | Porta → Mega | Saem da caixa traseira da porta pelo canal interno da porta (Fase 5) até a dobradiça. Laço de folga de 15 cm por fora. Entram pelos 3 furos de 10 mm da lateral esquerda (Y 28, Z 560/580/600). Correm presos na face interna da lateral esquerda, em Z ~580, até o fundo falso. **Em Z 580 ficam abaixo das nervuras da Prateleira 1**, que começam em 624. Passam pelos 3 furos de 10 mm do fundo falso (X 20) e seguem pelo alto do vão de trás até a placa de eletrônica, à direita |
-| Trava e reed | Lateral direita → relé 1 e pino 3 | Pela face interna da lateral direita, em Z ~580, até o furo de 10 mm do fundo falso (X 860). Diodo D3 nos terminais da trava |
-| Webcam interna | → notebook | Pela lateral direita em Z ~470 (abaixo das nervuras da Prateleira 2, que começam em 492,7). Furo de 38 mm no fundo falso (X 840, Z 460), atravessa o vão, furo de 38 mm no traseiro, notebook |
-| USB do Mega | Mega → notebook | Sai pelo mesmo furo de 38 mm do traseiro (X 840, Z 460) |
+| Cabos de rede 1, 2 e 3 | Porta → caixa da eletrônica | Canal interno da porta até a dobradiça. Laço de folga de 15 cm na dobradiça, por fora. Sobem pela quina da frente-esquerda até o tampo e vão até a caixa |
+| Peltier, ventoinhas e DS18B20 dos coolers | Coolers → caixa | Sobem pela face de fora da lateral esquerda, atrás dos coolers (Y ~450), até o tampo |
+| DS18B20 da baia e ventoinhas frias | Baia → caixa | Furo de 10 mm na lateral esquerda entre os coolers (Y 245, Z 300); depois sobem junto com os fios dos coolers |
+| Trava e reed | Lateral direita → caixa | Por dentro, pela face da lateral direita, até o furo de 10 mm (Y 40, Z 580). Depois sobem por fora da lateral direita até o tampo. Diodo D3 nos terminais da trava |
+| Webcam interna | → notebook | Furo de 38 mm na lateral direita (Y 60, Z 460); o plugue USB passa pelo furo |
+| USB do Mega | Caixa → notebook | Direto |
 | Webcam externa | Tampo → notebook | Por fora, sem furo |
-| Sensores | DS18B20 → pino 4 | O da baia passa pelo furo de 10 mm do fundo falso entre as Peltier (X 175, Z 355), junto com os fios das ventoinhas frias. Os dos coolers ficam presos na base de cada cooler com abraçadeira de metal. Os 3 cabos se juntam num conector de alavanca por cor (vermelho, preto, amarelo), com o resistor de 4,7 kΩ entre o amarelo e o vermelho |
-| Peltier | Relés 2 e 3 → pastilhas | Só no vão de trás. Fusível térmico emendado com conector de alavanca, sem solda |
-| Tomada | → fonte | Furo de 10 mm no traseiro (X 840, Z 28), embaixo à direita, perto da fonte |
+| Tomada | → caixa | Pela traseira da caixa, com passa-fio |
+
+## 6. Furos para fazer à mão
+
+Todos nas duas laterais, **pela face de fora**, com o armário montado. As posições são marcadas com os gabaritos cortados a laser (Fase 5), que se apoiam na mesa e na borda da frente da lateral.
+- Os quadrados de 41 mm das Peltier: broca de 10 mm nos 4 cantos de dentro do quadrado e estilete pela janela do gabarito.
+- Os furos redondos: broca do diâmetro indicado. O de 38 mm, com a serra copo.
 
 ## 6. Furos para fazer à mão
 
 Todos em peças já cortadas: só furos, sem recortar contorno. Os dois furos quadrados de 40 mm das Peltier são feitos com broca nos cantos e estilete, pela frente, com a gaveta tirada. Os de 38 mm, com a serra copo da lista antiga.
 
 <!-- gerado:furos -->
-| Peça | Posição | Tamanho | Para | Como medir |
-|---|---|---|---|---|
-| lateral esquerda | Y 28 · Z 560 | Ø 10 mm | cabo de rede da porta (um por furo) | Y da frente, Z da base |
-| fundo falso | X 20 · Z 560 | Ø 10 mm | cabo de rede da porta (um por furo) | X da esquerda, Z da base, olhando de frente |
-| lateral esquerda | Y 28 · Z 580 | Ø 10 mm | cabo de rede da porta (um por furo) | Y da frente, Z da base |
-| fundo falso | X 20 · Z 580 | Ø 10 mm | cabo de rede da porta (um por furo) | X da esquerda, Z da base, olhando de frente |
-| lateral esquerda | Y 28 · Z 600 | Ø 10 mm | cabo de rede da porta (um por furo) | Y da frente, Z da base |
-| fundo falso | X 20 · Z 600 | Ø 10 mm | cabo de rede da porta (um por furo) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 860 · Z 580 | Ø 10 mm | fios da trava e do reed | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 110 · Z 300 | 40 × 40 mm | Peltier em X 110 (quadrado 40 × 40) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 75 · Z 265 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 75 · Z 335 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 145 · Z 265 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 145 · Z 335 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 240 · Z 300 | 40 × 40 mm | Peltier em X 240 (quadrado 40 × 40) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 205 · Z 265 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 205 · Z 335 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 275 · Z 265 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 275 · Z 335 | Ø 3,5 mm | prensa da Peltier (M3) | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 175 · Z 355 | Ø 10 mm | DS18B20 da baia e ventoinhas frias | X da esquerda, Z da base, olhando de frente |
-| fundo falso | X 840 · Z 460 | Ø 38 mm | cabo USB da câmera interna | X da esquerda, Z da base, olhando de frente |
-| traseiro | X 840 · Z 460 | Ø 38 mm | cabo USB da câmera interna | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 840 · Z 28 | Ø 10 mm | cabo de força | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 75 · Z 164 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 75 · Z 218 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 75 · Z 382 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 75 · Z 436 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 135 · Z 164 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 135 · Z 218 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 135 · Z 382 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 135 · Z 436 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 215 · Z 164 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 215 · Z 218 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 215 · Z 382 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 215 · Z 436 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 275 · Z 164 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 275 · Z 218 | Ø 38 mm | entrada de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 275 · Z 382 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
-| traseiro | X 275 · Z 436 | Ø 38 mm | saída de ar dos coolers | X da esquerda olhando de frente (por trás: 880 − X), Z da base |
+| Lateral | Y (da frente) | Z (de baixo) | Tamanho | Para |
+|---|---:|---:|---|---|
+| lateral esquerda | 160 | 300 | 41 × 41 mm (quadrado) | Peltier 1 (quadrado) |
+| lateral esquerda | 125 | 300 | Ø 3,5 mm | prensa da Peltier 1 (M3) |
+| lateral esquerda | 195 | 300 | Ø 3,5 mm | prensa da Peltier 1 (M3) |
+| lateral esquerda | 105 | 102 | Ø 4,5 mm | suporte do cooler 1 (M4) |
+| lateral esquerda | 105 | 200 | Ø 4,5 mm | suporte do cooler 1 (M4) |
+| lateral esquerda | 215 | 102 | Ø 4,5 mm | suporte do cooler 1 (M4) |
+| lateral esquerda | 215 | 200 | Ø 4,5 mm | suporte do cooler 1 (M4) |
+| lateral esquerda | 330 | 300 | 41 × 41 mm (quadrado) | Peltier 2 (quadrado) |
+| lateral esquerda | 295 | 300 | Ø 3,5 mm | prensa da Peltier 2 (M3) |
+| lateral esquerda | 365 | 300 | Ø 3,5 mm | prensa da Peltier 2 (M3) |
+| lateral esquerda | 275 | 102 | Ø 4,5 mm | suporte do cooler 2 (M4) |
+| lateral esquerda | 275 | 200 | Ø 4,5 mm | suporte do cooler 2 (M4) |
+| lateral esquerda | 385 | 102 | Ø 4,5 mm | suporte do cooler 2 (M4) |
+| lateral esquerda | 385 | 200 | Ø 4,5 mm | suporte do cooler 2 (M4) |
+| lateral esquerda | 245 | 300 | Ø 10 mm | fios do DS18B20 da baia e das ventoinhas frias |
+| lateral esquerda | 22 | 100 | Ø 4,5 mm | bloco da dobradiça (M4) |
+| lateral esquerda | 22 | 185 | Ø 4,5 mm | bloco da dobradiça (M4) |
+| lateral esquerda | 22 | 440 | Ø 4,5 mm | bloco da dobradiça (M4) |
+| lateral esquerda | 22 | 600 | Ø 4,5 mm | bloco da dobradiça (M4) |
+| lateral esquerda | 22 | 720 | Ø 4,5 mm | bloco da dobradiça (M4) |
+| lateral esquerda | 22 | 840 | Ø 4,5 mm | bloco da dobradiça (M4) |
+| lateral direita | 12 | 600 | Ø 4,5 mm | fixação da trava (M4) [medir na trava] |
+| lateral direita | 42 | 600 | Ø 4,5 mm | fixação da trava (M4) [medir na trava] |
+| lateral direita | 40 | 580 | Ø 10 mm | fios da trava e do reed |
+| lateral direita | 60 | 460 | Ø 38 mm | cabo USB da câmera interna (plugue passa) |
 <!-- /gerado:furos -->
 
 ## 7. Montagem da Peltier (cada uma das duas)
 
-Da baia para o vão de trás:
+De dentro da baia para fora:
 
 1. **Dissipador frio** 65 × 46 × 24 com a ventoinha de 60 mm, aletas para dentro da baia.
 2. Pasta térmica.
-3. **Espaçador** de alumínio 38,1 × 38,1 × 50 mm, atravessando o EPS do fundo da baia por um furo quadrado no EPS.
+3. **Espaçador** de alumínio 38,1 × 38,1 × 50 mm, atravessando o EPS da parede esquerda por um furo quadrado no EPS.
 4. Pasta térmica.
-5. **Pastilha TEC1-12703** dentro do furo quadrado do fundo falso, com a face **fria** virada para a baia. Para saber qual é a face fria [medir]: ligue a pastilha por 2 s numa fonte de 5 V e veja qual lado esfria.
+5. **Pastilha TEC1-12703** dentro do furo quadrado da lateral, com a face **fria** virada para dentro. Para saber qual é a face fria [medir]: ligue a pastilha por 2 s numa fonte de 5 V e veja qual lado esfria.
 6. Pasta térmica.
-7. **Cooler Hyper 212**, base encostada na pastilha, heat pipes para trás, ventoinha embaixo soprando para cima. Fusível térmico e DS18B20 presos na base.
-8. **Prensa:** 4 barras roscadas M3 nos furos de 3,5 mm do fundo falso (±35 mm do centro). Atrás, uma barra chata de metal sobre a base do cooler. Na frente, uma placa de MDF de sobra sobre o dissipador frio. Apertar as porcas em cruz, meia volta de cada vez, até o conjunto não mexer. **Aperto demais quebra a cerâmica da pastilha.**
-9. **Apoio do cooler:** calço de MDF (2 camadas de sobra coladas) entre a borda de baixo do bloco de aletas e o fundo falso, sem tapar a ventoinha.
+7. **Cooler Hyper 212** do lado de fora: base na pastilha, heat pipes para fora, ventoinha **embaixo** soprando para cima, apoiado no berço já parafusado.
+8. **Prensa:** 2 barras roscadas M3 nos furos de 3,5 mm (Y ± 35 mm do centro). Por fora, uma barra chata sobre a base do cooler; por dentro, uma placa de MDF de sobra sobre o dissipador frio. Apertar as porcas alternando os lados, meia volta de cada vez, até o conjunto não mexer. **Aperto demais quebra a cerâmica da pastilha.**
+9. **Fusível térmico e DS18B20 do cooler:** encostados na base do cooler, com pasta térmica e abraçadeira de metal. O corpo do fusível vai coberto com termo-retrátil (ele é ligado a um dos terminais).
 
 ## 8. Ordem de montagem
 
-1. Fazer todos os furos da seção 6 com o armário vazio.
-2. Montar a baia fria: sarrafos, piso de MDF, EPS colado e emendas fechadas com fita metalizada.
-3. Montar as duas Peltier (seção 7). Testar cada uma em bancada antes, seguindo `docs/TESTES_DE_BANCADA.md`.
-4. Fixar a placa de eletrônica no vão de trás, à direita. Fonte deitada na base.
-5. Montar o +12 V e o GND (seção 4) **sem** ligar a fonte na tomada.
-6. Passar os cabos da porta e da trava.
-7. Seguir o roteiro de testes de bancada do primeiro passo ao último, antes de fechar o traseiro.
+1. Fazer todos os furos da seção 6 com os gabaritos, por fora.
+2. Montar os berços e parafusar na lateral esquerda.
+3. Montar a baia fria pela frente: taquinhos, piso, EPS colado (com entalhe onde passa corrediça) e emendas fechadas com fita metalizada.
+4. Testar cada Peltier na bancada antes de montar no armário (`docs/TESTES_DE_BANCADA.md`, passo 7). Depois montar as duas (seção 7).
+5. Montar a caixa da eletrônica e, dentro dela, o +12 V e o GND (seção 4), **sem** ligar a fonte na tomada.
+6. Passar os cabos da porta, da trava e dos coolers até a caixa.
+7. Seguir o roteiro de testes de bancada do primeiro passo ao último.
 
 Antes de ligar na tomada: `docs/SEGURANCA.md`.

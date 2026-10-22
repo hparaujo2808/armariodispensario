@@ -197,7 +197,7 @@ def svg_sinais(pinos: dict) -> str:
         g = p.get("grupo") or ("reles" if p["nome"].startswith("RELE") else p["cabo"])
         por_grupo.setdefault(g, []).append(p)
     grupos = list(por_grupo.items())
-    titulos = {"jumper": "Módulo de relés (vão de trás)", "reles": "Módulo de relés (vão de trás)",
+    titulos = {"jumper": "Módulo de relés (caixa da eletrônica)", "reles": "Módulo de relés (caixa da eletrônica)",
                "porta_1": "Teclado 4x4 (porta) · cabo de rede 1", "porta_2": "LCD 16x2 (porta) · cabo de rede 2",
                "porta_3": "AS608 e buzzer (porta) · cabo de rede 3", "reed": "Reed MC-38 (batente da porta)",
                "sensores": "3 × DS18B20 (baia fria e coolers)", "medicao": "Divisor 4,7 kΩ / 2,2 kΩ do +12 V"}

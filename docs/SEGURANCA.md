@@ -8,14 +8,16 @@ Marque cada item **toda vez** que mexer na fiação.
 
 - [ ] Fonte **desligada da tomada** enquanto se mexe em qualquer fio.
 - [ ] Chave 127/220 V da fonte na tensão da tomada (fonte colmeia; a fechada é automática).
-- [ ] Fonte colmeia: tampa de MDF ou acrílico **sobre o borne L/N/terra**, parafusada. Cabo de força preso por abraçadeira, para um puxão não arrancar os fios do borne. **Fio terra (verde ou verde-amarelo) ligado.**
+- [ ] Fonte colmeia: dentro da caixa da eletrônica, que é a tampa do borne L/N/terra. Cabo de força preso por abraçadeira na caixa, para um puxão não arrancar os fios do borne. **Fio terra (verde ou verde-amarelo) ligado.**
 - [ ] F1 (10 A) logo no + da fonte e F2 (2 A) no ramo fino, com fusível dentro.
 - [ ] Nenhum fio de 12 V encosta no Mega, nos pinos dele ou no LCD.
 - [ ] Cada conector de alavanca com a alavanca **fechada** e o fio descascado só o tamanho da janela (~11 mm). Puxar cada fio com a mão: não pode sair.
 - [ ] Diodos D1, D2 e D3 com a **faixa no +**.
 - [ ] Ventoinhas dos coolers ligadas direto no 12 V (T12), e não pelo relé.
-- [ ] Cada Peltier com cooler apertado, pasta térmica nas duas faces e fusível térmico preso na base do cooler.
-- [ ] Nada encostado embaixo dos coolers: é por onde entra o ar.
+- [ ] Cada Peltier com cooler apertado, pasta térmica nas duas faces e fusível térmico preso na base do cooler, com termo-retrátil no corpo e luvas crimpadas.
+- [ ] Cooler apoiado no berço (não pendurado só pela prensa da Peltier).
+- [ ] Nada encostado embaixo dos coolers nem em cima deles: o ar entra pela grade do berço e sai por cima.
+- [ ] Caixa da eletrônica fechada e parafusada antes de ligar a fonte na tomada (ela é a proteção dos terminais da fonte colmeia).
 - [ ] Medido com o multímetro em Ω: **B12 não está em curto com o GND** (passo 0.5 dos testes).
 - [ ] LM2596 já ajustado em 5,0 V, sem carga (passo 1.2).
 - [ ] Alguém olhando o armário nos primeiros 5 minutos. Extintor ou, no mínimo, saber onde está o disjuntor.
@@ -24,10 +26,11 @@ Marque cada item **toda vez** que mexer na fiação.
 
 | Parte | O que pode dar errado | Como o projeto evita | O que vocês fazem |
 |---|---|---|---|
-| Tomada e fonte | Choque nos 127/220 V do borne da fonte colmeia | Tampa sobre o borne; fonte fechada se a colmeia não chegou | Só mexer com a fonte fora da tomada |
+| Tomada e fonte | Choque nos 127/220 V do borne da fonte colmeia | Fonte dentro da caixa da eletrônica, com tampa parafusada; fonte fechada se a colmeia não chegou | Só abrir a caixa com a fonte fora da tomada |
 | Fiação de 12 V | Curto esquenta o fio e derrete a capa | F1 10 A protege os fios de 1,5 mm²; F2 2 A protege os de 0,5 mm² | Não trocar fusível por um maior. Nunca "fazer ponte" num fusível |
+| Coolers do lado de fora | Dedo na ventoinha; aletas mornas (~46 °C) | Grade do berço por baixo da ventoinha | Na banca, avisar para não encostar |
 | Peltier | Sem ventilação passa de 125 °C em minutos, queima e pode chamuscar o MDF | Ventoinha sempre ligada com a fonte; corte por software a 60 °C no cooler; fusível térmico a 85 °C em série | Nunca ligar sem o cooler preso e girando |
-| Baia fria | Condensação pinga na eletrônica | Toda a eletrônica fica no vão de trás, fora da baia; bandejinha com papel absorvente embaixo do dissipador frio | Conferir a bandejinha a cada teste longo |
+| Baia fria | Condensação pinga na eletrônica | Toda a eletrônica fica na caixa do tampo, fora e acima da baia; bandejinha com papel absorvente embaixo de cada dissipador frio | Conferir a bandejinha a cada teste longo |
 | Trava | Bobina esquenta se ficar ligada; porta presa se a eletrônica falhar | Firmware limita o tempo energizada; liberação mecânica de emergência (Fase 5) | Testar a liberação antes da banca |
 | Relés | Pulso ao ligar o Mega abriria a trava | Firmware põe a saída em HIGH antes de configurar o pino (passo 3 dos testes) | Repetir o passo 3 sempre que gravar firmware novo |
 | Mega e notebook | 12 V no 5 V do Mega queima o Mega e pode danificar a porta USB do notebook | 12 V e 5 V do Mega nunca no mesmo conector; terra num ponto só | Conferir com o multímetro antes de ligar a USB |
