@@ -79,8 +79,8 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 | 2 + 2 m | Cabo flexível 1,5 mm², vermelho e preto | As Peltier ficam a ~1,2 m da caixa da eletrônica | ~R$ 8 |
 | 2 m | Fita de espuma EVA adesiva (perfil de vedação de porta) | Vedação da tampa da baia fria e batentes da porta | ~R$ 10 |
 | 20 | Bases adesivas para abraçadeira | Prender os cabos por fora do armário até o tampo | ~R$ 15 |
-| 4 chapas | MDF 3 mm 1000 × 1000 + corte a laser (porta, caixa da eletrônica, berços, piso e tampa da baia, gabaritos, cupom de teste) | Fase 5. Quantidade exata sai do gerador; confirmar preço com o fornecedor que cortou a V2 | ~R$ 140 + corte |
-| | | **Subtotal estimado** | **~R$ 238** |
+| 5 chapas + sobra | MDF 3 mm 1000 × 1000 + corte a laser: CHAPA_24 a CHAPA_28 (porta, caixa da eletrônica, berços, piso e tampa da baia, gabaritos) e o cupom de teste (meia chapa ou sobra). Ver `armario/MANUAL_PORTA.md` | Fase 5. Confirmar preço com o fornecedor que cortou a V2 | ~R$ 175 + corte |
+| | | **Subtotal estimado** | **~R$ 273** |
 
 ## Condicionais (comprar só se for o caso)
 
@@ -96,12 +96,12 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 | | Valor |
 |---|---:|
 | Itens com preço conferido hoje (carrinhos 1 a 6) | **R$ 541,77** |
-| Itens estimados, sem link | ~R$ 238 |
-| **Total do que falta** | **~R$ 780 + fretes** |
+| Itens estimados, sem link | ~R$ 273 |
+| **Total do que falta** | **~R$ 815 + fretes** |
 | Se a fonte colmeia não chegou | + R$ 94,40 |
 | Se não houver segunda webcam | + R$ 66,61 |
 | Se precisar comprar o alicate | + R$ 78,90 |
-| **Pior caso (os três condicionais)** | **~R$ 1.020 + fretes** |
+| **Pior caso (os três condicionais)** | **~R$ 1.055 + fretes** |
 
 Para economizar frete: a Eletrogate fica em BH e entrega por moto. Antes de pagar a Usinainfo, vejam se a Eletrogate tem os mesmos itens (DS18B20, MC-38, conectores de alavanca) e juntem tudo num carrinho só.
 

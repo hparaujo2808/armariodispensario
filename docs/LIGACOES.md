@@ -26,7 +26,7 @@ O teste `pytest tests/test_pinos.py` falha se este documento, o `pinos.h` do fir
 | Porta | LCD 16x2, teclado 4x4, leitor de digital AS608 e buzzer passivo, com os fios correndo no canal interno da porta até a dobradiça (Fase 5) |
 | Tampo, na frente, no meio | Webcam externa, olhando para quem está no teclado. O cabo vai por fora até o notebook |
 | Tampo, atrás | **Caixa da eletrônica**: fonte, F1, F2, módulo de relés, LM2596, Mega e conectores de alavanca |
-| Lateral direita, por dentro, na frente | Trava (Z 600) e reed do sensor de porta (Z 560, num taquinho de MDF que leva o reed até a borda da frente). O ímã e o batente ficam na porta (Fase 5) |
+| Lateral direita, por dentro, na frente | Trava (Z 600, lingueta apontando para o meio do armário) e reed do sensor de porta (Z 560, 6 mm atrás da borda). O ímã fica na mata-junta da porta e o batente na face de dentro da porta (`armario/MANUAL_PORTA.md`) |
 | Lateral direita, por dentro, Z 460 | Webcam interna, olhando para as gavetas |
 | Coluna A, metade de cima (Z 205 a 399) | Baia fria: EPS de 50 mm, bandeja, 2 dissipadores frios com ventoinha, DS18B20 da baia, bandejinhas da água |
 | Lateral esquerda, por fora | Dobradiça (no bloco de reforço, junto da frente); os 2 coolers Hyper 212 nos berços (Y 98 a 392, Z 238 a 336), cada um com fusível térmico e DS18B20 na base |
@@ -163,7 +163,7 @@ Tudo corre por fora do armário, preso com abraçadeiras em bases adesivas, até
 
 | Cabo | Liga | Caminho |
 |---|---|---|
-| Cabos de rede 1, 2 e 3 | Porta → caixa da eletrônica | Canal interno da porta até a dobradiça. Laço de folga de 15 cm na dobradiça, por fora. Sobem pela quina da frente-esquerda até o tampo e vão até a caixa |
+| Cabos de rede 1, 2 e 3 | Porta → caixa da eletrônica | Canal no alto do miolo da porta; saem pela borda de cima da porta, a 22–48 mm da dobradiça. Laço de folga de 15 cm até o tampo e a caixa |
 | Peltier, ventoinhas e DS18B20 dos coolers | Coolers → caixa | Sobem pela face de fora da lateral esquerda, atrás dos coolers (Y ~450), até o tampo |
 | DS18B20 da baia e ventoinhas frias | Baia → caixa | Furo de 10 mm na lateral esquerda entre os coolers (Y 245, Z 300); depois sobem junto com os fios dos coolers |
 | Trava e reed | Lateral direita → caixa | Por dentro, pela face da lateral direita, até o furo de 10 mm (Y 40, Z 580). Depois sobem por fora da lateral direita até o tampo. Diodo D3 nos terminais da trava |
@@ -174,7 +174,7 @@ Tudo corre por fora do armário, preso com abraçadeiras em bases adesivas, até
 
 ## 6. Furos para fazer à mão
 
-Todos nas duas laterais, **pela face de fora**, com o armário montado. As posições são marcadas com os gabaritos cortados a laser (Fase 5), que se apoiam na mesa e na borda da frente da lateral.
+Todos nas duas laterais, **pela face de fora**, com o armário montado. Os gabaritos, o bloco da dobradiça, os berços e a caixa da eletrônica são cortados a laser (`armario/MANUAL_PORTA.md`). As posições são marcadas com os gabaritos cortados a laser (Fase 5), que se apoiam na mesa e na borda da frente da lateral.
 - Os quadrados de 41 mm das Peltier: broca de 10 mm nos 4 cantos de dentro do quadrado e estilete pela janela do gabarito.
 - Os furos redondos: broca do diâmetro indicado. O de 38 mm, com a serra copo.
 

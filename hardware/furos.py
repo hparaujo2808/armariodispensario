@@ -59,7 +59,7 @@ def furos() -> list[dict]:
                 add(E, y + dy, z, L.FURO_M4, f"suporte do cooler {i} (M4)")
     y, z, d = L.FURO_FIOS_BAIA
     add(E, y, z, d, "fios do DS18B20 da baia e das ventoinhas frias")
-    for z in (100.0, 185.0, 440.0, 600.0, 720.0, 840.0):
+    for z in L.BLOCO_DOB_PARAFUSOS_Z:
         add(E, L.BLOCO_DOB_PARAFUSO_Y, z, L.FURO_M4, "bloco da dobradiça (M4)")
 
     for dy in L.TRAVA_FUROS_DY:

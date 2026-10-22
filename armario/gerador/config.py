@@ -179,3 +179,101 @@ DISP_FOLGA_TRAS = 60.0      # vão livre entre a face de cima da pista e o TETO_
 DISP_LABIO = 35.0           # quanto o retentor sobe acima da face de cima da pista, na frente
 DISP_APOIO_H = 12.0         # altura das tiras de apoio da pista
 DISP_APOIO_L = 470.0        # comprimento das tiras de apoio
+
+
+# =====================================================================
+# v2.4 — PORTA e peças novas (Fase 5, 22/10/2026)
+# Coordenadas do armário: olhando de frente, X para a direita, Y para o fundo
+# (frente da caixa em Y = 0), Z para cima. Valores [ds] vêm do datasheet do
+# modelo escolhido (docs/DECISOES.md 1.6); [est]/[medir] devem ser conferidos
+# no cupom de teste (00_CUPOM_PORTA_CORTE.dxf) antes de cortar a porta.
+# =====================================================================
+PRIMEIRA_CHAPA_PORTA = 24
+
+# --- folgas e afastamentos ------------------------------------------------
+FRENTE_GAVETA_Y = 0.0          # [calc] frente das gavetas rente à caixa; MEDIR e ajustar (negativo = para fora)
+FOLGA_PORTA_GAVETA_MIN = 5.0   # folga mínima exigida entre a porta fechada e qualquer frente de gaveta
+AFASTAMENTO_PORTA = 8.0        # face da frente do bloco da dobradiça, à frente da caixa
+FOLGA_RECORTE = 0.3            # folga por lado nos recortes de componente (LCD, leitor, teclado)
+
+# --- dobradiça piano [ds Amazon B0FZLKCS2P] --------------------------------
+DOB_LARGURA_ABERTA = 25.0
+DOB_PASSO = 73.0               # furos intercalados: cada aba tem um furo a cada 73 mm
+DOB_FURO = 3.5                 # [medir] no cupom
+DOB_ABA_ESP = 1.0              # [est] medir no cupom
+DOB_FURO_DA_DOBRA = 7.0        # [est] distância do centro do pino ao centro dos furos
+DOB_COMPRIMENTO = 840.0
+DOB_Z0 = 20.0                  # ponta de baixo da dobradiça
+DOB_PRIMEIRO_FURO = 18.0       # [medir] corte a dobradiça para o 1º furo da aba do armário ficar aqui
+
+# --- bloco da dobradiça (3 camadas, na face de fora da LAT_E) ---------------
+BLOCO_DOB_CAMADAS = 3
+BLOCO_DOB_LARGURA = 45.0       # em Y, de −AFASTAMENTO até 37
+BLOCO_DOB_PARAFUSO_Y = 22.0    # parafusos M4 do bloco na LAT_E (Y em relação à frente)
+BLOCO_DOB_PARAFUSOS_Z = (100.0, 185.0, 440.0, 600.0, 720.0, 840.0)
+
+# --- porta (caixão: duas peles + montantes laminados + nervuras em pé) -----
+PORTA_W = 880.0
+PORTA_H = 876.0
+PORTA_Z0 = 2.0                 # folga da porta para a mesa
+PORTA_NUCLEO = 24.0            # altura das nervuras (miolo)
+PORTA_MONT_E = 20.0            # montante da dobradiça (largura)
+PORTA_MONT_D = 30.0            # montante da trava e do puxador (largura)
+PORTA_CAMADAS_MONT = 8         # 8 × 3 mm = 24 mm (= miolo)
+PORTA_NERV_H = (220.0, 450.0)  # nervuras horizontais (v, a partir da borda de baixo da porta)
+PORTA_NERV_V = (300.0, 600.0)  # nervuras verticais (u, a partir da borda esquerda da porta)
+MDF_DENSIDADE = 750.0          # kg/m³ [est] (MDF fino comercial: 700–800)
+
+# --- componentes na porta (centros no sistema do ARMÁRIO: X, Z) -------------
+LCD_PLACA = (80.0, 36.0)       # [ds padrão 1602A]
+LCD_FUROS = (75.0, 31.0)       # [ds]
+LCD_FURO_D = 3.0               # [ds] (M2.5) — moldura laminada segura a placa, sem parafuso no LCD
+LCD_MOLDURA = (71.2, 24.2)     # [ds] moldura metálica do vidro
+LCD_JANELA = (66.0, 16.0)      # área visível 64,5 × 14,5 [ds] + folga
+LCD_CENTRO = (695.0, 750.0)
+
+AS608_MODULO = (44.0, 23.0, 20.0)   # [ds MakerHero]
+AS608_JANELA = (41.0, 21.0)         # menor que o módulo: ele encosta por dentro
+AS608_CENTRO = (790.0, 750.0)
+
+TECLADO = (69.0, 77.0)         # [ds padrão membrana 4x4]
+TECLADO_FLAT = (25.0, 3.0)     # rasgo para o cabo flat (~20 mm + folga)
+TECLADO_CENTRO = (720.0, 590.0)
+
+BUZZER_CENTRO = (690.0, 705.0)
+BUZZER_FUROS_D = 2.0
+
+PUXADOR = (22.0, 100.0)        # cava na pele de fora e no montante direito (X × Z)
+PUXADOR_CENTRO = (855.0, 590.0)
+
+# janela na pele de dentro para montar LCD e leitor, coberta pela tampa traseira
+JANELA_INT = (640.0, 830.0, 695.0, 775.0)   # X0, X1, Z0, Z1
+CAIXA_TRASEIRA_PROF = 12.0     # quanto a tampa traseira avança além da face de dentro da porta
+
+# saída dos cabos: canal no alto do miolo (Z) e entalhe no trilho de cima, junto da dobradiça (u)
+SAIDA_CABOS_Z = (862.0, 874.0)
+SAIDA_CABOS_U = (22.0, 48.0)
+
+# --- trava, batente e reed (lateral direita, por dentro) --------------------
+TRAVA_Z = 600.0
+TRAVA_CORPO = (28.0, 54.0, 41.0)    # X (saliência), Y, Z [est] — MEDIR a FE-91
+TRAVA_Y0 = 12.0                     # face da frente do corpo da trava
+TRAVA_LINGUETA = (10.0, 12.0, 10.0) # saliência para a frente (−Y), largura, altura [est]
+TRAVA_FUROS_DY = (12.0, 42.0)
+BATENTE_X = (840.0, 846.0)          # braço do batente (2 camadas, em X); a lingueta sai da trava para −X
+BATENTE_Y1 = 40.0                   # até onde o braço entra no armário (Y)
+BATENTE_JANELA = (14.0, 14.0)       # janela da lingueta (Y × Z) [est]
+REED_Z = 560.0
+
+# --- baia fria ---------------------------------------------------------
+BAIA_PISO_Z = 205.0
+BAIA_TAQUINHO_Y = (50.0, 245.0, 450.0)
+BAIA_TAQUINHO = (40.0, 12.0)        # Y × Z de cada camada
+
+# --- berços dos coolers --------------------------------------------------
+BERCO_GRADE_FURO = 11.0             # quadrado; 11 mm não deixa passar o dedo-padrão de 12 mm
+BERCO_GRADE_ALMA = 3.0
+
+# --- caixa da eletrônica no tampo ------------------------------------------
+CAIXA_INT = (350.0, 240.0, 85.0)    # L × P × A internos
+CAIXA_XY = (260.0, 430.0)           # canto de frente-esquerda sobre o tampo

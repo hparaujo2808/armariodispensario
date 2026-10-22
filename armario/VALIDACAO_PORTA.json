@@ -1,0 +1,135 @@
+{
+  "versao": "v2.4 (porta)",
+  "chapas": [
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "pecas": 120,
+  "pecas_cupom": 29,
+  "contornos_fechados_e_validos": true,
+  "sem_sobreposicao_e_dentro_da_area_util": true,
+  "miolo_da_porta_sem_sobreposicao": true,
+  "colisoes_0_a_90_graus": 0,
+  "folga_porta_gavetas_mm": 9.0,
+  "espessura_porta_mm": 30.0,
+  "massa_porta_kg_sem_componentes": 4.75,
+  "folgas_mm": {
+    "0": {
+      "porta": [
+        1.0,
+        "bloco da dobradiça"
+      ],
+      "mata-junta": [
+        3.0,
+        "lateral direita"
+      ],
+      "tampa traseira": [
+        29.0,
+        "lateral direita"
+      ],
+      "placa do batente": [
+        9.0,
+        "reed"
+      ],
+      "braço do batente (baixo)": [
+        3.0,
+        "corpo da trava"
+      ],
+      "braço do batente (cima)": [
+        3.0,
+        "corpo da trava"
+      ],
+      "braço do batente (antes da janela)": [
+        1.0,
+        "lingueta"
+      ],
+      "braço do batente (depois da janela)": [
+        1.0,
+        "lingueta"
+      ],
+      "ímã do reed": [
+        2.0,
+        "reed"
+      ]
+    },
+    "45": {
+      "porta": [
+        1.4,
+        "bloco da dobradiça"
+      ],
+      "mata-junta": [
+        612.9,
+        "tampo"
+      ],
+      "tampa traseira": [
+        618.7,
+        "lateral direita"
+      ],
+      "placa do batente": [
+        662.2,
+        "lingueta"
+      ],
+      "braço do batente (baixo)": [
+        627.9,
+        "lateral direita"
+      ],
+      "braço do batente (cima)": [
+        627.9,
+        "lateral direita"
+      ],
+      "braço do batente (antes da janela)": [
+        651.3,
+        "lingueta"
+      ],
+      "braço do batente (depois da janela)": [
+        624.9,
+        "lingueta"
+      ],
+      "ímã do reed": [
+        668.0,
+        "lateral direita"
+      ]
+    },
+    "90": {
+      "porta": [
+        1.4,
+        "bloco da dobradiça"
+      ],
+      "mata-junta": [
+        861.0,
+        "bloco da dobradiça"
+      ],
+      "tampa traseira": [
+        633.0,
+        "bloco da dobradiça"
+      ],
+      "placa do batente": [
+        846.0,
+        "bloco da dobradiça"
+      ],
+      "braço do batente (baixo)": [
+        851.0,
+        "bloco da dobradiça"
+      ],
+      "braço do batente (cima)": [
+        851.0,
+        "bloco da dobradiça"
+      ],
+      "braço do batente (antes da janela)": [
+        851.0,
+        "bloco da dobradiça"
+      ],
+      "braço do batente (depois da janela)": [
+        851.3,
+        "bloco da dobradiça"
+      ],
+      "ímã do reed": [
+        869.0,
+        "bloco da dobradiça"
+      ]
+    }
+  }
+}

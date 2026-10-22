@@ -1,0 +1,150 @@
+codigo;nome;grupo;largura_mm;altura_mm;chapa
+PORTA_PELE_EXT;Porta — pele de fora (vista de trás);porta;880.0;876.0;24
+PORTA_PELE_INT;Porta — pele de dentro;porta;880.0;876.0;25
+PORTA_MONT_E_1;Porta — montante esquerdo, camada 1;porta;20.0;876.0;26
+PORTA_MONT_E_2;Porta — montante esquerdo, camada 2;porta;20.0;876.0;26
+PORTA_MONT_E_3;Porta — montante esquerdo, camada 3;porta;20.0;876.0;26
+PORTA_MONT_E_4;Porta — montante esquerdo, camada 4;porta;20.0;876.0;26
+PORTA_MONT_E_5;Porta — montante esquerdo, camada 5;porta;20.0;876.0;26
+PORTA_MONT_E_6;Porta — montante esquerdo, camada 6;porta;20.0;876.0;26
+PORTA_MONT_E_7;Porta — montante esquerdo, camada 7;porta;20.0;876.0;26
+PORTA_MONT_E_8;Porta — montante esquerdo, camada 8;porta;20.0;876.0;26
+PORTA_MONT_D_1;Porta — montante direito, camada 1;porta;30.0;876.0;26
+PORTA_MONT_D_2;Porta — montante direito, camada 2;porta;30.0;876.0;26
+PORTA_MONT_D_3;Porta — montante direito, camada 3;porta;30.0;876.0;26
+PORTA_MONT_D_4;Porta — montante direito, camada 4;porta;30.0;876.0;26
+PORTA_MONT_D_5;Porta — montante direito, camada 5;porta;30.0;876.0;26
+PORTA_MONT_D_6;Porta — montante direito, camada 6;porta;30.0;876.0;26
+PORTA_MONT_D_7;Porta — montante direito, camada 7;porta;30.0;876.0;26
+PORTA_MONT_D_8;Porta — montante direito, camada 8;porta;30.0;876.0;26
+BLOCO_DOB_1;Bloco da dobradiça — camada 1;armário;45.0;840.0;26
+BLOCO_DOB_2;Bloco da dobradiça — camada 2;armário;45.0;840.0;26
+BLOCO_DOB_3;Bloco da dobradiça — camada 3;armário;45.0;840.0;26
+GABARITO_LAT_D;Gabarito de furação — lateral direita (encostar na mesa e na frente);armário;117.6;650.0;26
+PORTA_MATA_JUNTA_1_1;Mata-junta 1, camada 1;porta;30.0;560.0;26
+PORTA_MATA_JUNTA_1_2;Mata-junta 1, camada 2;porta;30.0;560.0;26
+BAIA_PISO;Baia fria — piso;armário;342.0;490.0;27
+GABARITO_LAT_E;Gabarito de furação — lateral esquerda (encostar na mesa e na frente);armário;437.6;345.0;27
+CAIXA_BASE;Caixa da eletrônica — base;armário;356.0;246.0;27
+CAIXA_TAMPA;Caixa da eletrônica — tampa;armário;356.0;246.0;27
+PORTA_MATA_JUNTA_2_1;Mata-junta 2, camada 1;porta;30.0;240.0;26
+PORTA_MATA_JUNTA_2_2;Mata-junta 2, camada 2;porta;30.0;240.0;27
+BAIA_TAMPA;Baia fria — frente da tampa isolada;armário;341.0;189.0;28
+BERCO_1_GRADE;Berço do cooler 1 — grade;armário;164.0;148.0;28
+BERCO_2_GRADE;Berço do cooler 2 — grade;armário;164.0;148.0;28
+BERCO_1_BASE;Berço do cooler 1 — placa na lateral;armário;148.0;136.5;27
+BERCO_1_MAO_A;Berço do cooler 1 — mão-francesa A;armário;167.0;136.5;28
+BERCO_1_MAO_B;Berço do cooler 1 — mão-francesa B;armário;167.0;136.5;28
+BERCO_2_BASE;Berço do cooler 2 — placa na lateral;armário;148.0;136.5;28
+BERCO_2_MAO_A;Berço do cooler 2 — mão-francesa A;armário;167.0;136.5;28
+BERCO_2_MAO_B;Berço do cooler 2 — mão-francesa B;armário;167.0;136.5;28
+PORTA_TAMPA_TRAS;Porta — tampa traseira do LCD e do leitor;porta;226.0;116.0;27
+CAIXA_FRENTE;Caixa da eletrônica — parede frente;armário;356.0;85.0;27
+CAIXA_TRAS;Caixa da eletrônica — parede tras;armário;356.0;85.0;28
+CAIXA_ESQ;Caixa da eletrônica — parede esq;armário;246.0;85.0;27
+CAIXA_DIR;Caixa da eletrônica — parede dir;armário;246.0;85.0;28
+BATENTE_PLACA_1;Batente — placa, camada 1;porta;33.0;70.0;27
+BATENTE_PLACA_2;Batente — placa, camada 2;porta;33.0;70.0;27
+BATENTE_BRACO_1;Batente — braço, camada 1;porta;46.0;70.0;28
+BATENTE_BRACO_2;Batente — braço, camada 2;porta;46.0;70.0;28
+PORTA_LCD_1;Moldura do LCD — camada 1;porta;108.0;52.0;28
+PORTA_LCD_2;Moldura do LCD — camada 2;porta;108.0;52.0;28
+PORTA_LCD_3;Moldura do LCD — camada 3;porta;108.0;52.0;28
+PORTA_LCD_4;Moldura do LCD — camada 4;porta;108.0;52.0;28
+PORTA_LCD_PRESILHA_E;Moldura do LCD — presilha E;porta;18.0;52.0;28
+PORTA_LCD_PRESILHA_D;Moldura do LCD — presilha D;porta;18.0;52.0;28
+PORTA_LEITOR_1;Moldura do leitor AS608 — camada 1;porta;72.0;37.0;28
+PORTA_LEITOR_2;Moldura do leitor AS608 — camada 2;porta;72.0;37.0;28
+PORTA_LEITOR_3;Moldura do leitor AS608 — camada 3;porta;72.0;37.0;28
+PORTA_LEITOR_4;Moldura do leitor AS608 — camada 4;porta;72.0;37.0;28
+PORTA_LEITOR_5;Moldura do leitor AS608 — camada 5;porta;72.0;37.0;28
+PORTA_LEITOR_6;Moldura do leitor AS608 — camada 6;porta;72.0;37.0;28
+PORTA_LEITOR_7;Moldura do leitor AS608 — camada 7;porta;72.0;37.0;28
+PORTA_LEITOR_PRESILHA_E;Moldura do leitor AS608 — presilha E;porta;17.0;37.0;28
+PORTA_LEITOR_PRESILHA_D;Moldura do leitor AS608 — presilha D;porta;17.0;37.0;28
+PORTA_TRILHO_INF;Porta — trilho de baixo (em pé);porta;830.0;24.0;28
+PORTA_TRILHO_SUP;Porta — trilho de cima (em pé);porta;830.0;24.0;28
+PORTA_NERV_H1;Porta — nervura horizontal 1 (v 220);porta;830.0;24.0;28
+PORTA_NERV_H2;Porta — nervura horizontal 2 (v 450);porta;830.0;24.0;28
+PORTA_NERV_V1;Porta — nervura vertical 1 (u 300);porta;870.0;24.0;28
+PORTA_NERV_V2;Porta — nervura vertical 2 (u 600);porta;870.0;24.0;28
+PORTA_JAN_INF;Porta — moldura da janela (baixo);porta;206.0;24.0;28
+PORTA_JAN_SUP;Porta — moldura da janela (cima);porta;206.0;24.0;28
+PORTA_JAN_ESQ;Porta — moldura da janela (esquerda);porta;86.0;24.0;28
+GABARITO_LAT_E_REGUA;Régua de encosto do GABARITO_LAT_E;armário;345.0;18.0;28
+GABARITO_LAT_D_REGUA;Régua de encosto do GABARITO_LAT_D;armário;650.0;18.0;28
+CAIXA_CANTO_1_1;Caixa — canto 1 da tampa, camada 1;armário;16.0;16.0;28
+CAIXA_CANTO_1_2;Caixa — canto 1 da tampa, camada 2;armário;16.0;16.0;28
+CAIXA_CANTO_1_3;Caixa — canto 1 da tampa, camada 3;armário;16.0;16.0;28
+CAIXA_CANTO_2_1;Caixa — canto 2 da tampa, camada 1;armário;16.0;16.0;28
+CAIXA_CANTO_2_2;Caixa — canto 2 da tampa, camada 2;armário;16.0;16.0;28
+CAIXA_CANTO_2_3;Caixa — canto 2 da tampa, camada 3;armário;16.0;16.0;28
+CAIXA_CANTO_3_1;Caixa — canto 3 da tampa, camada 1;armário;16.0;16.0;28
+CAIXA_CANTO_3_2;Caixa — canto 3 da tampa, camada 2;armário;16.0;16.0;28
+CAIXA_CANTO_3_3;Caixa — canto 3 da tampa, camada 3;armário;16.0;16.0;28
+CAIXA_CANTO_4_1;Caixa — canto 4 da tampa, camada 1;armário;16.0;16.0;28
+CAIXA_CANTO_4_2;Caixa — canto 4 da tampa, camada 2;armário;16.0;16.0;28
+CAIXA_CANTO_4_3;Caixa — canto 4 da tampa, camada 3;armário;16.0;16.0;28
+PORTA_COLUNA_1_1;Porta — coluna 1 da tampa, camada 1;porta;14.0;14.0;28
+PORTA_COLUNA_1_2;Porta — coluna 1 da tampa, camada 2;porta;14.0;14.0;28
+PORTA_COLUNA_1_3;Porta — coluna 1 da tampa, camada 3;porta;14.0;14.0;28
+PORTA_COLUNA_1_4;Porta — coluna 1 da tampa, camada 4;porta;14.0;14.0;28
+PORTA_COLUNA_2_1;Porta — coluna 2 da tampa, camada 1;porta;14.0;14.0;28
+PORTA_COLUNA_2_2;Porta — coluna 2 da tampa, camada 2;porta;14.0;14.0;28
+PORTA_COLUNA_2_3;Porta — coluna 2 da tampa, camada 3;porta;14.0;14.0;28
+PORTA_COLUNA_2_4;Porta — coluna 2 da tampa, camada 4;porta;14.0;14.0;28
+PORTA_COLUNA_3_1;Porta — coluna 3 da tampa, camada 1;porta;14.0;14.0;28
+PORTA_COLUNA_3_2;Porta — coluna 3 da tampa, camada 2;porta;14.0;14.0;28
+PORTA_COLUNA_3_3;Porta — coluna 3 da tampa, camada 3;porta;14.0;14.0;28
+PORTA_COLUNA_3_4;Porta — coluna 3 da tampa, camada 4;porta;14.0;14.0;28
+PORTA_COLUNA_4_1;Porta — coluna 4 da tampa, camada 1;porta;14.0;14.0;28
+PORTA_COLUNA_4_2;Porta — coluna 4 da tampa, camada 2;porta;14.0;14.0;28
+PORTA_COLUNA_4_3;Porta — coluna 4 da tampa, camada 3;porta;14.0;14.0;28
+PORTA_COLUNA_4_4;Porta — coluna 4 da tampa, camada 4;porta;14.0;14.0;28
+BAIA_TAQ_E1_1;Taquinho E1, camada 1;armário;40.0;12.0;28
+BAIA_TAQ_E1_2;Taquinho E1, camada 2;armário;40.0;12.0;28
+BAIA_TAQ_E1_3;Taquinho E1, camada 3;armário;40.0;12.0;28
+BAIA_TAQ_E2_1;Taquinho E2, camada 1;armário;40.0;12.0;28
+BAIA_TAQ_E2_2;Taquinho E2, camada 2;armário;40.0;12.0;28
+BAIA_TAQ_E2_3;Taquinho E2, camada 3;armário;40.0;12.0;28
+BAIA_TAQ_E3_1;Taquinho E3, camada 1;armário;40.0;12.0;28
+BAIA_TAQ_E3_2;Taquinho E3, camada 2;armário;40.0;12.0;28
+BAIA_TAQ_E3_3;Taquinho E3, camada 3;armário;40.0;12.0;28
+BAIA_TAQ_D1_1;Taquinho D1, camada 1;armário;40.0;12.0;28
+BAIA_TAQ_D1_2;Taquinho D1, camada 2;armário;40.0;12.0;28
+BAIA_TAQ_D1_3;Taquinho D1, camada 3;armário;40.0;12.0;28
+BAIA_TAQ_D2_1;Taquinho D2, camada 1;armário;40.0;12.0;28
+BAIA_TAQ_D2_2;Taquinho D2, camada 2;armário;40.0;12.0;28
+BAIA_TAQ_D2_3;Taquinho D2, camada 3;armário;40.0;12.0;28
+BAIA_TAQ_D3_1;Taquinho D3, camada 1;armário;40.0;12.0;28
+BAIA_TAQ_D3_2;Taquinho D3, camada 2;armário;40.0;12.0;28
+BAIA_TAQ_D3_3;Taquinho D3, camada 3;armário;40.0;12.0;28
+CP_PELE;Cupom — pele de fora com LCD, leitor, teclado e buzzer;cupom;210.0;240.0;cupom
+CP_BLOCO_1;Bloco da dobradiça — camada 1;cupom;45.0;150.0;cupom
+CP_BLOCO_2;Bloco da dobradiça — camada 2;cupom;45.0;150.0;cupom
+CP_BLOCO_3;Bloco da dobradiça — camada 3;cupom;45.0;150.0;cupom
+CP_PORTA_PELE;Cupom — borda da porta (pele);cupom;40.0;150.0;cupom
+CP_PORTA_MONT1;Cupom — borda da porta (mont1);cupom;20.0;150.0;cupom
+CP_PORTA_MONT2;Cupom — borda da porta (mont2);cupom;20.0;150.0;cupom
+CP_TRAVA_PLACA;Cupom — placa da trava (faz o papel da lateral direita);cupom;100.0;110.0;cupom
+CP_BATENTE_PLACA_1;Batente — placa, camada 1;cupom;33.0;70.0;cupom
+CP_BATENTE_PLACA_2;Batente — placa, camada 2;cupom;33.0;70.0;cupom
+CP_BATENTE_BRACO_1;Batente — braço, camada 1;cupom;46.0;70.0;cupom
+CP_BATENTE_BRACO_2;Batente — braço, camada 2;cupom;46.0;70.0;cupom
+CP_PELTIER;Cupom — furo da Peltier e da prensa;cupom;110.0;60.0;cupom
+CP_GRADE;Cupom — grade do berço (teste do dedo);cupom;60.0;60.0;cupom
+CP_LCD_1;Moldura do LCD — camada 1;cupom;108.0;52.0;cupom
+CP_LCD_2;Moldura do LCD — camada 2;cupom;108.0;52.0;cupom
+CP_LCD_3;Moldura do LCD — camada 3;cupom;108.0;52.0;cupom
+CP_LCD_4;Moldura do LCD — camada 4;cupom;108.0;52.0;cupom
+CP_LCD_PRESILHA_E;Moldura do LCD — presilha E;cupom;18.0;52.0;cupom
+CP_LCD_PRESILHA_D;Moldura do LCD — presilha D;cupom;18.0;52.0;cupom
+CP_LEITOR_1;Moldura do leitor AS608 — camada 1;cupom;72.0;37.0;cupom
+CP_LEITOR_2;Moldura do leitor AS608 — camada 2;cupom;72.0;37.0;cupom
+CP_LEITOR_3;Moldura do leitor AS608 — camada 3;cupom;72.0;37.0;cupom
+CP_LEITOR_4;Moldura do leitor AS608 — camada 4;cupom;72.0;37.0;cupom
+CP_LEITOR_5;Moldura do leitor AS608 — camada 5;cupom;72.0;37.0;cupom
+CP_LEITOR_6;Moldura do leitor AS608 — camada 6;cupom;72.0;37.0;cupom
+CP_LEITOR_7;Moldura do leitor AS608 — camada 7;cupom;72.0;37.0;cupom
+CP_LEITOR_PRESILHA_E;Moldura do leitor AS608 — presilha E;cupom;17.0;37.0;cupom
+CP_LEITOR_PRESILHA_D;Moldura do leitor AS608 — presilha D;cupom;17.0;37.0;cupom

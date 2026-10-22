@@ -33,11 +33,11 @@ def faixas_corredicas():
 # --- gaveta: frente nominal (calc a partir do config) -------------------------
 # Corrediça de 457 mm começa a 3 mm da frente; a lateral da gaveta (457 + 2 dentes
 # de 3 mm) começa logo atrás da frente de 3 mm -> frente da gaveta rente à caixa.
-FRENTE_GAVETA_Y = 3.0 - c.MATERIAL_T          # 0,0 mm [calc]; medir e ajustar (negativo = para fora)
+FRENTE_GAVETA_Y = c.FRENTE_GAVETA_Y            # 0,0 mm [calc] = 3,0 (início da corrediça) − 3,0 (frente); medir
 
 # --- baia fria (coluna A, metade de cima) -------------------------------------
 BAIA_X = (T, T + c.COL_A_W)                   # 3 a 346
-BAIA_Z = (205.0, c.GAVETEIRO_Z[1])            # piso novo a 205 (gaveta A2 vai até 199,8)
+BAIA_Z = (c.BAIA_PISO_Z, c.GAVETEIRO_Z[1])     # piso novo a 205 (gaveta A2 vai até 199,8)
 EPS = 50.0
 
 # --- Peltier, atravessando a LAT_E -------------------------------------------
@@ -84,33 +84,24 @@ SUPORTE_PARAFUSOS_DY = (-55.0, 55.0)             # em relação ao centro do coo
 FURO_FIOS_BAIA = ((PELTIER_Y[0] + PELTIER_Y[1]) / 2, PELTIER_Z, 10.0)   # (Y, Z, Ø)
 
 # --- dobradiça da porta (lado esquerdo) -------------------------------------
-# Dobradiça piano de aço 25 mm aberta, 3 m, furos a cada 73 mm intercalados
-# [ds Amazon B0FZLKCS2P]; espessura da aba, diâmetro do furo e do pino [medir]
-DOBRADICA_LARGURA_ABERTA = 25.0
-DOBRADICA_PASSO = 73.0
-DOBRADICA_FURO = 3.5               # [medir] no cupom de teste
-DOBRADICA_ABA_ESP = 1.0            # [est]
-DOBRADICA_PINO_D = 5.0             # [est]
-# Bloco de reforço colado e parafusado na face de fora da LAT_E, junto da
-# frente: 3 camadas de MDF (a do meio prende porcas M3). Avança AFASTAMENTO
-# para a frente da caixa, para a porta ficar longe das frentes das gavetas.
-BLOCO_DOB_CAMADAS = 3
-BLOCO_DOB_LARGURA = 45.0           # em Y
-BLOCO_DOB_Z = (20.0, 860.0)
-AFASTAMENTO_PORTA = 8.0            # face de dentro da porta a 8 mm da frente da caixa
-# Parafusos M4 do bloco na LAT_E (Y em relação à frente da caixa), em Z livres
-BLOCO_DOB_PARAFUSO_Y = 22.0
+# Dobradiça piano e bloco de reforço: parâmetros em armario/gerador/config.py
+# (seção v2.4). O bloco (3 camadas, a do meio prende porcas M3) avança
+# AFASTAMENTO_PORTA para a frente da caixa, para a porta ficar longe das gavetas.
+BLOCO_DOB_LARGURA = c.BLOCO_DOB_LARGURA
+BLOCO_DOB_Z = (c.DOB_Z0, c.DOB_Z0 + c.DOB_COMPRIMENTO)
+AFASTAMENTO_PORTA = c.AFASTAMENTO_PORTA
+BLOCO_DOB_PARAFUSO_Y = c.BLOCO_DOB_PARAFUSO_Y
+BLOCO_DOB_PARAFUSOS_Z = c.BLOCO_DOB_PARAFUSOS_Z
 
 # --- trava e reed (lateral direita, por dentro, perto da frente) -------------
-TRAVA_Z = 600.0                    # entre a Prateleira 2 (533,7) e as nervuras da Prateleira 1 (624,3)
-# Medidas da trava FE-91 não publicadas: [medir] e ajustar no cupom
-TRAVA_CORPO = (28.0, 54.0, 41.0)   # X (saliência da parede), Y, Z [est]
-TRAVA_FUROS_DY = (12.0, 42.0)      # furos de fixação, Y da frente [est]
-REED_Z = 560.0
+TRAVA_Z = c.TRAVA_Z                # entre a Prateleira 2 (533,7) e as nervuras da Prateleira 1 (624,3)
+TRAVA_CORPO = c.TRAVA_CORPO        # [est] medir a FE-91
+TRAVA_FUROS_DY = c.TRAVA_FUROS_DY
+REED_Z = c.REED_Z
 FURO_FIOS_TRAVA = (40.0, 580.0, 10.0)            # (Y, Z, Ø) na LAT_D
 CAMERA_INTERNA = (60.0, 460.0, 38.0)             # (Y, Z, Ø) na LAT_D, cabo com plugue USB passa
 
 # --- tampo: câmera externa e caixa da eletrônica -----------------------------
 CAMERA_EXTERNA_XY = (440.0, 30.0)
-CAIXA_ELETRONICA = (360.0, 250.0, 95.0)          # L x P x A externos [calc no gerador da porta]
-CAIXA_ELETRONICA_XY = (260.0, 430.0)             # canto de frente-esquerda sobre o tampo
+CAIXA_ELETRONICA = tuple(d + 2 * T for d in c.CAIXA_INT)   # externos
+CAIXA_ELETRONICA_XY = c.CAIXA_XY
