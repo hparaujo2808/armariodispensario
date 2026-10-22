@@ -4,3 +4,4 @@ shapely==2.2.0
 matplotlib==3.11.2
 # Testes
 pytest==9.1.1
+PyYAML==6.0.3

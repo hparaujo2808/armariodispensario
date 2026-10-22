@@ -94,7 +94,7 @@ O dissipador frio pode passar de 0 °C (calculado −5 °C a 32 °C de ambiente)
 
 Cuidados:
 - Os relés continuam alimentados pelo LM2596, nunca pelo 5 V do Mega (0,21 A só das bobinas).
-- Se o módulo de relés tiver o jumper **JD-VCC** (a página da Eletrogate não diz; olhar a placa), o lado do Mega e o lado de 12 V ficam isolados pelos optoacopladores. Nesse caso: tirar o jumper, ligar JD-VCC no LM2596 e VCC no 5 V do Mega. Sem o jumper, o GND do Mega vai ao ponto de terra único do 12 V **por um fio só**, e nenhuma corrente de carga passa pelo Mega.
+- O GND do Mega vai ao GND do módulo de relés **por um fio só** (ponto único de terra), e nenhuma corrente de carga passa pelo Mega. Não vale a pena isolar pelo jumper JD-VCC do módulo: o divisor que mede o 12 V já precisa do terra comum.
 - O Mega mede o 12 V por um divisor (4,7 kΩ / 2,2 kΩ → 3,8 V numa entrada analógica). Assim registra "falta de energia" e "energia voltou" no log de auditoria.
 - A abertura da porta serial reinicia o Mega (DTR). O firmware inicia com tudo desligado e só libera a trava com um comando novo (item 4 da auditoria).
 

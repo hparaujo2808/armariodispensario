@@ -1,0 +1,89 @@
+# Fonte única do mapa de pinos do Arduino Mega 2560.
+#
+# Tudo o que diz "pino X liga em Y" sai daqui:
+#   python hardware/gerar.py      -> firmware/armario_dispensador/pinos.h,
+#                                    tabela de pinos do docs/LIGACOES.md,
+#                                    docs/diagrama-ligacoes.svg
+#   pytest tests/test_pinos.py    -> falha se algum desses estiver diferente
+#
+# Campos de cada pino:
+#   nome      constante no firmware (vira PINO_<nome> no pinos.h)
+#   pino      número digital (22) ou analógico ("A0")
+#   modo      saida | entrada_pullup | entrada | barramento | serial | analogico
+#   ativo     baixo | alto (só para saídas e entradas digitais)
+#   liga_em   onde o fio chega
+#   cabo      por onde o fio passa (ver docs/LIGACOES.md, "Cabos")
+#   exige     recursos do pino que o firmware usa: pwm, interrupcao, serial1
+#   grupo     (opcional) agrupa no diagrama; sem ele, agrupa pelo cabo
+#   nota      detalhe para quem monta
+
+placa: Arduino Mega 2560
+alimentacao: USB do notebook (Vin desligado; docs/DECISOES.md, 1.3)
+
+# Pinos que não podem ser usados para outra coisa.
+reservados:
+  0: RX0 da USB (conversa com o notebook)
+  1: TX0 da USB (conversa com o notebook)
+  13: LED da placa; pisca no bootloader, não serve para relé
+
+pinos:
+  # --- relés (módulo de 4 canais, aciona com LOW) ---------------------------
+  - {nome: RELE_TRAVA, pino: 8, modo: saida, ativo: baixo, liga_em: "IN1 do módulo de relés", cabo: jumper,
+     nota: "Relé 1: trava solenoide. digitalWrite(HIGH) antes de pinMode(OUTPUT)"}
+  - {nome: RELE_PELTIER_1, pino: 9, modo: saida, ativo: baixo, liga_em: "IN2 do módulo de relés", cabo: jumper,
+     nota: "Relé 2: Peltier 1 (X 110) + ventoinha fria 1"}
+  - {nome: RELE_PELTIER_2, pino: 10, modo: saida, ativo: baixo, liga_em: "IN3 do módulo de relés", cabo: jumper,
+     nota: "Relé 3: Peltier 2 (X 240) + ventoinha fria 2"}
+  - {nome: RELE_LIVRE, pino: 11, modo: saida, ativo: baixo, liga_em: "IN4 do módulo de relés", cabo: jumper,
+     nota: "Relé 4: sem carga. O firmware mantém desligado"}
+
+  # --- porta ------------------------------------------------------------------
+  - {nome: BUZZER, pino: 7, modo: saida, ativo: alto, liga_em: "Buzzer passivo (+) por resistor de 1 kΩ", cabo: porta_3,
+     exige: [pwm], nota: "Volume pelo ciclo de trabalho do PWM (RNF10). O (−) vai no GND do cabo"}
+  - {nome: SENSOR_PORTA, pino: 3, modo: entrada_pullup, ativo: baixo, liga_em: "Reed MC-38 (o outro fio no GND)", cabo: reed,
+     exige: [interrupcao], nota: "LOW = ímã perto = porta fechada. Fio rompido lê HIGH = aberta (falha segura)"}
+  - {nome: DIGITAL_TX, pino: 18, modo: serial, liga_em: "RX do AS608 por divisor 1 kΩ / 2,2 kΩ", cabo: porta_3,
+     exige: [serial1], nota: "TX1 do Mega. O divisor baixa 5 V para 3,4 V"}
+  - {nome: DIGITAL_RX, pino: 19, modo: serial, liga_em: "TX do AS608", cabo: porta_3,
+     exige: [serial1], nota: "RX1 do Mega. Conferir na bancada que o TX do leitor chega a mais de 3,0 V"}
+
+  - {nome: LCD_RS, pino: 38, modo: saida, ativo: alto, liga_em: "RS do LCD 16x2", cabo: porta_2}
+  - {nome: LCD_E, pino: 40, modo: saida, ativo: alto, liga_em: "E do LCD", cabo: porta_2}
+  - {nome: LCD_D4, pino: 42, modo: saida, ativo: alto, liga_em: "D4 do LCD", cabo: porta_2}
+  - {nome: LCD_D5, pino: 44, modo: saida, ativo: alto, liga_em: "D5 do LCD", cabo: porta_2}
+  - {nome: LCD_D6, pino: 46, modo: saida, ativo: alto, liga_em: "D6 do LCD", cabo: porta_2}
+  - {nome: LCD_D7, pino: 48, modo: saida, ativo: alto, liga_em: "D7 do LCD", cabo: porta_2}
+
+  - {nome: TECLADO_L1, pino: 22, modo: saida, ativo: baixo, liga_em: "Linha 1 do teclado (pino 1 do flat)", cabo: porta_1}
+  - {nome: TECLADO_L2, pino: 24, modo: saida, ativo: baixo, liga_em: "Linha 2 (pino 2)", cabo: porta_1}
+  - {nome: TECLADO_L3, pino: 26, modo: saida, ativo: baixo, liga_em: "Linha 3 (pino 3)", cabo: porta_1}
+  - {nome: TECLADO_L4, pino: 28, modo: saida, ativo: baixo, liga_em: "Linha 4 (pino 4)", cabo: porta_1}
+  - {nome: TECLADO_C1, pino: 30, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 1 (pino 5)", cabo: porta_1}
+  - {nome: TECLADO_C2, pino: 32, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 2 (pino 6)", cabo: porta_1}
+  - {nome: TECLADO_C3, pino: 34, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 3 (pino 7)", cabo: porta_1}
+  - {nome: TECLADO_C4, pino: 36, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 4 (pino 8)", cabo: porta_1}
+
+  # --- frio e energia -----------------------------------------------------------
+  - {nome: ONEWIRE, pino: 4, modo: barramento, liga_em: "DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V", cabo: sensores,
+     nota: "Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço"}
+  - {nome: MEDE_12V, pino: A0, modo: analogico, grupo: medicao, liga_em: "Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND)", cabo: jumper,
+     nota: "12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia"}
+
+# Ligações que não são pino de sinal, mas usam o 5 V e o GND do Mega.
+alimentacao_mega:
+  - {liga_em: "VDD do LCD, A (luz de fundo) por 220 Ω, potenciômetro de contraste", de: 5V, cabo: porta_2}
+  - {liga_em: "VCC do AS608", de: 5V, cabo: porta_3}
+  - {liga_em: "VDD dos 3 DS18B20 (vermelho) e pull-up de 4,7 kΩ", de: 5V, cabo: sensores}
+  - {liga_em: "GND do LCD, do AS608 e do buzzer", de: GND, cabo: "porta_2 e porta_3"}
+  - {liga_em: "GND dos DS18B20 (preto) e do reed", de: GND, cabo: "sensores e reed"}
+  - {liga_em: "GND do módulo de relés (ponto único de terra)", de: GND, cabo: jumper,
+     nota: "Único fio entre o terra do Mega e o terra do 12 V. Nenhuma corrente de carga passa por ele"}
+
+# Cabos (o caminho físico está em docs/LIGACOES.md)
+cabos:
+  porta_1: {tipo: "cabo de rede 1 (8 fios)", vai: "porta -> Mega"}
+  porta_2: {tipo: "cabo de rede 2 (8 fios)", vai: "porta -> Mega"}
+  porta_3: {tipo: "cabo de rede 3 (8 fios, 3 sobrando)", vai: "porta -> Mega"}
+  reed: {tipo: "fio do próprio MC-38 + emenda de 0,5 mm²", vai: "batente da porta -> Mega"}
+  sensores: {tipo: "cabos dos DS18B20 (90 cm) + conector de alavanca", vai: "baia fria e coolers -> Mega"}
+  jumper: {tipo: "jumper macho-fêmea", vai: "dentro do vão de trás"}

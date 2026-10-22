@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1010" width="1500" height="1010">
+<rect width="1500" height="1010" fill="#ffffff"/>
+<text x="30" y="34" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1f2a26" text-anchor="start">Potência: 12 V, 5 V dos relés e GND</text>
+<text x="30" y="56" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5b6862" text-anchor="start">Gerado de hardware/potencia.yaml por hardware/gerar.py. Vermelho = +12 V, laranja = +12 V comutado, verde = 5 V, preto = GND.</text>
+<rect x="30" y="92" width="100" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="80.0" y="108" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Tomada</text>
+<text x="80.0" y="122" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">127/220 V</text>
+<polyline points="130,110 170,110 170,110" fill="none" stroke="#7d868c" stroke-width="3"/>
+<rect x="170" y="92" width="110" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="225.0" y="108" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Fonte 12 V 10 A</text>
+<text x="225.0" y="122" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">V+ / V−</text>
+<polyline points="280,100 300,100 300,100" fill="none" stroke="#d0312d" stroke-width="3"/>
+<rect x="300" y="82" width="70" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="335.0" y="104" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">F1 10 A</text>
+<polyline points="370,100 400,100 400,140" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="410" y="135" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d0312d" text-anchor="start">B12  +12 V  1,5 mm² · 7,6 A</text>
+<line x1="300" y1="140" x2="300" y2="900" stroke="#d0312d" stroke-width="5"/>
+<line x1="400" y1="140" x2="300" y2="140" stroke="#d0312d" stroke-width="5"/>
+<line x1="1420" y1="140" x2="1420" y2="960" stroke="#1e1e1e" stroke-width="5"/>
+<text x="1420" y="130" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e1e1e" text-anchor="middle">GND</text>
+<polyline points="1420,960 225,960 225,960" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="822.5" y="954" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 1,5 A</text>
+<line x1="225" y1="960" x2="225" y2="128" stroke="#1e1e1e" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="235" y="950" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1e1e1e" text-anchor="start">parafuso V− 3 da fonte</text>
+<polyline points="300,200 420,200 420,200" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="360.0" y="194" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,23 A</text>
+<rect x="420" y="182" width="130" height="36" rx="5" fill="#dfe6f7" stroke="#1f4fa8" stroke-width="1.5"/>
+<text x="485.0" y="198" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Relé 2</text>
+<text x="485.0" y="212" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">COM → NA (pino 9)</text>
+<polyline points="550,200 640,200 640,200" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="595.0" y="194" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,23 A</text>
+<circle cx="640" cy="200" r="7" fill="#e07020"/>
+<text x="640" y="186" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#e07020" text-anchor="middle">P1</text>
+<polyline points="640,200 760,200 760,200" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="700.0" y="194" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,05 A</text>
+<rect x="760" y="182" width="120" height="36" rx="5" fill="#fbe9d0" stroke="#e07020" stroke-width="1.5"/>
+<text x="820.0" y="198" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">TF1 85 °C</text>
+<text x="820.0" y="212" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">no cooler</text>
+<polyline points="880,200 960,200 960,200" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="920" y="230" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#5b6862" text-anchor="middle">fio da pastilha</text>
+<rect x="960" y="182" width="170" height="36" rx="5" fill="#f2f2f2" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="198" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier 1 TEC1-12703</text>
+<text x="1045.0" y="212" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">3,93 Ω [calc]</text>
+<polyline points="1130,200 1420,200 1420,200" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="1275.0" y="194" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,05 A</text>
+<text x="1275" y="216" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#1e1e1e" text-anchor="middle">parafuso V− 1 da fonte</text>
+<polyline points="640,200 640,260 960,260" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="800.0" y="254" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,18 A</text>
+<rect x="960" y="242" width="170" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="258" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Ventoinha fria 1</text>
+<text x="1045.0" y="272" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">60 mm 12 V 0,18 A</text>
+<polyline points="1130,260 1420,260 1420,260" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="1275.0" y="254" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,18 A</text>
+<polyline points="640,200 640,320 960,320" fill="none" stroke="#7a4fc2" stroke-width="2"/>
+<rect x="960" y="302" width="170" height="36" rx="5" fill="#efe7fb" stroke="#7a4fc2" stroke-width="1.5"/>
+<text x="1045.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">D1 1N4007</text>
+<text x="1045.0" y="332" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">faixa em P1</text>
+<line x1="1130" y1="320" x2="1420" y2="320" stroke="#1e1e1e" stroke-width="2"/>
+<polyline points="300,400 420,400 420,400" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="360.0" y="394" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,23 A</text>
+<rect x="420" y="382" width="130" height="36" rx="5" fill="#dfe6f7" stroke="#1f4fa8" stroke-width="1.5"/>
+<text x="485.0" y="398" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Relé 3</text>
+<text x="485.0" y="412" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">COM → NA (pino 10)</text>
+<polyline points="550,400 640,400 640,400" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="595.0" y="394" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,23 A</text>
+<circle cx="640" cy="400" r="7" fill="#e07020"/>
+<text x="640" y="386" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#e07020" text-anchor="middle">P2</text>
+<polyline points="640,400 760,400 760,400" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="700.0" y="394" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,05 A</text>
+<rect x="760" y="382" width="120" height="36" rx="5" fill="#fbe9d0" stroke="#e07020" stroke-width="1.5"/>
+<text x="820.0" y="398" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">TF2 85 °C</text>
+<text x="820.0" y="412" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">no cooler</text>
+<polyline points="880,400 960,400 960,400" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="920" y="430" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#5b6862" text-anchor="middle">fio da pastilha</text>
+<rect x="960" y="382" width="170" height="36" rx="5" fill="#f2f2f2" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="398" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier 2 TEC1-12703</text>
+<text x="1045.0" y="412" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">3,93 Ω [calc]</text>
+<polyline points="1130,400 1420,400 1420,400" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="1275.0" y="394" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 3,05 A</text>
+<text x="1275" y="416" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#1e1e1e" text-anchor="middle">parafuso V− 2 da fonte</text>
+<polyline points="640,400 640,460 960,460" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="800.0" y="454" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,18 A</text>
+<rect x="960" y="442" width="170" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="458" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Ventoinha fria 2</text>
+<text x="1045.0" y="472" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">60 mm 12 V 0,18 A</text>
+<polyline points="1130,460 1420,460 1420,460" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="1275.0" y="454" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,18 A</text>
+<polyline points="640,400 640,520 960,520" fill="none" stroke="#7a4fc2" stroke-width="2"/>
+<rect x="960" y="502" width="170" height="36" rx="5" fill="#efe7fb" stroke="#7a4fc2" stroke-width="1.5"/>
+<text x="1045.0" y="518" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">D2 1N4007</text>
+<text x="1045.0" y="532" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">faixa em P2</text>
+<line x1="1130" y1="520" x2="1420" y2="520" stroke="#1e1e1e" stroke-width="2"/>
+<polyline points="300,620 400,620 400,620" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="350.0" y="614" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">1,5 mm² · 1,14 A</text>
+<rect x="400" y="602" width="80" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="440.0" y="624" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">F2 2 A</text>
+<polyline points="480,620 560,620 560,620" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="520.0" y="614" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 1,14 A</text>
+<line x1="560" y1="620" x2="560" y2="830" stroke="#d0312d" stroke-width="4"/>
+<text x="570" y="598" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d0312d" text-anchor="start">T12</text>
+<polyline points="560,620 960,620 960,620" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="760.0" y="614" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,26 A</text>
+<rect x="960" y="602" width="170" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="618" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Ventoinha cooler 1</text>
+<text x="1045.0" y="632" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">120 mm 0,26 A, sempre ligada</text>
+<polyline points="560,620 560,670 960,670" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="760.0" y="664" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,26 A</text>
+<rect x="960" y="652" width="170" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="668" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Ventoinha cooler 2</text>
+<text x="1045.0" y="682" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">120 mm 0,26 A, sempre ligada</text>
+<polyline points="1130,645 1420,645 1420,645" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="1275.0" y="639" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,52 A</text>
+<line x1="1130" y1="620" x2="1150" y2="645" stroke="#1e1e1e" stroke-width="2"/><line x1="1130" y1="670" x2="1150" y2="645" stroke="#1e1e1e" stroke-width="2"/>
+<polyline points="560,740 640,740 640,740" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="600.0" y="734" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,5 A</text>
+<rect x="640" y="722" width="130" height="36" rx="5" fill="#dfe6f7" stroke="#1f4fa8" stroke-width="1.5"/>
+<text x="705.0" y="738" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Relé 1</text>
+<text x="705.0" y="752" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">COM → NA (pino 8)</text>
+<polyline points="770,740 960,740 960,740" fill="none" stroke="#e07020" stroke-width="3"/>
+<text x="865.0" y="734" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,5 A</text>
+<rect x="960" y="722" width="170" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1045.0" y="738" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Trava FE-91 12 V</text>
+<text x="1045.0" y="752" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">0,5 A [ds] · D3 nos terminais</text>
+<polyline points="1130,740 1420,740 1420,740" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<text x="1275.0" y="734" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,5 A</text>
+<polyline points="560,830 640,830 640,830" fill="none" stroke="#d0312d" stroke-width="3"/>
+<text x="600.0" y="824" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,1 A</text>
+<rect x="640" y="812" width="130" height="36" rx="5" fill="#e1f3e8" stroke="#2e8b57" stroke-width="1.5"/>
+<text x="705.0" y="828" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">LM2596</text>
+<text x="705.0" y="842" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">ajustado em 5,0 V</text>
+<polyline points="705,848 705,848 705,960" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<polyline points="770,830 960,830 960,830" fill="none" stroke="#2e8b57" stroke-width="3"/>
+<text x="865.0" y="824" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">0,5 mm² · 0,23 A</text>
+<rect x="960" y="812" width="170" height="36" rx="5" fill="#dfe6f7" stroke="#1f4fa8" stroke-width="1.5"/>
+<text x="1045.0" y="828" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Módulo de relés</text>
+<text x="1045.0" y="842" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">VCC 5 V · IN1–IN4 do Mega</text>
+<polyline points="1045,848 1045,848 1045,960" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<polyline points="1130,840 1260,840 1260,840" fill="none" stroke="#1e1e1e" stroke-width="3"/>
+<rect x="1180" y="862" width="160" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="1260.0" y="878" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">GND do Mega</text>
+<text x="1260.0" y="892" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">ponto único de terra</text>
+<line x1="1260" y1="840" x2="1260" y2="862" stroke="#1e1e1e" stroke-width="2"/>
+<polyline points="300,900 400,900 400,900" fill="none" stroke="#d0312d" stroke-width="3"/>
+<rect x="400" y="882" width="140" height="36" rx="5" fill="#e9ece6" stroke="#7d868c" stroke-width="1.5"/>
+<text x="470.0" y="898" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1f2a26" text-anchor="middle">Divisor 4,7k / 2,2k</text>
+<text x="470.0" y="912" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="400" fill="#3d4844" text-anchor="middle">→ A0 do Mega</text>
+</svg>

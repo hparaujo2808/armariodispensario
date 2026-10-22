@@ -70,7 +70,8 @@ Preços no Pix e links conferidos em **22/10/2026**. Preço e estoque mudam: con
 | Qtd | Peça | Para quê | Estimativa |
 |---:|---|---|---:|
 | 2 pedaços de 50 mm | Barra **quadrada** de alumínio maciça 1 1/2" (38,1 mm). Serve também barra chata 1 1/2" × 1/2" (38,1 × 12,7 mm), cortada em 8 pedaços de 38 mm e empilhada 4 a 4 com pasta térmica | Espaçador que leva o frio da Peltier através do EPS | ~R$ 20 |
-| 1 kit | Parafusos M4 × 20 (20) e M4 × 30 (10), porcas e arruelas **largas**; 1 m de barra roscada M3 com 12 porcas e arruelas | Dobradiças, trava e prensa das Peltier (MDF de 3 mm não segura rosca) | ~R$ 30 |
+| 1 kit | Parafusos M4 × 20 (20) e M4 × 30 (10), porcas e arruelas **largas**; 1 m de barra roscada M3 com 16 porcas e arruelas; 2 pedaços de 80 mm de barra chata de aço ou alumínio (~20 × 3 mm) | Dobradiças, trava e prensa das Peltier (MDF de 3 mm não segura rosca) | ~R$ 30 |
+| 2,5 m | Cabo de rede (UTP Cat5e, 8 fios), por metro | Terceiro cabo da porta: leitor de digital e buzzer (os dois que vocês têm vão para o teclado e o LCD) | ~R$ 5 |
 | 2 m | Fita de espuma EVA adesiva (perfil de vedação de porta) | Vedação da tampa da baia fria | ~R$ 10 |
 | 3 chapas | MDF 3 mm 1000 × 1000 + corte a laser (porta, piso e tampa da baia, gabarito de furação, cupom de teste) | Fase 5. Confirmar preço com o fornecedor que cortou a V2 | ~R$ 105 + corte |
 
@@ -88,9 +89,9 @@ Preços no Pix e links conferidos em **22/10/2026**. Preço e estoque mudam: con
 | | Valor |
 |---|---:|
 | Itens com preço conferido hoje (carrinhos 1 a 6) | **R$ 460,81** |
-| Itens estimados, sem link | ~R$ 165 |
-| **Total do que falta** | **~R$ 626 + fretes** |
-| Com a fonte fechada e a webcam (os dois condicionais) | ~R$ 787 + fretes |
+| Itens estimados, sem link | ~R$ 170 |
+| **Total do que falta** | **~R$ 631 + fretes** |
+| Com a fonte fechada e a webcam (os dois condicionais) | ~R$ 792 + fretes |
 | Para cada cooler de PC velho | −R$ 69,99 |
 
 Para economizar frete: a Eletrogate fica em BH e entrega por moto. Antes de pagar a Usinainfo, vejam se a Eletrogate tem os mesmos itens (DS18B20, MC-38, conectores de alavanca) e juntem tudo num carrinho só.

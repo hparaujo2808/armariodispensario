@@ -9,3 +9,4 @@ build/
 Thumbs.db
 desktop.ini
 referencias_externas/
+__pycache__/
