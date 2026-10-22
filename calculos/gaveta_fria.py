@@ -11,7 +11,9 @@ Origem dos números:
 [ds]   TEC1-12703: Beijing Huimao TES1-12703 (Th = 25 °C): Imax 3 A,
        Umax 15,2 V, ΔTmax 67 K (link em docs/AUDITORIA.md).
 [ds]   XPS: condutividade 0,030–0,035 W/m·K nas fichas de XPS comercial;
-       usamos 0,035 (pior caso). MDF 0,14 W/m·K. Alumínio 6061 ~ 167 W/m·K;
+       usamos 0,035 (pior caso). EPS escolhido (IsoPró T1F, 10 kg/m³, placa
+       50 x 500 x 1000 mm): a ficha não dá a condutividade; EPS dessa
+       densidade fica perto de 0,044 W/m·K [est]. MDF 0,14 W/m·K. Alumínio 6061 ~ 167 W/m·K;
        usamos 160.
 [est]  Cooler de torre no lado quente: 0,35 K/W com a ventoinha ligada
        (fabricantes não publicam). Dissipador frio 65x46x24 com ventoinha de
@@ -42,6 +44,7 @@ R_PASTA = 0.05          # K/W por interface, 40 x 40 mm [est]
 
 # ---- materiais --------------------------------------------------------------
 K_XPS, K_MDF, K_AL = 0.035, 0.14, 160.0
+K_EPS = 0.044
 H_IN, H_OUT = 1 / 0.05, 1 / 0.13
 PONTES = 1.25
 R_QUENTE = 0.35         # cooler de torre com ventoinha [est]
@@ -129,8 +132,15 @@ def main():
             b = g["bandeja"]
             print(f"{nome:28s} {t:4.0f} | {b[0]:6.0f} x {b[1]:5.0f} x {b[2]:5.0f}     | {g['vol_l']:4.1f}L | "
                   + " ".join(f"{x:6.1f}" for x in temps) + f" | {carga(g, t, 5, 25):11.1f} W")
-    e = equilibrio(geometria(*BAIAS["A3+A4 (coluna A, em cima)"], 40.0), 40.0, 32.0, 2)
-    print(f"\nA3+A4, 2 pastilhas, 40 mm, a 32 °C: I={e['i']:.2f} A, Qc={e['qc']:.1f} W, Qh={e['qh']:.1f} W, "
+    global K_XPS
+    K_XPS = K_EPS
+    g = geometria(*BAIAS["A3+A4 (coluna A, em cima)"], 50.0)
+    temps = [equilibrio(g, 50.0, a, 2)["t_in"] for a in (25.0, 28.0, 30.0, 32.0)]
+    b = g["bandeja"]
+    print(f"\nESCOLHA: A3+A4, 2 pastilhas, EPS 50 mm (k={K_EPS}): bandeja {b[0]:.0f} x {b[1]:.0f} x {b[2]:.0f} mm "
+          f"= {g['vol_l']:.1f} L; mínima a 25/28/30/32 °C: " + " / ".join(f"{x:.1f}" for x in temps))
+    e = equilibrio(g, 50.0, 32.0, 2)
+    print(f"A 32 °C: I={e['i']:.2f} A, Qc={e['qc']:.1f} W, Qh={e['qh']:.1f} W, "
           f"Th={e['th']:.0f} °C, Tc={e['tc']:.0f} °C")
 
 

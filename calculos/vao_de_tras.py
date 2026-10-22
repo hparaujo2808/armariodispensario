@@ -33,7 +33,7 @@ VENT_ESP = 25.0                                      # espessura da ventoinha [d
 PELTIER_LADO, PELTIER_ESP = 40.0, 3.8
 
 # ---- baia fria na coluna A, em cima (docs/DECISOES.md) ----------------------
-ISO = 40.0
+ISO = 50.0          # EPS 50 mm (docs/DECISOES.md)
 BAIA_X = (c.X_COL_A[0] + T, c.X_COL_A[1] + T)        # externo
 BAIA_Z = (201.0, c.GAVETEIRO_Z[1])
 Z_PELTIER = (BAIA_Z[0] + BAIA_Z[1]) / 2               # centro da baia
