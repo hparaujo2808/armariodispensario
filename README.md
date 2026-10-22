@@ -19,7 +19,7 @@ rogi: Tudo roda local num Arduino Mega, sem internet e sem servidor. A senha é 
 | Parte | Componente |
 |---|---|
 | Controle | Arduino Mega 2560 |
-| Porta | LCD 16x1 em paralelo (sem I2C), teclado de membrana 4x4, buzzer |
+| Porta | LCD 16x2 em paralelo (sem I2C), teclado de membrana 4x4, buzzer |
 | Tranca | Trava solenoide 12 V, acionada por relé |
 | Frio | 2 pastilhas Peltier TEC1-12703 com dissipador de alumínio (sem cooler), acionadas por relé |
 | Energia | Fonte chaveada 12 V 10 A + regulador 12 V → 5 V para os relés |

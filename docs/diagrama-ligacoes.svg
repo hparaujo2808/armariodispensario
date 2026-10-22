@@ -192,7 +192,7 @@
 <line x1="981.0" y1="710" x2="999.0" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="984.0" y1="714" x2="996.0" y2="714" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="987.0" y1="718" x2="993.0" y2="718" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x1 sem I2C (na porta)</text>
+<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x2 sem I2C (na porta)</text>
 <rect x="700" y="788" width="280" height="302" rx="8" fill="#1c1d1f" stroke="none" stroke-width="1.5"/>
 <text x="840" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
 <polyline points="255,806 700,806" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>

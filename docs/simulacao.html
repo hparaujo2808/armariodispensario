@@ -96,7 +96,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 aside.painel { display: grid; gap: 14px; min-width: 0; }
 .bloco { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 12px; min-width: 0; }
 
-/* LCD 16x1 HD44780: uma linha de 16 colunas, matriz de 5x8 pontos por caractere */
+/* LCD 16x2 HD44780: duas linhas de 16 colunas, matriz de 5x8 pontos por caractere */
 .lcd-moldura { background: #1e5a2f; border-radius: 6px; padding: 10px 12px; box-shadow: inset 0 0 0 3px #164524; }
 .lcd { background: var(--lcd-bg); border-radius: 3px; padding: 8px 8px; display: grid; gap: 4px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
 .lcd .linha { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
@@ -442,7 +442,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 <line x1="981.0" y1="710" x2="999.0" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="984.0" y1="714" x2="996.0" y2="714" stroke="#1e1e1e" stroke-width="2.5"/>
 <line x1="987.0" y1="718" x2="993.0" y2="718" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x1 sem I2C (na porta)</text>
+<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x2 sem I2C (na porta)</text>
 <rect x="700" y="788" width="280" height="302" rx="8" fill="#1c1d1f" stroke="none" stroke-width="1.5"/>
 <text x="840" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
 <polyline points="255,806 700,806" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
@@ -529,7 +529,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
         <thead><tr><th>Cabo</th><th>Liga</th><th>Fios</th><th>Bitola</th><th>Caminho</th></tr></thead>
         <tbody>
           <tr><td><button type="button" class="cabo-btn" data-cabo="teclado" aria-pressed="false"><i style="background:#e8892a"></i>Teclado</button></td><td>Teclado 4x4 → Mega 22 a 36 (pares)</td><td class="n">8</td><td>cabo de rede 1</td><td>Por dentro da porta até a dobradiça, laço de folga, furo na lateral esquerda, lateral por dentro (embaixo da prateleira de cima) até o fundo falso, furo, Arduino</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD 16x1 → Mega 38 (RS), 40 (E), 42 a 48 (D4 a D7), 5 V, GND · buzzer → Mega 7</td><td class="n">8 + 1</td><td>cabo de rede 2 + 1 fio de 0,5 mm² do buzzer</td><td>O mesmo caminho do teclado, lado a lado. O − do buzzer pega o GND do LCD dentro da caixa da porta</td></tr>
+          <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD 16x2 → Mega 38 (RS), 40 (E), 42 a 48 (D4 a D7), 5 V, GND · buzzer → Mega 7</td><td class="n">8 + 1</td><td>cabo de rede 2 + 1 fio de 0,5 mm² do buzzer</td><td>O mesmo caminho do teclado, lado a lado. O − do buzzer pega o GND do LCD dentro da caixa da porta</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="trava" aria-pressed="false"><i style="background:#d23b2b"></i>Trava</button></td><td>Trava → relé 1 (COM e NA) e GND</td><td class="n">2</td><td>0,5 mm²</td><td>Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 soldado nos terminais da trava</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha → relés 2 e 3</td><td class="n">2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente</td></tr>
           <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 10 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso; do COM 3 pro IN+ do LM2596, e dele pro Vin do Mega</td><td class="n">1 por trecho</td><td>1,5 mm² (0,5 mm² pro LM2596 e Vin)</td><td>Só no vão de trás. Sem bornes: dois fios por parafuso, pontas torcidas juntas</td></tr>
@@ -595,7 +595,7 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
             <tr><td>Dobradiças</td><td>2, na lateral esquerda, a 120 mm do topo e da base.</td></tr>
             <tr><td>Puxador</td><td>Do lado direito, a 440 mm de altura.</td></tr>
             <tr><td>Puxadores das gavetas</td><td>Rasgo ou furo na frente da gaveta, nada saltado para fora. A porta fecha por cima das gavetas e bateria em qualquer puxador.</td></tr>
-            <tr><td>LCD</td><td>16x1 sem I2C. Janela de 71 × 24 mm, centro a 690 mm de altura: a tela de uma linha aparece inteira nela. A placa do módulo (80 × 36 mm), o potenciômetro de contraste e o resistor da luz de fundo ficam por dentro.</td></tr>
+            <tr><td>LCD</td><td>16x2 sem I2C. Janela de 71 × 24 mm, centro a 690 mm de altura: as duas linhas aparecem inteiras nela. A placa do módulo (80 × 36 mm), o potenciômetro de contraste e o resistor da luz de fundo ficam por dentro.</td></tr>
             <tr><td>Teclado</td><td>Membrana adesiva colada por fora, logo abaixo do LCD. Rasgo de 22 × 2 mm para o cabo flat passar.</td></tr>
             <tr><td>Batente da trava</td><td>Cantoneira em L por dentro da porta, na altura da lingueta (600 mm), com janela de 12 × 20 mm.</td></tr>
             <tr><td>Fios da porta</td><td>17 fios (8 do teclado, 8 do LCD, 1 do buzzer, que divide o GND do LCD). Dois cabos de rede e um fio solto resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
@@ -687,37 +687,34 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     serial.scrollTop = serial.scrollHeight;
   }
 
-  /* ---------------- LCD 16x1 ---------------- */
+  /* ---------------- LCD 16x2 ---------------- */
   const lcdEl = $("lcd");
   const celulas = [];
-  for (let r = 0; r < 1; r++) {
+  for (let r = 0; r < 2; r++) {
     const linha = document.createElement("div"); linha.className = "linha";
     const row = [];
     for (let c = 0; c < 16; c++) { const d = document.createElement("span"); d.className = "c"; linha.appendChild(d); row.push(d); }
     lcdEl.appendChild(linha); celulas.push(row);
   }
-  let lcdAtual = [""];
-  function lcd(txt) {
-    const a = (txt || "").padEnd(16).slice(0, 16);
-    if (a === lcdAtual[0]) return;
-    lcdAtual = [a];
-    for (let c = 0; c < 16; c++) celulas[0][c].textContent = a[c] === " " ? " " : a[c];
-    lcdEl.setAttribute("aria-label", a.trim());
+  let lcdAtual = ["", ""];
+  function lcd(tela) {
+    const linhas = (Array.isArray(tela) ? tela : [tela, ""]).map((t) => (t || "").padEnd(16).slice(0, 16));
+    if (linhas[0] === lcdAtual[0] && linhas[1] === lcdAtual[1]) return;
+    lcdAtual = linhas;
+    linhas.forEach((a, r) => { for (let c = 0; c < 16; c++) celulas[r][c].textContent = a[c] === " " ? " " : a[c]; });
+    lcdEl.setAttribute("aria-label", linhas.map((a) => a.trim()).join(" / "));
     desenharLcd3d();
   }
-  // uma linha só: cada mensagem cabe em 16 caracteres
+  // duas linhas de 16 caracteres; mensagem curta ocupa a de cima
   function mensagem(txt, ms) { st.msg = txt; st.msgAte = performance.now() + ms; }
 
   function telaBase(agora) {
     if (st.msg && agora < st.msgAte) return st.msg;
     st.msg = null;
-    // telas que não cabem numa linha alternam a cada 1,5 s
-    const vez = Math.floor(agora / 1500) % 2;
-    if (agora < st.bloqueioAte) return "Bloqueado " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s";
-    if (st.sessao && st.trava) return vez ? "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s" : "Acesso liberado";
-    if (st.sessao) return vez ? "D = encerrar" : "C1:" + (st.frio.C1 ? "LIG" : "DES") + " C2:" + (st.frio.C2 ? "LIG" : "DES");
-    if (!st.entrada.length) return "Digite a senha";
-    return "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length);
+    if (agora < st.bloqueioAte) return ["Bloqueado", "Aguarde " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s"];
+    if (st.sessao && st.trava) return ["Acesso liberado", "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s"];
+    if (st.sessao) return ["C1:" + (st.frio.C1 ? "LIG" : "DES") + "  C2:" + (st.frio.C2 ? "LIG" : "DES"), "D = encerrar"];
+    return ["Digite a senha", "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length)];
   }
 
   /* ---------------- teclado 4x4 ---------------- */
@@ -1067,11 +1064,11 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
     const furoLente = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 6.6, 24), new THREE.MeshBasicMaterial({ color: 0x111111 }));
     furoLente.rotation.x = Math.PI / 2; furoLente.position.set(440, 835, 3); porta.add(nome(furoLente, "Furo da câmera", "15 mm, a 835 mm de altura; a webcam enxerga por ele com a porta fechada"));
     nome(caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true), "Caixa do LCD e do teclado", "o buzzer fica nela");
-    const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 110;
+    const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 200;
     const lcdTex = new THREE.CanvasTexture(lcdCanvas); lcdTex.anisotropy = 4;
-    const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(64.5, 14), new THREE.MeshBasicMaterial({ map: lcdTex }));
-    lcdTela.position.set(760, 690, 16.2); porta.add(nome(lcdTela, "Display LCD 16x1", "sem I2C: pinos 38 (RS), 40 (E), 42 a 48 (D4 a D7)"));
-    nome(caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false), "Display LCD 16x1", "potenciômetro de contraste e resistor de 220 Ω atrás da placa");
+    const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(64.5, 16), new THREE.MeshBasicMaterial({ map: lcdTex }));
+    lcdTela.position.set(760, 690, 16.2); porta.add(nome(lcdTela, "Display LCD 16x2", "sem I2C: pinos 38 (RS), 40 (E), 42 a 48 (D4 a D7)"));
+    nome(caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false), "Display LCD 16x2", "potenciômetro de contraste e resistor de 220 Ω atrás da placa");
     const tecCanvas = document.createElement("canvas"); tecCanvas.width = 276; tecCanvas.height = 304;
     (function () {
       const x = tecCanvas.getContext("2d");
@@ -1206,9 +1203,9 @@ footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-t
 
     function desenharLcdTela() {
       const x = lcdCanvas.getContext("2d");
-      x.fillStyle = "#9fc23a"; x.fillRect(0, 0, 512, 110);
+      x.fillStyle = "#9fc23a"; x.fillRect(0, 0, 512, 200);
       x.fillStyle = "#1f2a12"; x.font = "800 58px Doto, 'IBM Plex Mono', monospace"; x.textBaseline = "middle";
-      const l = lcdAtual[0]; for (let c = 0; c < 16; c++) x.fillText(l[c] || " ", 14 + c * 30.4, 57);
+      lcdAtual.forEach((l, r) => { for (let c = 0; c < 16; c++) x.fillText(l[c] || " ", 14 + c * 30.4, 52 + r * 96); });
       lcdTex.needsUpdate = true;
     }
 

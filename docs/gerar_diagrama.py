@@ -150,7 +150,7 @@ fio([(1168, y - 46), (1258, y - 46), (1258, y)], "#5b6862", 2.5)
 ponto(1060, y, "#5b6862"); ponto(1258, y, "#5b6862")
 texto(1152, y - 64, "diodo 1N4007 (faixa no +)", 11, anc="middle", peso=600)
 
-# ---------------- LCD 16x1 sem I2C (paralelo, 4 bits) ----------------
+# ---------------- LCD 16x2 sem I2C (paralelo, 4 bits) ----------------
 fio([(PX, 110), (300, 110), (300, 620), (700, 620)], C["v5"])
 for i, (n, pin) in enumerate(LCDP):
     yy = P[n]
@@ -163,7 +163,7 @@ texto(760, 658, "Digite a senha", 16, "#1f2a12", fam=MONO, peso=500)
 texto(756, 700, "RW, VSS e K no GND · A no 5V por 220 Ω", 10, "#cfe9d6")
 texto(756, 716, "V0 no meio do potenciômetro de 10 kΩ", 10, "#cfe9d6")
 pino(960, 700); fio([(965, 700), (990, 700)], C["gnd"]); terra(990, 700)
-texto(830, 600, "LCD 16x1 sem I2C (na porta)", 12, anc="middle", peso=600)
+texto(830, 600, "LCD 16x2 sem I2C (na porta)", 12, anc="middle", peso=600)
 
 # ---------------- teclado 4x4 ----------------
 KX, KY = 700, 788

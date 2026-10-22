@@ -15,7 +15,7 @@ O diagrama é gerado por `python docs/gerar_diagrama.py`. Para mudar um pino, mu
 | 9 | IN2: Peltier da gaveta C1 |
 | 10 | IN3: Peltier da gaveta C2 |
 | 11 | IN4: livre |
-| 38 · 40 | RS e E do LCD 16x1 |
+| 38 · 40 | RS e E do LCD 16x2 |
 | 42 · 44 · 46 · 48 | D4, D5, D6 e D7 do LCD |
 | 22 · 24 · 26 · 28 | Linhas L1 a L4 do teclado |
 | 30 · 32 · 34 · 36 | Colunas C1 a C4 do teclado |
@@ -25,7 +25,7 @@ O diagrama é gerado por `python docs/gerar_diagrama.py`. Para mudar um pino, mu
 
 O módulo de relés comum liga com nível baixo: no código, `LOW` liga e `HIGH` desliga.
 
-rogi: O LCD é um 16x1 sem placa I2C, ligado em paralelo com 4 bits de dados (D0 a D3 ficam soltos). No próprio LCD, dentro da caixa da porta: VSS, RW e K no GND, VDD no 5V, A no 5V pelo resistor de 220 Ω e V0 no pino do meio de um potenciômetro de 10 kΩ, com as pontas dele no 5V e no GND. Se a tela ligar e não mostrar nada, gire o potenciômetro: é o contraste. Muitos 16x1 são por dentro duas metades de 8 caracteres, então o código inicia como `lcd.begin(8, 2)` e escreve os 8 primeiros caracteres na linha 0 e os 8 seguintes na linha 1. Se o de vocês mostrar só a metade esquerda, é isso.
+rogi: O LCD é um 16x2 sem placa I2C, ligado em paralelo com 4 bits de dados (D0 a D3 ficam soltos). No próprio LCD, dentro da caixa da porta: VSS, RW e K no GND, VDD no 5V, A no 5V pelo resistor de 220 Ω e V0 no pino do meio de um potenciômetro de 10 kΩ, com as pontas dele no 5V e no GND. Se a tela ligar e não mostrar nada, gire o potenciômetro: é o contraste. No código, `lcd.begin(16, 2)`: duas linhas de 16 caracteres, a de cima com o aviso (`Digite a senha`, `Acesso liberado`) e a de baixo com o detalhe (`Senha: **__`, `Abra a porta 4s`).
 
 ## Cabos e caminhos
 

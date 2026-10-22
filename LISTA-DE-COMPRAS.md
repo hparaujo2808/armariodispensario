@@ -9,7 +9,7 @@ rogi: Links e preços conferidos em 21/10/2026. Preço muda toda semana e estoqu
 | Peça | Para quê | Observação |
 |---|---|---|
 | Arduino Mega 2560 + cabo USB | O cérebro: lê o teclado, mostra no LCD e decide quando abrir a trava e ligar o frio | |
-| Display LCD 16x1, sem I2C | Mostra `Digite a senha` e os `*` na porta | Potenciômetro de 10 kΩ e resistor de 220 Ω vêm do kit |
+| Display LCD 16x2, sem I2C | Mostra `Digite a senha` e os `*` na porta | Potenciômetro de 10 kΩ e resistor de 220 Ω vêm do kit |
 | Teclado de membrana 4x4 | Onde a enfermeira digita a senha; A/B ligam o frio, D encerra | |
 | Buzzer | Bipe de tecla, de senha certa e de senha errada | Conferir se é ativo: ligado direto em 5 V e GND, ele apita sozinho |
 | Webcam USB (de alguém do grupo) | Filma quem está na porta, do compartimento de cima | Qualquer uma que funcione no notebook. Se ninguém tiver, uma 720p simples de uns R$ 40 serve |
