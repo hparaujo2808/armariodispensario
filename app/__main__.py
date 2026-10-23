@@ -53,7 +53,7 @@ def montar(cfg: Config, semear_senha: str = "") -> Dispensario:
     mv = ClienteMV(url, cfg.mv_token, cfg.mv_timeout_s)
     disp = Dispensario(cfg, mega, banco, mv)
     if mega.online:
-        mega.ajustar(sp=int(round(cfg.setpoint_c * 10)), alarme=cfg.alarme_porta_s)
+        mega.ajustar(sp=int(round(cfg.setpoint_c * 10)), alarme=cfg.alarme_porta_s, auto=int(cfg.modo_autonomo))
     return disp
 
 

@@ -285,7 +285,7 @@ def criar_app(disp: Dispensario, laços: bool = True) -> FastAPI:
 
     @app.put("/api/compartimentos")
     def salvar_comp(d: CompartimentoIn, s=Depends(perfil("farmacia", "admin"))):
-        disp.db.salvar_compartimento(d.id, d.nome, d.climatizado, d.ordem)
+        executar(disp.db.salvar_compartimento, d.id, d.nome, d.climatizado, d.ordem)
         disp.db.auditar("CONFIG_COMPARTIMENTO", d.model_dump(), usuario_id=s["uid"])
         return {"ok": True}
 
@@ -366,8 +366,6 @@ def criar_app(disp: Dispensario, laços: bool = True) -> FastAPI:
 
     @app.post("/api/usuarios/{uid}/ativo")
     def ativo(uid: int, d: Ativo, s=Depends(perfil("admin"))):
-        disp.db.atualizar_usuario(uid, ativo=int(d.ativo))
-        disp.db.auditar("USUARIO_" + ("ATIVADO" if d.ativo else "DESATIVADO"), {"id": uid}, usuario_id=s["uid"])
-        return {"ok": True}
+        return executar(disp.definir_ativo, uid, d.ativo, s["uid"])
 
     return app

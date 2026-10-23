@@ -2,8 +2,8 @@
 
 Veio do software do legado (Raspberry Pi) quase sem mudança. Novidades:
 `usuarios.mega_id` (número do usuário no Arduino Mega, 1 a 20) e a tabela
-`mega_eventos`, que guarda cada evento recebido do Mega uma vez só (pelo número
-de sequência), também somente-inserção.
+`mega_eventos`, que guarda cada evento recebido do Mega uma vez só (pela época e
+pelo número de sequência), também somente-inserção.
 
 Garantias de projeto:
 - RNF04 (auditabilidade): `auditoria` e `movimentos` são somente-inserção
@@ -25,7 +25,7 @@ import os
 import sqlite3
 import threading
 import time
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 ESQUEMA = """
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -110,13 +110,15 @@ CREATE TABLE IF NOT EXISTS notificacoes (
     lida INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS mega_eventos (
-    seq INTEGER PRIMARY KEY,
+    epoca INTEGER NOT NULL,          -- sobe quando a EEPROM do Mega é formatada ou a placa é trocada
+    seq INTEGER NOT NULL,
     boot INTEGER NOT NULL,
     ms INTEGER NOT NULL,
     tipo TEXT NOT NULL,
     usuario INTEGER NOT NULL,
     valor INTEGER NOT NULL,
-    recebido REAL NOT NULL
+    recebido REAL NOT NULL,
+    PRIMARY KEY (epoca, seq)
 );
 CREATE TRIGGER IF NOT EXISTS mega_sem_update BEFORE UPDATE ON mega_eventos
 BEGIN SELECT RAISE(ABORT, 'eventos do Mega sao somente-insercao (RNF04)'); END;
@@ -133,6 +135,7 @@ BEGIN SELECT RAISE(ABORT, 'movimentos sao somente-insercao (RNF04)'); END;
 """
 
 GENESIS = "0" * 64
+FILA_MEGA = 200          # eventos que cabem na fila da EEPROM do Mega (firmware: mem::N_FILA)
 
 
 class ErroRegra(Exception):
@@ -168,7 +171,15 @@ class Banco:
         self.con.execute("PRAGMA journal_mode=WAL")
         self.con.execute("PRAGMA synchronous=FULL")
         self.con.execute("PRAGMA foreign_keys=ON")
+        self._migrar_mega_eventos()
         self.con.executescript(ESQUEMA)
+
+    def _migrar_mega_eventos(self) -> None:
+        """Bancos de antes de 23/10 tinham `seq` como chave sozinho: a tabela velha é guardada com outro nome."""
+        cols = [r[1] for r in self.con.execute("PRAGMA table_info(mega_eventos)")]
+        if cols and "epoca" not in cols:
+            self.con.executescript("DROP TRIGGER IF EXISTS mega_sem_update; DROP TRIGGER IF EXISTS mega_sem_delete; "
+                                   "ALTER TABLE mega_eventos RENAME TO mega_eventos_ate_2026_10_23;")
 
     # ------------------------------------------------------------ utilitários
     def _q(self, sql: str, args: Iterable = ()) -> List[sqlite3.Row]:
@@ -180,17 +191,23 @@ class Banco:
             return self.con.execute(sql, tuple(args))
 
     def transacao(self):
+        """Transação; pode ser aninhada (só a de fora faz o COMMIT ou o ROLLBACK)."""
         banco = self
 
         class _T:
             def __enter__(self):
                 banco._lock.acquire()
-                banco.con.execute("BEGIN IMMEDIATE")
+                if not banco.con.in_transaction:
+                    banco.con.execute("BEGIN IMMEDIATE")
+                    self.dono = True
+                else:
+                    self.dono = False
                 return banco
 
             def __exit__(self, exc_type, exc, tb):
                 try:
-                    banco.con.execute("ROLLBACK" if exc_type else "COMMIT")
+                    if self.dono:
+                        banco.con.execute("ROLLBACK" if exc_type else "COMMIT")
                 finally:
                     banco._lock.release()
                 return False
@@ -287,17 +304,48 @@ class Banco:
         raise ErroRegra("o Mega guarda no máximo 20 usuários")
 
     # ------------------------------------------------------- eventos do Mega
-    def registrar_mega_evento(self, ev: dict) -> bool:
-        """Guarda o evento do Mega. Devolve False se esse número de sequência já tinha chegado."""
-        try:
-            self._x("INSERT INTO mega_eventos(seq,boot,ms,tipo,usuario,valor,recebido) VALUES (?,?,?,?,?,?,?)",
-                    (ev["seq"], ev["b"], ev["ms"], ev["t"], ev["u"], ev["v"], time.time()))
-            return True
-        except sqlite3.IntegrityError:
-            return False
+    def epoca_mega(self) -> int:
+        return self._q("SELECT COALESCE(MAX(epoca), 1) FROM mega_eventos")[0][0]
+
+    def registrar_mega_evento(self, ev: dict) -> str:
+        """Guarda o evento do Mega. Devolve "novo", "repetido" (o Mega reenviou) ou "nova_epoca".
+
+        "nova_epoca": o número de sequência voltou para trás com conteúdo diferente,
+        ou seja, a EEPROM do Mega foi formatada ou a placa foi trocada. Sem isso,
+        todo evento novo seria descartado como repetido (revisão independente, item 3).
+        """
+        with self.transacao():
+            ep = self.epoca_mega()
+            r = self.con.execute("SELECT boot,ms,tipo,usuario,valor FROM mega_eventos WHERE epoca=? AND seq=?",
+                                 (ep, ev["seq"])).fetchone()
+            maior = self.con.execute("SELECT COALESCE(MAX(seq), 0) FROM mega_eventos WHERE epoca=?", (ep,)).fetchone()[0]
+            res = "novo"
+            if r is not None:
+                if tuple(r) == (ev["b"], ev["ms"], ev["t"], ev["u"], ev["v"]):
+                    return "repetido"
+                ep, res = ep + 1, "nova_epoca"
+            elif ev["seq"] + FILA_MEGA < maior:          # mais velho que a fila do Mega inteira: não é reenvio
+                ep, res = ep + 1, "nova_epoca"
+            self.con.execute("INSERT INTO mega_eventos(epoca,seq,boot,ms,tipo,usuario,valor,recebido) "
+                             "VALUES (?,?,?,?,?,?,?,?)",
+                             (ep, ev["seq"], ev["b"], ev["ms"], ev["t"], ev["u"], ev["v"], time.time()))
+        return res
+
+    def mega_contiguo(self) -> Tuple[int, int]:
+        """(último seq sem buraco desde o primeiro da época, maior seq recebido). O ACK do Mega é cumulativo."""
+        ep = self.epoca_mega()
+        r = self._q("SELECT MIN(seq) FROM mega_eventos e WHERE epoca=? AND NOT EXISTS "
+                    "(SELECT 1 FROM mega_eventos WHERE epoca=e.epoca AND seq=e.seq+1)", (ep,))[0][0]
+        m = self._q("SELECT COALESCE(MAX(seq), 0) FROM mega_eventos WHERE epoca=?", (ep,))[0][0]
+        return (r or 0), m
+
+    def mega_faltando(self, de: int, ate: int) -> List[int]:
+        ep = self.epoca_mega()
+        tem = {r[0] for r in self._q("SELECT seq FROM mega_eventos WHERE epoca=? AND seq BETWEEN ? AND ?", (ep, de, ate))}
+        return [s for s in range(de, ate + 1) if s not in tem]
 
     def mega_eventos(self, limite: int = 200) -> List[dict]:
-        return [dict(r) for r in self._q("SELECT * FROM mega_eventos ORDER BY seq DESC LIMIT ?", (limite,))]
+        return [dict(r) for r in self._q("SELECT * FROM mega_eventos ORDER BY epoca DESC, seq DESC LIMIT ?", (limite,))]
 
     def usuarios(self) -> List[dict]:
         return [{k: v for k, v in dict(r).items() if k != "senha_hash"} for r in self._q("SELECT * FROM usuarios ORDER BY nome")]
@@ -318,6 +366,12 @@ class Banco:
 
     # ------------------------------------------- itens e compartimentos (RF10, RF12)
     def salvar_compartimento(self, cid: str, nome: str, climatizado: bool, ordem: int = 0) -> None:
+        if not climatizado:
+            # RF12: um compartimento com item que exige frio não pode deixar de ser climatizado
+            ruins = self._q("SELECT e.item FROM estoque e JOIN itens i ON i.codigo=e.item "
+                            "WHERE e.compartimento=? AND i.requer_refrigeracao=1", (cid,))
+            if ruins:
+                raise ErroRegra(f"{cid} guarda item que exige refrigeração ({ruins[0][0]}): não pode deixar de ser climatizado")
         self._x("INSERT INTO compartimentos(id,nome,climatizado,ordem) VALUES (?,?,?,?) "
                 "ON CONFLICT(id) DO UPDATE SET nome=excluded.nome, climatizado=excluded.climatizado, ordem=excluded.ordem",
                 (cid, nome, int(climatizado), ordem))

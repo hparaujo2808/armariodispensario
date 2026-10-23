@@ -13,6 +13,7 @@ from typing import Callable, Dict, List, Optional
 from .base import Mega
 
 TRAVA_MAX_S = 3.0
+JANELA_ABERTURA_S = 5.0     # firmware: par::JANELA_ABERTURA_MS
 AGUARDA_NOTEBOOK_S = 120.0
 BLOQUEIO_S = 30.0
 
@@ -36,6 +37,7 @@ class MegaSimulado(Mega):
         self.temp = {"baia": 5.4, "cooler1": 38.0, "cooler2": 37.5, "peltier1": False, "peltier2": False,
                      "alarme": False, "v12": 12.0}
         self.comandos: List[str] = []
+        self.expirou_u, self.expirou_em = 0, -1e9
         self._ev("BOOT", 0, 0)
 
     # ---------------------------------------------------------- utilidades
@@ -75,6 +77,9 @@ class MegaSimulado(Mega):
         self.aviso_tempo = False
         if self.e == "LIBERADO":
             self._ev("PORTA_ABERTA", self.u, 0)
+        elif self.expirou_u and self.agora() - self.expirou_em < JANELA_ABERTURA_S:
+            self.u = self.expirou_u
+            self._ev("PORTA_ABERTA", self.u, 1)        # abertura tardia
         else:
             self._ev("ABERTURA_NAO_AUTORIZADA", 0, 0)
             self.u = 0
@@ -102,6 +107,9 @@ class MegaSimulado(Mega):
 
     def estado(self):
         return {"e": self.e, "u": str(self.u), "pend": str(len(self._pendentes))}
+
+    def relogio(self):
+        return (self.agora(), 1, int(self.agora() * 1000) % 2**32)
 
     def temperaturas(self):
         return dict(self.temp)
@@ -148,6 +156,7 @@ class MegaSimulado(Mega):
     def tick(self, agora: float) -> None:
         if self.e == "LIBERADO" and agora - self.desde >= TRAVA_MAX_S:
             self._ev("LIBERACAO_EXPIROU", self.u, 0)
+            self.expirou_u, self.expirou_em = self.u, agora
             self.u = 0
             self._ir("OCIOSO")
         elif self.e == "AGUARDANDO_NOTEBOOK" and agora - self.desde >= AGUARDA_NOTEBOOK_S:

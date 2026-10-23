@@ -43,6 +43,7 @@ class MegaSerial(Mega):
         self._cond = threading.Condition()
         self._estado: Dict[str, str] = {}
         self._temp: Dict[str, object] = {}
+        self._relogio = None
         self._ultima_linha = 0.0
         self._id = 0
         self._parar = threading.Event()
@@ -78,7 +79,10 @@ class MegaSerial(Mega):
                 buf += self.ser.read(256)
                 while b"\n" in buf:
                     linha, buf = buf.split(b"\n", 1)
-                    self._tratar(linha.decode("ascii", "replace"))
+                    try:
+                        self._tratar(linha.decode("ascii", "replace"))
+                    except Exception:   # noqa: BLE001 — uma linha estranha não pode matar a thread (e os PING)
+                        log.exception("Mega: linha ignorada %r", linha[:80])
             except (serial.SerialException, OSError) as e:
                 log.warning("Mega: %s (tentando de novo em 3 s)", e)
                 if self.ser:
@@ -99,6 +103,8 @@ class MegaSerial(Mega):
             self._fila.put(P.evento(campos))
         elif tipo == "ST":
             self._estado = campos
+            if "ms" in campos and "b" in campos:
+                self._relogio = (time.time(), int(campos["b"]), int(campos["ms"]))
         elif tipo == "TEMP":
             self._temp = temperaturas_de(campos)
         elif tipo in ("OK", "ERRO"):
@@ -144,6 +150,9 @@ class MegaSerial(Mega):
 
     def estado(self):
         return dict(self._estado)
+
+    def relogio(self):
+        return self._relogio
 
     def temperaturas(self):
         return dict(self._temp)

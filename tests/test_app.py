@@ -192,6 +192,8 @@ def test_liberacao_expira_se_a_porta_nao_abrir(a):
     a.d.consultar(CPF)
     a.d.liberar()
     rodar(a, 3.5)
+    assert a.d.estado == LIBERADO                    # ainda na janela de abertura tardia
+    rodar(a, 5.5)
     assert a.d.estado == OCIOSO
     assert "MEGA_LIBERACAO_EXPIROU" in tipos(a)
 
@@ -310,3 +312,84 @@ def test_painel_define_senha_da_porta(a):
     r = cli.post(f"/api/usuarios/{uid}/senha_porta", json={"senha": "8642"}, headers=h).json()
     assert r["mega_id"] == 4 and a.mega.senhas[4] == "8642"
     assert cli.post(f"/api/usuarios/{uid}/senha_porta", json={"senha": "12"}, headers=h).status_code == 400
+
+
+# ------------------------------------------------------------------ revisão independente (23/10)
+def _ev(seq, t="AUTH_FALHA", u=0, v=2, ms=1000, b=1):
+    return {"seq": seq, "t": t, "u": u, "v": v, "ms": ms, "b": b}
+
+
+def test_eeprom_formatada_nao_descarta_eventos_novos(a):
+    """Item 3: o seq do Mega recomeça em 1 depois de formatar a EEPROM."""
+    n = len(a.db.mega_eventos(5000))
+    a.d._evento_mega(_ev(1, "BOOT", ms=50, b=1))      # mesmo seq do BOOT do simulador, conteúdo diferente
+    assert "MEGA_SEQUENCIA_REINICIADA" in tipos(a)
+    assert len(a.db.mega_eventos(5000)) == n + 1
+    a.d._evento_mega(_ev(1, "BOOT", ms=50, b=1))      # agora sim, repetido
+    assert len(a.db.mega_eventos(5000)) == n + 1
+
+
+def test_ack_so_ate_o_ultimo_sem_buraco(a):
+    """Item 7: o ACK do Mega é cumulativo; um evento que faltou não pode ser apagado da fila."""
+    acks = []
+    a.mega.confirmar = lambda seq: acks.append(seq)
+    base = a.db.mega_contiguo()[0]
+    a.d._evento_mega(_ev(base + 2))                     # o base+1 se perdeu (CRC ruim)
+    a.d._confirmar_mega()
+    assert acks[-1] == base
+    a.d._evento_mega(_ev(base + 1))                     # reenviado pelo Mega
+    a.d._confirmar_mega()
+    assert acks[-1] == base + 2
+    a.d._evento_mega(_ev(base + 5))                     # base+3 e base+4 nunca chegam
+    a.d._confirmar_mega()
+    a.rel.avancar(61)
+    a.d._confirmar_mega()
+    assert acks[-1] == base + 5 and "MEGA_EVENTOS_PERDIDOS" in tipos(a)
+
+
+def test_evento_guardado_recebe_a_hora_do_mega(a):
+    """Item 8: evento guardado com o notebook fora do ar entra com a hora em que aconteceu."""
+    ms_agora = int(a.rel() * 1000) % 2**32
+    a.d._evento_mega(_ev(a.db.mega_contiguo()[1] + 1, ms=ms_agora - 600_000, b=1))
+    r = a.db.auditoria(tipo="MEGA_AUTH_FALHA")[0]
+    assert r["dados"]["hora_estimada"] and abs(r["ts"] - (a.rel() - 600)) < 1
+
+
+def test_desativar_usuario_apaga_no_mega(a):
+    """Item 4: senão o usuário revogado abriria a porta no modo autônomo."""
+    u = a.db.usuario(mega_id=2)
+    assert 2 in a.mega.senhas
+    a.d.definir_ativo(u["id"], False, None)
+    assert 2 not in a.mega.senhas and not a.db.usuario(mega_id=2)["ativo"]
+
+
+def test_rf12_compartimento_com_refrigerado_nao_perde_o_frio(a):
+    """Item 10."""
+    with pytest.raises(ErroRegra):
+        a.db.salvar_compartimento("BAIA_FRIA", "Baia fria", False)
+
+
+def test_confirmacao_e_tudo_ou_nada(a):
+    """Item 14: se um item falha, nenhum é baixado."""
+    antes = saldo(a, "BAIA_FRIA", "INS-NPH")
+    retirada_ate_porta_aberta(a)
+    a.mega.fechar_porta()
+    rodar(a, 0.2)
+    a.db.movimentar("ajuste", "SER-1ML", "A1", 0, None)    # saldo da seringa zerou no meio
+    with pytest.raises(Exception):
+        a.d.confirmar()
+    assert saldo(a, "BAIA_FRIA", "INS-NPH") == antes
+    assert a.d.estado == CONFIRMACAO
+
+
+def test_abertura_tardia_ainda_e_da_sessao(a):
+    """Item 16: a lingueta soltou no pulso, mas o reed só abriu depois de a liberação expirar."""
+    a.mega.autenticar(1)
+    rodar(a, 0.2)
+    a.d.consultar(CPF)
+    a.d.liberar()
+    rodar(a, 4)
+    a.mega.abrir_porta()
+    rodar(a, 0.2)
+    assert a.d.estado == PORTA_ABERTA and "ABERTURA" in tipos(a)
+    assert "ABERTURA_SEM_SESSAO" not in tipos(a)

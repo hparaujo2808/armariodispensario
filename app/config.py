@@ -28,6 +28,9 @@ class Config:
 
     # alarme da porta (RF09) e volume (RNF10) — enviados ao Mega
     alarme_porta_s: int = 30
+    # Notebook fora do ar: o Mega libera só com a digital ou a senha (sem CPF nem vídeo).
+    # Decisão da farmácia; com False, a porta só abre com o notebook funcionando.
+    modo_autonomo: bool = True
     volume_dia: int = 40
     volume_noite: int = 10
     noite_inicio_h: int = 22

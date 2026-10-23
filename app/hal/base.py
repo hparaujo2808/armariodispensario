@@ -4,12 +4,13 @@ O núcleo (core.py) só conversa com esta interface. Implementações:
   - hal/serial_mega.py : o Mega de verdade, pela USB
   - hal/mega_simulado.py : simulador em Python (demonstração sem hardware e testes)
 
-Os eventos do Mega chegam por `eventos()` (já sem repetidos de transmissão) e
-só são confirmados (`confirmar(seq)`) depois que o núcleo gravou na auditoria.
+Os eventos do Mega chegam por `eventos()` (podem vir repetidos: o Mega reenvia até o
+ACK, e quem descarta os repetidos é o núcleo) e só são confirmados (`confirmar(seq)`,
+cumulativo) depois que o núcleo gravou na auditoria.
 """
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 
 class Mega:
@@ -25,6 +26,10 @@ class Mega:
     def estado(self) -> Dict[str, str]:
         """Última linha ST: {e: estado, u: usuário, pend: eventos pendentes}."""
         raise NotImplementedError
+
+    def relogio(self) -> Optional[Tuple[float, int, int]]:
+        """(hora do notebook, boot, ms) da última linha ST: serve para datar eventos guardados."""
+        return None
 
     def temperaturas(self) -> Dict[str, Optional[float]]:
         """Última linha TEMP convertida: baia, cooler1, cooler2 (°C ou None), peltier1/2, alarme, v12."""

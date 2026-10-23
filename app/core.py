@@ -40,9 +40,12 @@ OCIOSO, AUTENTICADO, PRESCRICAO, LIBERADO, PORTA_ABERTA, CONFIRMACAO = (
 ALARMES_MEGA = {
     "PORTA_ABERTA_TEMPO": "PORTA_ABERTA_TEMPO", "ABERTURA_NAO_AUTORIZADA": "ABERTURA_NAO_AUTORIZADA",
     "TEMP_ALARME": "TEMPERATURA_FORA_FAIXA", "SENSOR_FALHA": "FALHA_SENSOR", "CORTE_QUENTE": "SOBRETEMPERATURA_DISSIPADOR",
+    "FRIO_SEM_EFEITO": "BAIA_NAO_ESFRIA",
     "ENERGIA_FALTA": "FALHA_ENERGIA", "BLOQUEIO": "BLOQUEIO_POR_ERROS",
 }
 FIM_ALARME = {"TEMP_NORMAL": "TEMPERATURA_FORA_FAIXA", "ENERGIA_VOLTA": "FALHA_ENERGIA"}
+LACUNA_MAX_S = 60.0
+JANELA_ABERTURA_S = 5.0  # firmware: par::JANELA_ABERTURA_MS     # quanto esperar um evento do Mega que faltou antes de dar como perdido
 
 
 class ErroOperacao(Exception):
@@ -67,6 +70,7 @@ class Dispensario:
         self._ult_temp = 0.0
         self._ult_volume = None
         self._gravacao_sem_sessao: Optional[str] = None
+        self._lacuna_desde: Optional[float] = None
         self.modo_contingencia = False
         self._recuperar_sessao()
         self.db.auditar("SISTEMA_INICIADO", {"dispensario": cfg.dispensario_id, "setor": cfg.setor})
@@ -142,21 +146,38 @@ class Dispensario:
         self.mensagem = "Operação interrompida foi recuperada. Confira e confirme as quantidades."
 
     # ============================================================ eventos do Mega
+    def _hora_do_evento(self, ev: dict) -> Optional[float]:
+        """Hora em que o evento aconteceu no Mega, pelo par (boot, ms) da última linha ST.
+
+        Só muda algo para eventos guardados (notebook fora do ar): o resto chega na hora.
+        """
+        rel = self.mega.relogio()
+        if not rel or rel[1] != ev["b"]:
+            return None
+        atraso = ((rel[2] - ev["ms"]) % 2**32) / 1000.0
+        return rel[0] - atraso if atraso > 2.0 else None
+
     def _evento_mega(self, ev: dict) -> None:
-        novo = self.db.registrar_mega_evento(ev)
-        if not novo:                                     # repetido (o Mega reenvia até o ACK)
-            self.mega.confirmar(ev["seq"])
+        res = self.db.registrar_mega_evento(ev)
+        if res == "repetido":                            # o Mega reenvia até o ACK
             return
+        if res == "nova_epoca":
+            self.db.auditar("MEGA_SEQUENCIA_REINICIADA", {"seq": ev["seq"], "boot": ev["b"]})
+            self.db.notificar("MEGA_SEQUENCIA_REINICIADA",
+                              "A memória do controlador foi zerada ou a placa foi trocada: conferir as senhas da porta.")
         t = ev["t"]
         dados = {"seq": ev["seq"], "boot": ev["b"], "ms_mega": ev["ms"], "usuario_mega": ev["u"], "valor": ev["v"]}
+        quando = self._hora_do_evento(ev)
+        if quando is not None:
+            dados["hora_estimada"] = True                # RF05: hora do Mega, não a da chegada
         u = self.db.usuario(mega_id=ev["u"]) if ev["u"] else None
         self.db.auditar("MEGA_" + t, dados, usuario_id=u["id"] if u else None,
-                        sessao_id=self.sessao["id"] if self.sessao else None)
+                        sessao_id=self.sessao["id"] if self.sessao else None, ts=quando)
 
         if t in ALARMES_MEGA:
             nome = ALARMES_MEGA[t]
             self.alarmes.setdefault(nome, self.agora())
-            if nome in ("TEMPERATURA_FORA_FAIXA", "FALHA_SENSOR", "SOBRETEMPERATURA_DISSIPADOR"):
+            if nome in ("TEMPERATURA_FORA_FAIXA", "FALHA_SENSOR", "SOBRETEMPERATURA_DISSIPADOR", "BAIA_NAO_ESFRIA"):
                 self.db.notificar(nome, f"Baia fria: {nome.replace('_', ' ').lower()} (valor {ev['v'] / 10:.1f})")
         if t in FIM_ALARME:
             self.alarmes.pop(FIM_ALARME[t], None)
@@ -168,7 +189,8 @@ class Dispensario:
         elif t == "BLOQUEIO":
             self.mensagem = f"Teclado bloqueado por {ev['v']} s depois de 3 erros"
         elif t == "LIBERACAO_EXPIROU" and self.estado == LIBERADO:
-            self._encerrar("liberacao_expirou", "A porta não foi aberta a tempo. Autentique de novo.")
+            # o Mega ainda aceita a abertura por JANELA_ABERTURA_S (o reed abre depois da lingueta)
+            self.sessao["expirou_em"] = self.agora()
         elif t == "CANCELADO" and self.estado in (AUTENTICADO, PRESCRICAO):
             self._encerrar("cancelada_no_mega", "Operação cancelada na porta")
         elif t == "PORTA_ABERTA":
@@ -186,7 +208,29 @@ class Dispensario:
             self.db.notificar("MODO_AUTONOMO", "O Mega liberou a porta sem o notebook: conferir a retirada pelas imagens.")
         elif t in ("BOOT", "RECUPERADO") and self.estado == LIBERADO:
             self._encerrar("mega_reiniciou", "O controlador reiniciou. Autentique de novo.")
-        self.mega.confirmar(ev["seq"])
+
+    def _confirmar_mega(self) -> None:
+        """ACK do Mega é cumulativo: só confirma até o último evento sem buraco antes dele.
+
+        Se faltar um evento por mais de LACUNA_MAX_S (o Mega já o tirou da fila), a falta
+        fica registrada na auditoria e a confirmação segue (revisão independente, item 7).
+        """
+        contig, maior = self.db.mega_contiguo()
+        if maior > contig:
+            if self._lacuna_desde is None:
+                self._lacuna_desde = self.agora()
+            elif self.agora() - self._lacuna_desde > LACUNA_MAX_S:
+                faltam = self.db.mega_faltando(contig + 1, maior)
+                for seq in faltam:
+                    self.db.registrar_mega_evento({"seq": seq, "b": 0, "ms": 0, "t": "PERDIDO", "u": 0, "v": 0})
+                self.db.auditar("MEGA_EVENTOS_PERDIDOS", {"seqs": faltam[:50], "total": len(faltam)})
+                self.db.notificar("MEGA_EVENTOS_PERDIDOS", f"{len(faltam)} evento(s) do controlador não chegaram")
+                self._lacuna_desde = None
+                contig = maior
+        else:
+            self._lacuna_desde = None
+        if contig:
+            self.mega.confirmar(contig)
 
     def _autenticado(self, mega_id: int, metodo: str) -> None:
         u = self.db.usuario(mega_id=mega_id)
@@ -326,52 +370,53 @@ class Dispensario:
             self._requer(CONFIRMACAO)
             s = self.sessao
             uid = s["usuario"]["id"]
-            if s["modo"] == "reposicao":
-                registros = []
-                for chave, q in (quantidades or {}).items():
-                    q = int(q)
-                    if q <= 0:
-                        continue
-                    comp, item = chave.split("|", 1)
-                    saldo = self.db.movimentar("reposicao", item, comp, q, uid, sessao_id=s["id"])
-                    registros.append({"compartimento": comp, "item": item, "quantidade": q, "saldo": saldo})
-                self._aud("REPOSICAO_REGISTRADA", {"registros": registros}, s.get("midia"))
-                for r in self.db.notificacoes():
-                    if r["tipo"] == "ESTOQUE_BAIXO" and r["item"] in {x["item"] for x in registros}:
-                        self.db.marcar_lida(r["id"])
-            else:
-                retirados, divergencias = [], []
-                for it in s["itens"]:
-                    q = it["qtd_retirar"] if quantidades is None else int(quantidades.get(it["codigo"], 0))
-                    if q < 0 or q > it["saldo"]:
-                        raise ErroOperacao(f"quantidade inválida para {it['descricao']}")
-                    if q != it["qtd_prescrita"]:
-                        divergencias.append({"codigo": it["codigo"], "prescrito": it["qtd_prescrita"], "retirado": q})
-                    restante = q
-                    for loc in it["locais"]:                 # baixa nos compartimentos, do maior saldo
-                        if restante <= 0:
-                            break
-                        tira = min(restante, loc["quantidade"])
-                        if tira > 0:
-                            self.db.movimentar("retirada", it["codigo"], loc["compartimento"], tira, uid,
-                                               s.get("paciente_ref"), s.get("prescricao_id"), s["id"])
-                            restante -= tira
-                    if q:
-                        retirados.append({"codigo": it["codigo"], "quantidade": q})
-                self._aud("RETIRADA_REGISTRADA", {"modo": s["modo"], "automatica": automatico,
-                                                  "paciente_ref": s.get("paciente_ref"),
-                                                  "prescricao_id": s.get("prescricao_id"), "itens": retirados},
-                          s.get("midia"))
-                if divergencias:
-                    self._aud("DIVERGENCIA_PRESCRICAO", {"divergencias": divergencias})
-                if automatico:
-                    self.db.notificar("CONFIRMACAO_AUTOMATICA",
-                                      f"Retirada de {s['usuario']['nome']} confirmada automaticamente — conferir o vídeo.")
-                if s.get("prescricao_id"):
-                    self.db.enfileirar_mv({"sessao_id": s["id"], "dispensario": self.cfg.dispensario_id,
-                                           "prescricao_id": s["prescricao_id"], "usuario_matricula": s["usuario"]["matricula"],
-                                           "ts": self.agora(), "itens": retirados, "divergencias": divergencias})
-                self._verificar_estoque_baixo([r["codigo"] for r in retirados])
+            with self.db.transacao():          # tudo ou nada: sem baixa pela metade
+                if s["modo"] == "reposicao":
+                    registros = []
+                    for chave, q in (quantidades or {}).items():
+                        q = int(q)
+                        if q <= 0:
+                            continue
+                        comp, item = chave.split("|", 1)
+                        saldo = self.db.movimentar("reposicao", item, comp, q, uid, sessao_id=s["id"])
+                        registros.append({"compartimento": comp, "item": item, "quantidade": q, "saldo": saldo})
+                    self._aud("REPOSICAO_REGISTRADA", {"registros": registros}, s.get("midia"))
+                    for r in self.db.notificacoes():
+                        if r["tipo"] == "ESTOQUE_BAIXO" and r["item"] in {x["item"] for x in registros}:
+                            self.db.marcar_lida(r["id"])
+                else:
+                    retirados, divergencias = [], []
+                    for it in s["itens"]:
+                        q = it["qtd_retirar"] if quantidades is None else int(quantidades.get(it["codigo"], 0))
+                        if q < 0 or q > it["saldo"]:
+                            raise ErroOperacao(f"quantidade inválida para {it['descricao']}")
+                        if q != it["qtd_prescrita"]:
+                            divergencias.append({"codigo": it["codigo"], "prescrito": it["qtd_prescrita"], "retirado": q})
+                        restante = q
+                        for loc in it["locais"]:                 # baixa nos compartimentos, do maior saldo
+                            if restante <= 0:
+                                break
+                            tira = min(restante, loc["quantidade"])
+                            if tira > 0:
+                                self.db.movimentar("retirada", it["codigo"], loc["compartimento"], tira, uid,
+                                                   s.get("paciente_ref"), s.get("prescricao_id"), s["id"])
+                                restante -= tira
+                        if q:
+                            retirados.append({"codigo": it["codigo"], "quantidade": q})
+                    self._aud("RETIRADA_REGISTRADA", {"modo": s["modo"], "automatica": automatico,
+                                                      "paciente_ref": s.get("paciente_ref"),
+                                                      "prescricao_id": s.get("prescricao_id"), "itens": retirados},
+                              s.get("midia"))
+                    if divergencias:
+                        self._aud("DIVERGENCIA_PRESCRICAO", {"divergencias": divergencias})
+                    if automatico:
+                        self.db.notificar("CONFIRMACAO_AUTOMATICA",
+                                          f"Retirada de {s['usuario']['nome']} confirmada automaticamente — conferir o vídeo.")
+                    if s.get("prescricao_id"):
+                        self.db.enfileirar_mv({"sessao_id": s["id"], "dispensario": self.cfg.dispensario_id,
+                                               "prescricao_id": s["prescricao_id"], "usuario_matricula": s["usuario"]["matricula"],
+                                               "ts": self.agora(), "itens": retirados, "divergencias": divergencias})
+                    self._verificar_estoque_baixo([r["codigo"] for r in retirados])
             self._encerrar("concluida", "Operação registrada. Obrigado!")
             return self.estado_publico()
 
@@ -388,11 +433,14 @@ class Dispensario:
         with self._lock:
             agora = self.agora()
             self.mega.tick(agora)
-            for ev in self.mega.eventos():
+            evs = self.mega.eventos()
+            for ev in evs:
                 try:
                     self._evento_mega(ev)
                 except Exception:   # noqa: BLE001 — um evento ruim não pode parar o laço
                     log.exception("erro ao tratar evento do Mega %s", ev)
+            if evs or self._lacuna_desde is not None:
+                self._confirmar_mega()
             self.temp = self.mega.temperaturas()
             if agora - self._ult_temp >= 60 and self.temp.get("baia") is not None:
                 self._ult_temp = agora
@@ -403,10 +451,19 @@ class Dispensario:
             if vol != self._ult_volume and self.mega.online and self.mega.ajustar(vol=vol):
                 self._ult_volume = vol
             s = self.sessao
-            if s and self.estado in (AUTENTICADO, PRESCRICAO) and agora - s["ultima_atividade"] > self.cfg.sessao_inatividade_s:
+            if s and self.estado == LIBERADO and s.get("expirou_em") and agora - s["expirou_em"] > JANELA_ABERTURA_S:
+                self._encerrar("liberacao_expirou", "A porta não foi aberta a tempo. Autentique de novo.")
+            elif s and self.estado in (AUTENTICADO, PRESCRICAO) and agora - s["ultima_atividade"] > self.cfg.sessao_inatividade_s:
                 self._encerrar("inatividade", "Sessão encerrada por inatividade", cancelar_mega=True)
             elif s and self.estado == CONFIRMACAO and agora - s["ultima_atividade"] > self.cfg.confirmacao_automatica_s:
-                self.confirmar(None, automatico=True)
+                try:
+                    self.confirmar(None, automatico=True)
+                except Exception as e:   # noqa: BLE001 — ex.: saldo mudou no painel no meio da retirada
+                    self.db.auditar("CONFIRMACAO_AUTOMATICA_FALHOU", {"erro": str(e)}, usuario_id=s["usuario"]["id"],
+                                    sessao_id=s["id"], midia=s.get("midia"))
+                    self.db.notificar("CONFIRMACAO_AUTOMATICA_FALHOU",
+                                      f"Retirada de {s['usuario']['nome']} não foi baixada ({e}) — conferir o vídeo.")
+                    self._encerrar("confirmacao_falhou", "Retirada não registrada: avise a farmácia")
 
     # ============================================================ outbox MV e mídia
     def enviar_pendentes_mv(self) -> int:
@@ -445,6 +502,21 @@ class Dispensario:
         self.db.atualizar_usuario(uid, mega_id=mega_id)
         self.db.auditar("SENHA_PORTA_DEFINIDA", {"usuario": uid, "mega_id": mega_id}, usuario_id=operador_id)
         return mega_id
+
+    def definir_ativo(self, uid: int, ativo: bool, operador_id: int) -> dict:
+        """Desativar também apaga o usuário no Mega; senão ele abriria a porta no modo autônomo."""
+        u = self.db.usuario(uid=uid)
+        if not u:
+            raise ErroOperacao("usuário inexistente")
+        self.db.atualizar_usuario(uid, ativo=int(ativo))
+        self.db.auditar("USUARIO_" + ("ATIVADO" if ativo else "DESATIVADO"), {"id": uid}, usuario_id=operador_id)
+        if ativo:
+            aviso = "Defina de novo a senha da porta e a digital deste usuário" if u["mega_id"] else ""
+            return {"ok": True, "aviso": aviso}
+        if u["mega_id"] and not self.mega.desativar(u["mega_id"]):
+            self.db.auditar("DESATIVACAO_MEGA_PENDENTE", {"id": uid, "mega_id": u["mega_id"]}, usuario_id=operador_id)
+            raise ErroOperacao("Desativado no sistema, mas o controlador da porta não respondeu: repita com ele ligado")
+        return {"ok": True, "aviso": ""}
 
     def cadastrar_digital(self, uid: int, operador_id: int) -> int:
         u = self.db.usuario(uid=uid)
