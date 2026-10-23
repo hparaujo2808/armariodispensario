@@ -53,3 +53,11 @@ def test_mega_nao_usa_vin():
     assert "Vin fica sem nada" in texto
     pinos, _ = gerar.carregar()
     assert all("Vin" not in str(a) for a in pinos["alimentacao_mega"])
+
+
+def test_simulacao_3d_atualizada():
+    """docs/simulacao.html sai de config.py + layout.py (docs/gerar_simulacao.py)."""
+    sys.path.insert(0, os.path.join(RAIZ, "docs"))
+    import gerar_simulacao
+    with open(gerar_simulacao.SAIDA, encoding="utf-8") as f:
+        assert f.read() == gerar_simulacao.gerar(), "rode python docs/gerar_simulacao.py"

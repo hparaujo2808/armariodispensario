@@ -2,1397 +2,186 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Armário Dispensador</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Doto:wght@700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Armário dispensador</title>
 <style>
-/* Layout: bancada de teste. Palco 3D à esquerda, a porta (LCD + teclado) e o estado do Arduino à direita; embaixo, o corte da tranca e a ficha da porta. */
-:root {
-  --bg: #e6e9e4;
-  --surface: #f4f5f1;
-  --ink: #1b2420;
-  --muted: #5b6862;
-  --line: #c9cfc8;
-  --stage: #dfe3dd;
-  --edge: #6c5a44;
-  --mdf: #c8a376;
-  --accent: #1f6f78;
-  --ok: #2c8a4b;
-  --stop: #c0392b;
-  --cold: #2f6fd1;
-  --lcd-bg: #9fc23a;
-  --lcd-on: #1f2a12;
-  --lcd-off: rgba(31, 42, 18, 0.09);
-  --pad: #1c1d1f;
-  --key: #2c2e31;
-  --key-fg: #f2f2ee;
-  --key-red: #b8352b;
-  --term-bg: #18201c;
-  --term-fg: #d6e4da;
-  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "IBM Plex Mono", "Consolas", "Menlo", monospace;
-  --font-lcd: "Doto", "IBM Plex Mono", "Consolas", monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #141917; --surface: #1c2220; --ink: #e5ebe6; --muted: #98a59e; --line: #2e3733;
-    --stage: #18201d; --edge: #d9c09a; --accent: #5fb7bf; --ok: #52b873; --stop: #e0614f; --cold: #6aa0ff;
-    --lcd-bg: #8fb233; --pad: #0e0f10; --key: #26282b; --term-bg: #0b0f0d; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #141917; --surface: #1c2220; --ink: #e5ebe6; --muted: #98a59e; --line: #2e3733;
-  --stage: #18201d; --edge: #d9c09a; --accent: #5fb7bf; --ok: #52b873; --stop: #e0614f; --cold: #6aa0ff;
-  --lcd-bg: #8fb233; --pad: #0e0f10; --key: #26282b; --term-bg: #0b0f0d; color-scheme: dark;
-}
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-body {
-  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
-  font-variation-settings: "wdth" 100;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 20px 40px;
-}
-.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 28px; }
-h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
-h1 { font-size: clamp(28px, 4.2vw, 44px); font-weight: 800; font-variation-settings: "wdth" 82; letter-spacing: -0.01em; line-height: 1.05; }
-h2 { font-size: 24px; font-weight: 750; font-variation-settings: "wdth" 86; }
-h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-p { margin: 0; max-width: 68ch; }
-.eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: 0.04em; }
-
-header.top { display: grid; gap: 10px; }
-.sub { color: var(--muted); }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 13px; font-weight: 600; }
-.chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
-.chip[data-s="stop"] i { background: var(--stop); }
-.chip[data-s="ok"] i { background: var(--ok); }
-.chip[data-s="cold"] i { background: var(--cold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cold) 25%, transparent); }
-
-.bancada { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr); gap: 18px; align-items: start; }
-.cena { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
-#palco { width: 100%; height: clamp(380px, 64vh, 660px); display: block; touch-action: none; }
-.cena .barra { position: absolute; left: 10px; right: 10px; top: 10px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
-.cena .barra > * { pointer-events: auto; }
-.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
-.seg button, .btn { font: 600 13px var(--font-body); color: var(--ink); background: transparent; border: 0; padding: 7px 11px; cursor: pointer; }
-.seg button + button { border-left: 1px solid var(--line); }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
-.btn { background: var(--surface); border: 1px solid var(--line); border-radius: 7px; }
-.btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.dica { position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted); background: color-mix(in srgb, var(--surface) 85%, transparent); padding: 4px 8px; border-radius: 6px; }
-.etiqueta { position: absolute; left: 0; top: 0; max-width: 260px; pointer-events: none; display: grid; gap: 2px; padding: 6px 10px; border-radius: 7px; background: var(--ink); color: var(--surface); box-shadow: 0 4px 14px rgba(0,0,0,0.22); font-size: 13px; line-height: 1.35; }
-.etiqueta[hidden] { display: none; }
-.etiqueta strong { font-weight: 700; }
-.etiqueta span { font-size: 12px; opacity: 0.78; }
-.carregando { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
-
-aside.painel { display: grid; gap: 14px; min-width: 0; }
-.bloco { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 12px; min-width: 0; }
-
-/* LCD 16x2 HD44780: duas linhas de 16 colunas, matriz de 5x8 pontos por caractere */
-.lcd-moldura { background: #1e5a2f; border-radius: 6px; padding: 10px 12px; box-shadow: inset 0 0 0 3px #164524; }
-.lcd { background: var(--lcd-bg); border-radius: 3px; padding: 8px 8px; display: grid; gap: 4px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
-.lcd .linha { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
-.lcd .c { aspect-ratio: 5 / 8; display: grid; place-items: center; font-family: var(--font-lcd); font-weight: 800; color: var(--lcd-on); font-size: clamp(17px, 2.05vw, 26px); line-height: 1;
-  background-image: radial-gradient(circle, var(--lcd-off) 38%, transparent 42%); background-size: 20% 12.5%; }
-.teclado { background: var(--pad); border-radius: 8px; padding: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
-.tecla { font: 700 20px var(--font-display); color: var(--key-fg); background: var(--key); border: 0; border-radius: 6px; aspect-ratio: 1.15; cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05); transition: transform 60ms; }
-.tecla.vermelha { background: var(--key-red); }
-.tecla:active, .tecla.batida { transform: translateY(2px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.35); }
-.tecla:disabled { opacity: 0.55; cursor: not-allowed; }
-.linha-info { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
-.linha-info code { font-family: var(--font-mono); color: var(--ink); background: var(--bg); padding: 1px 6px; border-radius: 4px; }
-
-.acoes { display: grid; gap: 10px; }
-.btn-porta { font: 700 15px var(--font-body); padding: 11px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--surface); cursor: pointer; }
-.gavetas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.gav { font: 600 13px var(--font-mono); padding: 7px 0; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; position: relative; }
-.gav.fria::after { content: ""; position: absolute; top: 4px; right: 5px; width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
-.gav.fria.ligada::after { background: var(--cold); }
-.gav[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
-
-.hw { display: grid; gap: 0; }
-.hw .item { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
-.hw .item:first-child { border-top: 0; }
-.hw .v { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; padding: 1px 8px; border-radius: 4px; background: var(--bg); }
-.hw .v[data-s="ok"] { color: var(--ok); }
-.hw .v[data-s="stop"] { color: var(--stop); }
-.hw .v[data-s="cold"] { color: var(--cold); }
-.serial { font-family: var(--font-mono); font-size: 12px; line-height: 1.55; background: var(--term-bg); color: var(--term-fg); border-radius: 8px; padding: 10px 12px; height: 168px; overflow: auto; margin: 0; white-space: pre-wrap; }
-.serial .t { opacity: 0.55; }
-
-.tranca { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-.corte { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
-.corte svg { width: 100%; height: auto; display: block; }
-.corte .estado { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); padding: 6px 4px 0; }
-.texto { display: grid; gap: 14px; min-width: 0; }
-ol.passos { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 64ch; }
-ol.passos li::marker { font-family: var(--font-mono); color: var(--accent); }
-
-.ficha { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.tabela-wrap { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; font-size: 14px; }
-th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
-td.k { font-family: var(--font-mono); font-weight: 500; white-space: nowrap; }
-td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.fiacao { display: grid; gap: 18px; }
-.duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-table.cabos { min-width: 760px; }
-.cabo-btn { display: inline-flex; align-items: center; gap: 8px; font: 600 13.5px var(--font-body); color: var(--ink); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; margin-left: -8px; cursor: pointer; white-space: nowrap; }
-.cabo-btn i { width: 18px; height: 6px; border-radius: 3px; flex: none; }
-.cabo-btn:hover { border-color: var(--line); }
-.cabo-btn[aria-pressed="true"] { border-color: var(--ink); background: var(--bg); }
-.nota { font-size: 13px; color: var(--muted); }
-.diagrama-wrap { overflow-x: auto; background: #ffffff; border: 1px solid var(--line); border-radius: 10px; }
-.diagrama { display: block; width: 100%; min-width: 900px; height: auto; }
-footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 14px; }
-
-@media (max-width: 920px) {
-  .bancada, .tranca, .ficha, .duas { grid-template-columns: 1fr; }
-  #palco { height: clamp(320px, 52vh, 480px); }
-}
-@media (prefers-reduced-motion: reduce) { .tecla { transition: none; } }
+  :root { --bg:#f3f1ec; --card:#fff; --tx:#1f2a26; --mut:#5b6862; --pri:#0b6e4f; --line:#d9d4c8; --lcd:#9ecb3c; --lcdtx:#16310b; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#1b1f1d; --card:#252b28; --tx:#e8ece9; --mut:#9aa8a1; --line:#3a423e; } }
+  :root[data-theme="dark"] { --bg:#1b1f1d; --card:#252b28; --tx:#e8ece9; --mut:#9aa8a1; --line:#3a423e; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--tx); font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  header { padding:14px 16px; }
+  h1 { margin:0; font-size:22px; }
+  header p { margin:4px 0 0; color:var(--mut); }
+  .grade { display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:14px; padding:0 16px 16px; }
+  @media (max-width: 860px) { .grade { grid-template-columns:1fr; } }
+  #cena { position:relative; height:640px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  @media (max-width: 860px) { #cena { height:420px; } }
+  #etq { position:absolute; pointer-events:none; background:#1f2a26; color:#fff; padding:6px 9px; border-radius:6px; font-size:13px; max-width:260px; display:none; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:12px; }
+  .card h2 { margin:0 0 8px; font-size:16px; }
+  .lcd { background:var(--lcd); color:var(--lcdtx); font:20px/1.25 ui-monospace,Menlo,Consolas,monospace; padding:8px 10px; border-radius:6px; white-space:pre; letter-spacing:1px; }
+  .tec { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:8px; }
+  button { font:inherit; border:1px solid var(--line); border-radius:8px; padding:8px; background:var(--bg); color:var(--tx); cursor:pointer; }
+  button.pri { background:var(--pri); color:#fff; border-color:var(--pri); }
+  .linha { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .chip { display:inline-block; padding:2px 8px; border-radius:999px; background:var(--bg); border:1px solid var(--line); font-size:13px; margin:2px 2px 0 0; }
+  .chip.on { background:#ffe2c2; border-color:#e8a15f; color:#5a2c00; }
+  #log { font:12px/1.35 ui-monospace,Menlo,Consolas,monospace; max-height:160px; overflow:auto; color:var(--mut); white-space:pre-wrap; }
+  small { color:var(--mut); }
 </style>
 </head>
 <body>
-
-<div class="wrap">
-  <header class="top">
-    <span class="eyebrow">PROTÓTIPO · ARDUINO MEGA · MDF 3 mm · 880 × 880 × 700 mm</span>
-    <h1>Armário Dispensador</h1>
-    <p class="sub">rogi: Simulação do armário pronto, com a porta que ainda vai ser construída. Digite a senha no teclado, abra a porta, puxe as gavetas e ligue o frio. A tranca, o display e as gavetas reagem como o Arduino vai fazer.</p>
-    <div class="chips" aria-live="polite">
-      <span class="chip" id="chip-trava" data-s="stop"><i></i><span>Tranca travada</span></span>
-      <span class="chip" id="chip-porta" data-s="stop"><i></i><span>Porta fechada</span></span>
-      <span class="chip" id="chip-c1"><i></i><span>Frio C1 desligado</span></span>
-      <span class="chip" id="chip-c2"><i></i><span>Frio C2 desligado</span></span>
+<header>
+  <h1>Armário dispensador</h1>
+  <p>Medidas geradas de <code>armario/gerador/config.py</code> e <code>hardware/layout.py</code> por <code>docs/gerar_simulacao.py</code>. Passe o mouse numa peça para ver o nome; clique na porta ou numa gaveta para abrir.</p>
+</header>
+<div class="grade">
+  <div id="cena"><div id="etq"></div></div>
+  <div>
+    <div class="card">
+      <h2>Na porta</h2>
+      <div class="lcd" id="lcd"></div>
+      <div class="tec" id="tec"></div>
+      <div class="linha"><button class="pri" id="b-dig">Digital do usuário 1</button><button id="b-dig-x">Dedo desconhecido</button></div>
+      <small>Usuário 1 tem a senha 1357 (padrão do firmware). Sem notebook, o Mega libera sozinho depois da autenticação.</small>
     </div>
-  </header>
-
-  <section class="bancada">
-    <div class="cena">
-      <canvas id="palco" aria-label="Modelo 3D do armário. Arraste para girar, role para aproximar, clique na porta e nas gavetas."></canvas>
-      <div class="carregando" id="carregando">Carregando o modelo 3D…</div>
-      <div class="barra">
-        <div class="seg" role="group" aria-label="Vista">
-          <button type="button" id="v-geral" aria-pressed="true">Geral</button>
-          <button type="button" id="v-porta" aria-pressed="false">Porta</button>
-          <button type="button" id="v-tranca" aria-pressed="false">Tranca</button>
-          <button type="button" id="v-eletronica" aria-pressed="false">Eletrônica</button>
-          <button type="button" id="v-fios" aria-pressed="false">Fios</button>
-        </div>
-        <button type="button" class="btn" id="raiox" aria-pressed="false">Raio-X</button>
-      </div>
-      <div class="dica">Arraste para girar · passe o mouse numa peça para ver o nome · clique na porta e nas gavetas</div>
-      <div class="etiqueta" id="etiqueta" role="status" hidden><strong></strong><span></span></div>
+    <div class="card">
+      <h2>Estado</h2>
+      <div id="chips"></div>
+      <div class="linha"><button id="b-vista-f">Frente</button><button id="b-vista-e">Lado esquerdo</button><button id="b-vista-c">De cima</button><button id="b-raio">Raio-x</button></div>
     </div>
-
-    <aside class="painel">
-      <div class="bloco">
-        <h3>Na porta</h3>
-        <div class="lcd-moldura"><div class="lcd" id="lcd" role="status" aria-live="polite"></div></div>
-        <div class="teclado" id="teclado"></div>
-        <div class="linha-info"><span>Senha de teste <code>1234</code> · <code>#</code> confirma · <code>*</code> apaga</span><button type="button" class="btn" id="som" aria-pressed="true">Som ligado</button></div>
-      </div>
-
-      <div class="bloco acoes">
-        <h3>Mãos da enfermeira</h3>
-        <button type="button" class="btn-porta" id="btn-porta">Puxar a porta</button>
-        <div class="gavetas" id="gavetas"></div>
-      </div>
-
-      <div class="bloco">
-        <h3>O que o Arduino está fazendo</h3>
-        <div class="hw">
-          <div class="item"><span>Relé 1 · trava solenoide</span><span class="v" id="hw-r1">DESLIGADO</span></div>
-          <div class="item"><span>Relé 2 · Peltier gaveta C1</span><span class="v" id="hw-r2">DESLIGADO</span></div>
-          <div class="item"><span>Relé 3 · Peltier gaveta C2</span><span class="v" id="hw-r3">DESLIGADO</span></div>
-          <div class="item"><span>Sessão (teclas A, B e D)</span><span class="v" id="hw-sessao">ENCERRADA</span></div>
-          <div class="item"><span>Senhas erradas seguidas</span><span class="v" id="hw-erros">0 de 3</span></div>
-        </div>
-        <h3>Monitor serial · 9600</h3>
-        <pre class="serial" id="serial" aria-live="off"></pre>
-      </div>
-    </aside>
-  </section>
-
-  <section class="tranca" aria-labelledby="t-tranca">
-    <div class="corte">
-      <svg id="corte" viewBox="0 0 420 270" role="img" aria-label="Corte visto de cima: trava na parede direita e batente com janela preso na porta"></svg>
-      <div class="estado" id="corte-estado">Lingueta dentro da janela do batente: a porta não sai.</div>
-    </div>
-    <div class="texto">
-      <span class="eyebrow">VISTO DE CIMA · CANTO DIREITO DA FRENTE</span>
-      <h2 id="t-tranca">Como a tranca segura a porta</h2>
-      <p>rogi: A trava solenoide é uma peça só, mas trabalha em dupla com um batente. O corpo dela fica parafusado por dentro, na parede direita, e de lá sai a lingueta. Na porta vai um batente em L com uma janela. Com a porta fechada, a lingueta fica enfiada nessa janela, e puxar a porta só faz o batente bater nela.</p>
-      <ol class="passos">
-        <li><strong>Sem energia, travada.</strong> Uma mola empurra a lingueta para fora. A trava não gasta nada parada.</li>
-        <li><strong>Senha certa.</strong> O Arduino liga o relé 1, a bobina recebe 12 V e puxa a lingueta para dentro. A porta fica livre por 5 s. Depois o relé desliga sozinho e a lingueta volta, com a porta aberta ou não.</li>
-        <li><strong>Fechar tranca sozinho.</strong> A lingueta tem a ponta chanfrada virada para a frente. Ao fechar, o batente desliza no chanfro, empurra a lingueta e ela estala dentro da janela. Ninguém precisa apertar nada.</li>
-      </ol>
-      <p>rogi: Por isso não precisa de sensor. O fechamento é mecânico e o Arduino nem fica sabendo se a porta fechou. Quem encerra a sessão é a tecla D: corta a trava se ela ainda estiver solta e bloqueia as teclas do frio. Se a enfermeira esquecer, a sessão encerra sozinha depois de 60 s sem nenhuma tecla.</p>
-    </div>
-  </section>
-
-  <section class="fiacao" aria-labelledby="t-fios">
-    <div class="texto">
-      <span class="eyebrow">10 CABOS · 7 FUROS</span>
-      <h2 id="t-fios">Por onde passa cada fio</h2>
-      <p>rogi: Todo fio termina no vão de trás, entre o fundo falso e o traseiro, onde ficam o Arduino, os relés e a fonte. Os da porta são os únicos que se mexem. Saem da caixa do LCD por um rasgo, correm por dentro da porta até a dobradiça, fazem um laço de folga por fora e entram pela lateral esquerda. No diagrama está o circuito. Na tabela, clique num cabo para ver só ele no 3D.</p>
-    </div>
-    <div class="diagrama-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1140" class="diagrama" role="img" aria-label="Diagrama de ligações do Armário Dispensador">
-<rect width="1500" height="1140" fill="#ffffff"/>
-<text x="40" y="34" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a26" text-anchor="start">Ligações do Armário Dispensador</text>
-<text x="40" y="52" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5b6862" text-anchor="start">Arduino Mega 2560 · porta com LCD e teclado · trava e Peltier por relé · posição dos pinos simplificada</text>
-<rect x="40" y="80" width="210" height="1040" rx="12" fill="#0b8a8a" stroke="none" stroke-width="1.5"/>
-<text x="145.0" y="102" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#d8f3f1" text-anchor="middle">posição dos pinos simplificada</text>
-<text x="110" y="600.0" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="30" font-weight="800" fill="#ffffff" text-anchor="middle" transform="rotate(-90 110 600.0)">ARDUINO MEGA 2560</text>
-<rect x="245" y="105" width="10" height="10" fill="#141414"/>
-<text x="236" y="115" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">5V</text>
-<rect x="245" y="135" width="10" height="10" fill="#141414"/>
-<text x="236" y="145" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">GND</text>
-<rect x="245" y="205" width="10" height="10" fill="#141414"/>
-<text x="236" y="215" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">Vin</text>
-<rect x="245" y="305" width="10" height="10" fill="#141414"/>
-<text x="236" y="315" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D7</text>
-<rect x="245" y="375" width="10" height="10" fill="#141414"/>
-<text x="236" y="385" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D8</text>
-<rect x="245" y="455" width="10" height="10" fill="#141414"/>
-<text x="236" y="465" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D9</text>
-<rect x="245" y="535" width="10" height="10" fill="#141414"/>
-<text x="236" y="545" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D10</text>
-<rect x="245" y="639" width="10" height="10" fill="#141414"/>
-<text x="236" y="649" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D38</text>
-<rect x="245" y="661" width="10" height="10" fill="#141414"/>
-<text x="236" y="671" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D40</text>
-<rect x="245" y="683" width="10" height="10" fill="#141414"/>
-<text x="236" y="693" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D42</text>
-<rect x="245" y="705" width="10" height="10" fill="#141414"/>
-<text x="236" y="715" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D44</text>
-<rect x="245" y="727" width="10" height="10" fill="#141414"/>
-<text x="236" y="737" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D46</text>
-<rect x="245" y="749" width="10" height="10" fill="#141414"/>
-<text x="236" y="759" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D48</text>
-<rect x="245" y="801" width="10" height="10" fill="#141414"/>
-<text x="236" y="811" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D22</text>
-<rect x="245" y="837" width="10" height="10" fill="#141414"/>
-<text x="236" y="847" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D24</text>
-<rect x="245" y="873" width="10" height="10" fill="#141414"/>
-<text x="236" y="883" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D26</text>
-<rect x="245" y="909" width="10" height="10" fill="#141414"/>
-<text x="236" y="919" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D28</text>
-<rect x="245" y="945" width="10" height="10" fill="#141414"/>
-<text x="236" y="955" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D30</text>
-<rect x="245" y="981" width="10" height="10" fill="#141414"/>
-<text x="236" y="991" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D32</text>
-<rect x="245" y="1017" width="10" height="10" fill="#141414"/>
-<text x="236" y="1027" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D34</text>
-<rect x="245" y="1053" width="10" height="10" fill="#141414"/>
-<text x="236" y="1063" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="end">D36</text>
-<rect x="1170" y="70" width="230" height="70" rx="4" fill="#aab2b7" stroke="#7d868c" stroke-width="1.5"/>
-<text x="1285" y="101" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1f2a26" text-anchor="middle">FONTE 12 V 10 A</text>
-<text x="1285" y="121" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3d4844" text-anchor="middle">chaveada (colmeia)</text>
-<rect x="1215" y="135" width="10" height="10" fill="#141414"/>
-<text x="1210" y="158" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d0312d" text-anchor="end">+12V</text>
-<rect x="1355" y="135" width="10" height="10" fill="#141414"/>
-<text x="1370" y="158" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1e1e1e" text-anchor="start">GND</text>
-<polyline points="1400,105 1470,105" fill="none" stroke="#7d868c" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1470" y="96" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#5b6862" text-anchor="end">tomada</text>
-<polyline points="1220,145 1220,210" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="1211" y="160" width="18" height="34" rx="3" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1200" y="182" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#1f2a26" text-anchor="end">fusível 10 A</text>
-<polyline points="255,210 1220,210" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="560" y="202" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#d0312d" text-anchor="middle">12 V</text>
-<circle cx="1000" cy="210" r="4.5" fill="#d0312d"/>
-<circle cx="1050" cy="210" r="4.5" fill="#d0312d"/>
-<polyline points="1360,145 1360,170 1440,170 1440,568" fill="none" stroke="#1e1e1e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1462" y="380" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="middle" transform="rotate(90 1462 380)">GND da fonte (comum)</text>
-<polyline points="255,140 285,140" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="285" y1="140" x2="285" y2="150" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="276.0" y1="150" x2="294.0" y2="150" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="279.0" y1="154" x2="291.0" y2="154" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="282.0" y1="158" x2="288.0" y2="158" stroke="#1e1e1e" stroke-width="2.5"/>
-<polyline points="255,310 747,310" fill="none" stroke="#139aa0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="765" cy="310" r="18" fill="#222426"/><circle cx="765" cy="310" r="5" fill="#55595d"/>
-<text x="742" y="296" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="middle">+</text>
-<text x="790" y="296" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="middle">-</text>
-<polyline points="783,310 830,310" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="830" y1="310" x2="830" y2="320" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="821.0" y1="320" x2="839.0" y2="320" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="824.0" y1="324" x2="836.0" y2="324" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="827.0" y1="328" x2="833.0" y2="328" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="765" y="280" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">buzzer ativo (na porta)</text>
-<polyline points="1050,210 1050,250" fill="none" stroke="#d0312d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="1030" y="250" width="110" height="50" rx="4" fill="#1f4fa8" stroke="none" stroke-width="1.5"/>
-<text x="1085" y="271" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">LM2596</text>
-<text x="1085" y="289" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#d6e2ff" text-anchor="middle">12 V → 5 V</text>
-<polyline points="1140,285 1165,285" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="1165" y1="285" x2="1165" y2="295" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="1156.0" y1="295" x2="1174.0" y2="295" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="1159.0" y1="299" x2="1171.0" y2="299" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="1162.0" y1="303" x2="1168.0" y2="303" stroke="#1e1e1e" stroke-width="2.5"/>
-<polyline points="1120,300 1120,318 940,318 940,332" fill="none" stroke="#2e8b57" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="700" y="332" width="260" height="238" rx="6" fill="#1f4fa8" stroke="none" stroke-width="1.5"/>
-<rect x="935" y="327" width="10" height="10" fill="#141414"/>
-<text x="940" y="348" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#d6e2ff" text-anchor="middle">VCC</text>
-<rect x="925" y="565" width="10" height="10" fill="#141414"/>
-<text x="918" y="562" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#d6e2ff" text-anchor="end">GND</text>
-<polyline points="930,575 930,584" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="930" y1="584" x2="930" y2="594" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="921.0" y1="594" x2="939.0" y2="594" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="924.0" y1="598" x2="936.0" y2="598" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="927.0" y1="602" x2="933.0" y2="602" stroke="#1e1e1e" stroke-width="2.5"/>
-<polyline points="255,380 700,380" fill="none" stroke="#8e5cc7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="375" width="10" height="10" fill="#141414"/>
-<text x="712" y="384" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d6e2ff" text-anchor="start">IN1</text>
-<rect x="760" y="358" width="120" height="44" rx="4" fill="#163c82" stroke="none" stroke-width="1.5"/>
-<text x="820" y="384" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#ffffff" text-anchor="middle">R1 · trava</text>
-<rect x="955" y="363" width="10" height="10" fill="#141414"/>
-<text x="950" y="372" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#d6e2ff" text-anchor="end">COM</text>
-<rect x="955" y="387" width="10" height="10" fill="#141414"/>
-<text x="950" y="396" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#d6e2ff" text-anchor="end">NA</text>
-<polyline points="965,368 1000,368" fill="none" stroke="#d0312d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1000" cy="368" r="4.5" fill="#d0312d"/>
-<polyline points="255,460 700,460" fill="none" stroke="#8e5cc7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="455" width="10" height="10" fill="#141414"/>
-<text x="712" y="464" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d6e2ff" text-anchor="start">IN2</text>
-<rect x="760" y="438" width="120" height="44" rx="4" fill="#163c82" stroke="none" stroke-width="1.5"/>
-<text x="820" y="464" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#ffffff" text-anchor="middle">R2 · Peltier C1</text>
-<rect x="955" y="443" width="10" height="10" fill="#141414"/>
-<text x="950" y="452" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#d6e2ff" text-anchor="end">COM</text>
-<rect x="955" y="467" width="10" height="10" fill="#141414"/>
-<text x="950" y="476" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#d6e2ff" text-anchor="end">NA</text>
-<polyline points="965,448 1000,448" fill="none" stroke="#d0312d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1000" cy="448" r="4.5" fill="#d0312d"/>
-<polyline points="255,540 700,540" fill="none" stroke="#8e5cc7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="535" width="10" height="10" fill="#141414"/>
-<text x="712" y="544" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#d6e2ff" text-anchor="start">IN3</text>
-<rect x="760" y="518" width="120" height="44" rx="4" fill="#163c82" stroke="none" stroke-width="1.5"/>
-<text x="820" y="544" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#ffffff" text-anchor="middle">R3 · Peltier C2</text>
-<rect x="955" y="523" width="10" height="10" fill="#141414"/>
-<text x="950" y="532" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#d6e2ff" text-anchor="end">COM</text>
-<rect x="955" y="547" width="10" height="10" fill="#141414"/>
-<text x="950" y="556" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#d6e2ff" text-anchor="end">NA</text>
-<polyline points="965,528 1000,528" fill="none" stroke="#d0312d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1000" cy="528" r="4.5" fill="#d0312d"/>
-<text x="712" y="348" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="start">MÓDULO DE RELÉS · liga com LOW</text>
-<polyline points="1000,210 1000,528" fill="none" stroke="#d0312d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="965,392 1080,392" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="1080" y="374" width="160" height="36" rx="4" fill="#3b4247" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="389" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">trava solenoide</text>
-<text x="1160" y="403" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#c9d0d4" text-anchor="middle">12 V · 0,5 a 1 A</text>
-<polyline points="1240,392 1440,392" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1440" cy="392" r="4.5" fill="#1e1e1e"/>
-<polyline points="965,472 1080,472" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="1080" y="454" width="160" height="36" rx="4" fill="#eef2f5" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="469" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C1</text>
-<text x="1160" y="483" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">12 V · ~6 A · 1,5 mm²</text>
-<polyline points="1240,472 1440,472" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1440" cy="472" r="4.5" fill="#1e1e1e"/>
-<polyline points="965,552 1080,552" fill="none" stroke="#a3221d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="1080" y="534" width="160" height="36" rx="4" fill="#eef2f5" stroke="#1e1e1e" stroke-width="1.5"/>
-<text x="1160" y="549" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1f2a26" text-anchor="middle">Peltier C2</text>
-<text x="1160" y="563" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#5b6862" text-anchor="middle">12 V · ~6 A · 1,5 mm²</text>
-<polyline points="1240,552 1440,552" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1440" cy="552" r="4.5" fill="#1e1e1e"/>
-<polyline points="1060,392 1060,346 1132,346" fill="none" stroke="#5b6862" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-<polygon points="1168,336 1168,356 1138,346" fill="#1e1e1e"/>
-<line x1="1136" y1="335" x2="1136" y2="357" stroke="#1e1e1e" stroke-width="3"/>
-<polyline points="1168,346 1258,346 1258,392" fill="none" stroke="#5b6862" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="1060" cy="392" r="4.5" fill="#5b6862"/>
-<circle cx="1258" cy="392" r="4.5" fill="#5b6862"/>
-<text x="1152" y="328" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#1f2a26" text-anchor="middle">diodo 1N4007 (faixa no +)</text>
-<polyline points="255,110 300,110 300,620 700,620" fill="none" stroke="#2e8b57" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,644 700,644" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,666 700,666" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,688 700,688" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,710 700,710" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,732 700,732" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<polyline points="255,754 700,754" fill="none" stroke="#59a8f0" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="700" y="606" width="260" height="158" rx="6" fill="#1e5a2f" stroke="none" stroke-width="1.5"/>
-<rect x="695" y="615" width="10" height="10" fill="#141414"/>
-<text x="711" y="624" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">VCC</text>
-<rect x="695" y="639" width="10" height="10" fill="#141414"/>
-<text x="711" y="648" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">RS</text>
-<rect x="695" y="661" width="10" height="10" fill="#141414"/>
-<text x="711" y="670" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">E</text>
-<rect x="695" y="683" width="10" height="10" fill="#141414"/>
-<text x="711" y="692" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D4</text>
-<rect x="695" y="705" width="10" height="10" fill="#141414"/>
-<text x="711" y="714" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D5</text>
-<rect x="695" y="727" width="10" height="10" fill="#141414"/>
-<text x="711" y="736" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D6</text>
-<rect x="695" y="749" width="10" height="10" fill="#141414"/>
-<text x="711" y="758" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#cfe9d6" text-anchor="start">D7</text>
-<rect x="752" y="632" width="196" height="40" rx="3" fill="#9fc23a" stroke="none" stroke-width="1.5"/>
-<text x="760" y="658" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16" font-weight="500" fill="#1f2a12" text-anchor="start">Digite a senha</text>
-<text x="756" y="700" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#cfe9d6" text-anchor="start">RW, VSS e K no GND · A no 5V por 220 Ω</text>
-<text x="756" y="716" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#cfe9d6" text-anchor="start">V0 no meio do potenciômetro de 10 kΩ</text>
-<rect x="955" y="695" width="10" height="10" fill="#141414"/>
-<polyline points="965,700 990,700" fill="none" stroke="#1e1e1e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="990" y1="700" x2="990" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="981.0" y1="710" x2="999.0" y2="710" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="984.0" y1="714" x2="996.0" y2="714" stroke="#1e1e1e" stroke-width="2.5"/>
-<line x1="987.0" y1="718" x2="993.0" y2="718" stroke="#1e1e1e" stroke-width="2.5"/>
-<text x="830" y="600" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">LCD 16x2 sem I2C (na porta)</text>
-<rect x="700" y="788" width="280" height="302" rx="8" fill="#1c1d1f" stroke="none" stroke-width="1.5"/>
-<text x="840" y="780" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2a26" text-anchor="middle">teclado 4x4 de membrana (na porta)</text>
-<polyline points="255,806 700,806" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="801" width="10" height="10" fill="#141414"/>
-<text x="712" y="810" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">L1</text>
-<polyline points="255,842 700,842" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="837" width="10" height="10" fill="#141414"/>
-<text x="712" y="846" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">L2</text>
-<polyline points="255,878 700,878" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="873" width="10" height="10" fill="#141414"/>
-<text x="712" y="882" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">L3</text>
-<polyline points="255,914 700,914" fill="none" stroke="#e8892a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="909" width="10" height="10" fill="#141414"/>
-<text x="712" y="918" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">L4</text>
-<polyline points="255,950 700,950" fill="none" stroke="#b8641a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="945" width="10" height="10" fill="#141414"/>
-<text x="712" y="954" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">C1</text>
-<polyline points="255,986 700,986" fill="none" stroke="#b8641a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="981" width="10" height="10" fill="#141414"/>
-<text x="712" y="990" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">C2</text>
-<polyline points="255,1022 700,1022" fill="none" stroke="#b8641a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="1017" width="10" height="10" fill="#141414"/>
-<text x="712" y="1026" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">C3</text>
-<polyline points="255,1058 700,1058" fill="none" stroke="#b8641a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<rect x="695" y="1053" width="10" height="10" fill="#141414"/>
-<text x="712" y="1062" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#e7e7e2" text-anchor="start">C4</text>
-<rect x="760" y="810" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="782" y="845" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">1</text>
-<rect x="812" y="810" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="834" y="845" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">2</text>
-<rect x="864" y="810" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="886" y="845" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">3</text>
-<rect x="916" y="810" width="44" height="56" rx="5" fill="#b8352b" stroke="none" stroke-width="1.5"/>
-<text x="938" y="845" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">A</text>
-<rect x="760" y="878" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="782" y="913" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">4</text>
-<rect x="812" y="878" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="834" y="913" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">5</text>
-<rect x="864" y="878" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="886" y="913" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">6</text>
-<rect x="916" y="878" width="44" height="56" rx="5" fill="#b8352b" stroke="none" stroke-width="1.5"/>
-<text x="938" y="913" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">B</text>
-<rect x="760" y="946" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="782" y="981" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">7</text>
-<rect x="812" y="946" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="834" y="981" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">8</text>
-<rect x="864" y="946" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="886" y="981" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">9</text>
-<rect x="916" y="946" width="44" height="56" rx="5" fill="#b8352b" stroke="none" stroke-width="1.5"/>
-<text x="938" y="981" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">C</text>
-<rect x="760" y="1014" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="782" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">*</text>
-<rect x="812" y="1014" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="834" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">0</text>
-<rect x="864" y="1014" width="44" height="56" rx="5" fill="#34373b" stroke="none" stroke-width="1.5"/>
-<text x="886" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">#</text>
-<rect x="916" y="1014" width="44" height="56" rx="5" fill="#b8352b" stroke="none" stroke-width="1.5"/>
-<text x="938" y="1049" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f2f2ee" text-anchor="middle">D</text>
-<text x="1050" y="680" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1f2a26" text-anchor="start">Legenda</text>
-<polyline points="1050,700 1084,700" fill="none" stroke="#d0312d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="704" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V (fonte, Vin do Mega, COM dos relés)</text>
-<polyline points="1050,724 1084,724" fill="none" stroke="#a3221d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="728" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">12 V chaveado pelo relé (vai para a carga)</text>
-<polyline points="1050,748 1084,748" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="752" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">5 V</text>
-<polyline points="1050,772 1084,772" fill="none" stroke="#1e1e1e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="776" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">GND · o símbolo de terra é o mesmo ponto em tudo</text>
-<polyline points="1050,796 1084,796" fill="none" stroke="#8e5cc7" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="800" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">controle dos relés (D8, D9, D10)</text>
-<polyline points="1050,820 1084,820" fill="none" stroke="#2f7fd1" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="824" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">LCD em paralelo (RS, E, D4 a D7)</text>
-<polyline points="1050,844 1084,844" fill="none" stroke="#e8892a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="848" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: linhas</text>
-<polyline points="1050,868 1084,868" fill="none" stroke="#b8641a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="872" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">teclado: colunas</text>
-<polyline points="1050,892 1084,892" fill="none" stroke="#139aa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="1096" y="896" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#1f2a26" text-anchor="start">buzzer</text>
-<text x="1050" y="936" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">GND da fonte, do Mega, do LM2596 e dos relés ligados juntos.</text>
-<text x="1050" y="956" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Fios de 12 V das Peltier em 1,5 mm²; sinais em cabo de rede.</text>
-<text x="1050" y="976" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6862" text-anchor="start">Ajustar o LM2596 para 5,0 V com o multímetro antes de ligar os relés.</text>
-</svg></div>
-    <div class="tabela-wrap">
-      <table class="cabos">
-        <thead><tr><th>Cabo</th><th>Liga</th><th>Fios</th><th>Bitola</th><th>Caminho</th></tr></thead>
-        <tbody>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="teclado" aria-pressed="false"><i style="background:#e8892a"></i>Teclado</button></td><td>Teclado 4x4 → Mega 22 a 36 (pares)</td><td class="n">8</td><td>cabo de rede 1</td><td>Por dentro da porta até a dobradiça, laço de folga, furo na lateral esquerda, lateral por dentro (embaixo da prateleira de cima) até o fundo falso, furo, Arduino</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="lcd" aria-pressed="false"><i style="background:#2f7fd1"></i>LCD e buzzer</button></td><td>LCD 16x2 → Mega 38 (RS), 40 (E), 42 a 48 (D4 a D7), 5 V, GND · buzzer → Mega 7</td><td class="n">8 + 1</td><td>cabo de rede 2 + 1 fio de 0,5 mm² do buzzer</td><td>O mesmo caminho do teclado, lado a lado. O − do buzzer pega o GND do LCD dentro da caixa da porta</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="trava" aria-pressed="false"><i style="background:#d23b2b"></i>Trava</button></td><td>Trava → relé 1 (COM e NA) e GND</td><td class="n">2</td><td>0,5 mm²</td><td>Parede direita por dentro, a 600 mm, até o fundo falso, furo, relés. Diodo 1N4007 soldado nos terminais da trava</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="peltier" aria-pressed="false"><i style="background:#b3261e"></i>Peltier C1 e C2</button></td><td>Pastilha → relés 2 e 3</td><td class="n">2 cada</td><td>1,5 mm²</td><td>A pastilha fica no próprio fundo falso, então os fios já saem no vão de trás. Sem cooler: só dissipador de alumínio no lado quente</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="v12" aria-pressed="false"><i style="background:#e24a3b"></i>12 V</button></td><td>Fonte → fusível 10 A → COM 1 → COM 2 → COM 3, de parafuso em parafuso; do COM 3 pro IN+ do LM2596, e dele pro Vin do Mega</td><td class="n">1 por trecho</td><td>1,5 mm² (0,5 mm² pro LM2596 e Vin)</td><td>Só no vão de trás. Sem bornes: dois fios por parafuso, pontas torcidas juntas</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="gnd" aria-pressed="false"><i style="background:#262626"></i>GND</button></td><td>Direto nos parafusos V− da fonte, 2 por parafuso: Peltier C1 e C2 · trava e IN− do LM2596 · GND do Mega</td><td class="n">1 por carga</td><td>1,5 mm²</td><td>Só no vão de trás. Os GND da fonte e do Mega precisam estar ligados juntos</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="v5" aria-pressed="false"><i style="background:#2e8b57"></i>5 V dos relés</button></td><td>LM2596 (ajustado em 5 V) → VCC do módulo de relés</td><td class="n">1</td><td>0,5 mm²</td><td>Só no vão de trás</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="controle" aria-pressed="false"><i style="background:#8e5cc7"></i>Controle</button></td><td>Mega 8, 9, 10 → IN1, IN2, IN3 dos relés</td><td class="n">3</td><td>jumper</td><td>Só no vão de trás, Arduino e relés lado a lado</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="forca" aria-pressed="false"><i style="background:#7d868c"></i>Tomada</button></td><td>Tomada → fonte (fase, neutro, terra)</td><td class="n">3</td><td>cabo de força</td><td>Furo no traseiro, embaixo à esquerda, direto na fonte</td></tr>
-          <tr><td><button type="button" class="cabo-btn" data-cabo="camera" aria-pressed="false"><i style="background:#1d9bb0"></i>Câmera</button></td><td>Webcam USB → notebook, fora do armário</td><td class="n">1</td><td>cabo USB da webcam (+ extensor de 2 m)</td><td>Piso do compartimento de cima, furo de 16 mm no fundo falso, vão de trás, furo de 16 mm no traseiro, notebook</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="duas">
-      <div class="texto">
-        <h3>Mapa de pinos do Mega</h3>
-        <div class="tabela-wrap">
-          <table>
-            <thead><tr><th>Pino</th><th>Liga em</th></tr></thead>
-            <tbody>
-              <tr><td class="k">7</td><td>Buzzer</td></tr>
-              <tr><td class="k">8 · 9 · 10</td><td>Relé 1 trava · relé 2 Peltier C1 · relé 3 Peltier C2</td></tr>
-              <tr><td class="k">11</td><td>Relé 4, livre</td></tr>
-              <tr><td class="k">38 · 40</td><td>RS e E do LCD</td></tr>
-              <tr><td class="k">42 · 44 · 46 · 48</td><td>D4 a D7 do LCD</td></tr>
-              <tr><td class="k">22 · 24 · 26 · 28</td><td>Linhas do teclado</td></tr>
-              <tr><td class="k">30 · 32 · 34 · 36</td><td>Colunas do teclado</td></tr>
-              <tr><td class="k">Vin · GND</td><td>12 V da fonte e GND comum</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="nota">O módulo de relés comum liga com nível baixo: o código escreve LOW para ligar.</p>
-      </div>
-      <div class="texto">
-        <h3>Furos para fazer antes de colar</h3>
-        <div class="tabela-wrap">
-          <table>
-            <thead><tr><th>Peça</th><th>Onde</th><th>Para</th></tr></thead>
-            <tbody>
-              <tr><td>Lateral esquerda</td><td class="n">660 mm de altura, 28 mm da frente</td><td>Cabos da porta</td></tr>
-              <tr><td>Fundo falso</td><td class="n">660 mm, rente à esquerda</td><td>Cabos da porta</td></tr>
-              <tr><td>Fundo falso</td><td class="n">600 mm, rente à direita</td><td>Trava</td></tr>
-              <tr><td>Traseiro</td><td class="n">28 mm, a 95 mm da esquerda</td><td>Cabo de força</td></tr>
-              <tr><td>Fundo falso</td><td class="n">Ø 38 mm, centro a 298 mm de altura e 595 mm da esquerda</td><td>Peltier da gaveta C1</td></tr>
-              <tr><td>Fundo falso</td><td class="n">Ø 38 mm, centro a 101 mm de altura e 595 mm da esquerda</td><td>Peltier da gaveta C2</td></tr>
-              <tr><td>Fundo falso</td><td class="n">Ø 16 mm, 835 mm de altura, no centro</td><td>Cabo USB da câmera</td></tr>
-              <tr><td>Traseiro</td><td class="n">Ø 16 mm, 835 mm de altura, no centro</td><td>Cabo USB da câmera</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="nota">Furos de 10 mm, menos os dois das Peltier, que são de 38 mm com serra copo, e os dois da câmera, de 16 mm para o plugue USB passar (esses dá para fazer com a caixa já colada). Nada de recorte: o MDF já está todo cortado. A pastilha fica no vão de trás tampando o furo, com a face fria virada para a gaveta, e uma abraçadeira por dois furinhos de 5 mm aperta o dissipador contra ela. Medidas olhando o armário de frente.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="ficha">
-    <div class="texto">
-      <span class="eyebrow">AINDA NÃO EXISTE</span>
-      <h2>A porta que falta</h2>
-      <div class="tabela-wrap">
-        <table>
-          <thead><tr><th>Item</th><th>Proposta</th></tr></thead>
-          <tbody>
-            <tr><td>Folha</td><td>MDF 6 mm, 880 × 880 mm, sobreposta à frente da caixa. Se for 3 mm como o resto, colar um quadro de ripas atrás para não empenar.</td></tr>
-            <tr><td>Dobradiças</td><td>2, na lateral esquerda, a 120 mm do topo e da base.</td></tr>
-            <tr><td>Puxador</td><td>Do lado direito, a 440 mm de altura.</td></tr>
-            <tr><td>Puxadores das gavetas</td><td>Rasgo ou furo na frente da gaveta, nada saltado para fora. A porta fecha por cima das gavetas e bateria em qualquer puxador.</td></tr>
-            <tr><td>LCD</td><td>16x2 sem I2C. Janela de 71 × 24 mm, centro a 690 mm de altura: as duas linhas aparecem inteiras nela. A placa do módulo (80 × 36 mm), o potenciômetro de contraste e o resistor da luz de fundo ficam por dentro.</td></tr>
-            <tr><td>Teclado</td><td>Membrana adesiva colada por fora, logo abaixo do LCD. Rasgo de 22 × 2 mm para o cabo flat passar.</td></tr>
-            <tr><td>Batente da trava</td><td>Cantoneira em L por dentro da porta, na altura da lingueta (600 mm), com janela de 12 × 20 mm.</td></tr>
-            <tr><td>Fios da porta</td><td>17 fios (8 do teclado, 8 do LCD, 1 do buzzer, que divide o GND do LCD). Dois cabos de rede e um fio solto resolvem. Deixar um laço de folga de 15 cm na dobradiça e entrar por um furo de 10 mm na lateral esquerda.</td></tr>
-            <tr><td>Buzzer</td><td>Na caixa do LCD, por fora. Dentro do vão de trás ninguém ouviria.</td></tr>
-            <tr><td>Câmera</td><td>Furo de 15 mm a 835 mm de altura, no meio da largura, na frente da lente da webcam do compartimento de cima. Marcar com a webcam ligada, onde a lente fica centralizada.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="texto">
-      <span class="eyebrow">TECLADO 4x4</span>
-      <h2>O que cada tecla faz</h2>
-      <div class="tabela-wrap">
-        <table>
-          <thead><tr><th>Tecla</th><th>Função</th></tr></thead>
-          <tbody>
-            <tr><td class="k">0 a 9</td><td>Digita a senha (4 dígitos, aparecem como *)</td></tr>
-            <tr><td class="k">*</td><td>Apaga o último dígito</td></tr>
-            <tr><td class="k">#</td><td>Confirma a senha</td></tr>
-            <tr><td class="k">A</td><td>Liga ou desliga o frio da gaveta C1 (só depois da senha)</td></tr>
-            <tr><td class="k">B</td><td>Liga ou desliga o frio da gaveta C2 (só depois da senha)</td></tr>
-            <tr><td class="k">C</td><td>Livre, reserva para depois</td></tr>
-            <tr><td class="k">D</td><td>Encerra a sessão: corta a trava se ainda estiver solta e bloqueia A e B (sem tecla por 60 s, encerra sozinha)</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>rogi: Três senhas erradas seguidas travam o teclado por 30 s, com contagem no display. O teclado do computador também funciona aqui: números, <code>*</code>, <code>#</code> ou Enter, e A a D.</p>
-    </div>
-  </section>
-
-  <footer>
-    <span>Medidas da caixa, do gaveteiro e da baia do dispensador tiradas do manual de montagem v2.3. Altura das prateleiras aproximada.</span>
-    <span>Gavetas frias em C1 e C2 é sugestão: são as mais altas e cabem a pastilha e o dissipador atrás do fundo falso. O display real não tem acento, por isso as mensagens saem sem.</span>
-  </footer>
+    <div class="card"><h2>Monitor serial</h2><div id="log"></div></div>
+  </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
+const DADOS = {"pecas":[{"nome":"Base","detalhe":"MDF 3 mm","grupo":"armario","cor":"#b98d55","x":[3.0,877.0],"y":[0,700.0],"z":[0,3.0]},{"nome":"Tampo","detalhe":"MDF 3 mm","grupo":"armario","cor":"#b98d55","x":[3.0,877.0],"y":[0,700.0],"z":[877.0,880.0]},{"nome":"Lateral esquerda","detalhe":"furos das Peltier e dos berços feitos por fora, com gabarito","grupo":"armario","cor":"#c9a26b","x":[0,3.0],"y":[0,700.0],"z":[0,880.0]},{"nome":"Lateral direita","detalhe":"trava e reed por dentro; furo da câmera interna","grupo":"armario","cor":"#c9a26b","x":[877.0,880.0],"y":[0,700.0],"z":[0,880.0]},{"nome":"Fundo falso","detalhe":"sem furos: o vão de trás não é usado","grupo":"armario","cor":"#b98d55","x":[3.0,877.0],"y":[494.0,497.0],"z":[3.0,877.0]},{"nome":"Traseiro","detalhe":"sem furos","grupo":"armario","cor":"#b98d55","x":[3.0,877.0],"y":[697.0,700.0],"z":[3.0,877.0]},{"nome":"Teto do gaveteiro","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[3.0,877.0],"y":[0,494.0],"z":[399.0,402.0]},{"nome":"Prateleira de baixo","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[3.0,877.0],"y":[0,494.0],"z":[530.6666666666666,533.6666666666666]},{"nome":"Prateleira do meio","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[3.0,877.0],"y":[0,494.0],"z":[662.3333333333333,665.3333333333333]},{"nome":"Piso do compartimento de cima","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[3.0,877.0],"y":[0,494.0],"z":[793.9999999999999,796.9999999999999]},{"nome":"Divisória A/B","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[346.0,349.0],"y":[0,494.0],"z":[3.0,399.0]},{"nome":"Divisória B/C","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[511.0,514.0],"y":[0,494.0],"z":[3.0,399.0]},{"nome":"Divisória do dispensador","detalhe":"","grupo":"armario","cor":"#c9a26b","x":[676.0,679.0],"y":[0,494.0],"z":[3.0,399.0]},{"nome":"Gaveta A1","detalhe":"clique para puxar; puxador embutido (nada saliente)","grupo":"gaveta","cor":"#e2c08d","x":[16.0,333.0],"y":[0.0,463.0],"z":[5.399999999999999,101.4],"gaveta":"A1"},{"nome":"Gaveta A2","detalhe":"clique para puxar; puxador embutido (nada saliente)","grupo":"gaveta","cor":"#e2c08d","x":[16.0,333.0],"y":[0.0,463.0],"z":[103.80000000000001,199.8],"gaveta":"A2"},{"nome":"Gaveta B1","detalhe":"clique para puxar; puxador embutido (nada saliente)","grupo":"gaveta","cor":"#e2c08d","x":[362.0,498.0],"y":[0.0,463.0],"z":[5.0,200.0],"gaveta":"B1"},{"nome":"Gaveta B2","detalhe":"clique para puxar; puxador embutido (nada saliente)","grupo":"gaveta","cor":"#e2c08d","x":[362.0,498.0],"y":[0.0,463.0],"z":[202.0,397.0],"gaveta":"B2"},{"nome":"Gaveta C1","detalhe":"clique para puxar; puxador embutido (nada saliente)","grupo":"gaveta","cor":"#e2c08d","x":[527.0,663.0],"y":[0.0,463.0],"z":[5.0,200.0],"gaveta":"C1"},{"nome":"Gaveta C2","detalhe":"clique para puxar; puxador embutido (nada saliente)","grupo":"gaveta","cor":"#e2c08d","x":[527.0,663.0],"y":[0.0,463.0],"z":[202.0,397.0],"gaveta":"C2"},{"nome":"Baia fria (piso)","detalhe":"piso a 205 mm, apoiado em taquinhos","grupo":"armario","cor":"#b98d55","x":[3.0,346.0],"y":[0,494.0],"z":[205.0,208.0]},{"nome":"Baia fria — isopor 50 mm","detalhe":"EPS 50 mm em todas as faces; bandeja de 186 × 82 × 382 mm (5,8 L)","grupo":"baia","cor":"#eef2f5","x":[3.0,346.0],"y":[3.0,494.0],"z":[208.0,399.0],"transparente":true},{"nome":"Baia fria — tampa isolada","detalhe":"frente de MDF + bloco de EPS; sai pela alça","grupo":"baia","cor":"#dfe7ee","x":[3.0,346.0],"y":[0,3.0],"z":[208.0,397.0]},{"nome":"Rampa do dispensador","detalhe":"estrutura passiva: os rolos descem por gravidade, sem sensor nem motor","grupo":"armario","cor":"#b98d55","x":[679.0,877.0],"y":[15,494.0],"z":[245.9,249]},{"nome":"Cooler 1 (Hyper 212)","detalhe":"lado quente da Peltier; ventoinha embaixo soprando para cima","grupo":"frio","cor":"#9aa3a8","x":[-152.8,-0.7999999999999998],"y":[98.0,222.0],"z":[263.5,336.5]},{"nome":"Ventoinha do cooler 1","detalhe":"120 mm, 12 V, sempre ligada com a fonte","grupo":"frio","cor":"#2f3438","x":[-137.8,-15.8],"y":[100.0,220.0],"z":[238.5,263.5]},{"nome":"Berço do cooler 1","detalhe":"grade de quadrados de 11 mm; o peso do cooler fica aqui","grupo":"frio","cor":"#c9a26b","x":[-167.0,-3.0],"y":[86.0,234.0],"z":[223.5,226.5]},{"nome":"Peltier 1 (TEC1-12703)","detalhe":"no furo quadrado de 41 mm da lateral","grupo":"frio","cor":"#f4f4f4","x":[-0.8,3.0],"y":[140.0,180.0],"z":[280.0,320.0]},{"nome":"Dissipador frio 1","detalhe":"65 × 46 × 24 + ventoinha de 60 mm, dentro da baia","grupo":"frio","cor":"#9aa3a8","x":[53.0,87.0],"y":[137.0,183.0],"z":[268.0,332.0]},{"nome":"Cooler 2 (Hyper 212)","detalhe":"lado quente da Peltier; ventoinha embaixo soprando para cima","grupo":"frio","cor":"#9aa3a8","x":[-152.8,-0.7999999999999998],"y":[268.0,392.0],"z":[263.5,336.5]},{"nome":"Ventoinha do cooler 2","detalhe":"120 mm, 12 V, sempre ligada com a fonte","grupo":"frio","cor":"#2f3438","x":[-137.8,-15.8],"y":[270.0,390.0],"z":[238.5,263.5]},{"nome":"Berço do cooler 2","detalhe":"grade de quadrados de 11 mm; o peso do cooler fica aqui","grupo":"frio","cor":"#c9a26b","x":[-167.0,-3.0],"y":[256.0,404.0],"z":[223.5,226.5]},{"nome":"Peltier 2 (TEC1-12703)","detalhe":"no furo quadrado de 41 mm da lateral","grupo":"frio","cor":"#f4f4f4","x":[-0.8,3.0],"y":[310.0,350.0],"z":[280.0,320.0]},{"nome":"Dissipador frio 2","detalhe":"65 × 46 × 24 + ventoinha de 60 mm, dentro da baia","grupo":"frio","cor":"#9aa3a8","x":[53.0,87.0],"y":[307.0,353.0],"z":[268.0,332.0]},{"nome":"Bloco da dobradiça","detalhe":"3 camadas coladas e parafusadas; recebe a dobradiça piano","grupo":"armario","cor":"#b98d55","x":[-9.0,0],"y":[-8.0,37.0],"z":[20.0,860.0]},{"nome":"Trava FE-91","detalhe":"relé 1 do Mega; energizada no máximo 3 s","grupo":"trava","cor":"#2f3438","x":[849.0,877.0],"y":[12.0,66.0],"z":[579.5,620.5]},{"nome":"Lingueta","detalhe":"recolhe com 12 V; o lado chanfrado fica para a frente","grupo":"lingueta","cor":"#9aa3a8","x":[839.0,849.0],"y":[12.0,24.0],"z":[595.0,605.0]},{"nome":"Reed (sensor da porta)","detalhe":"pino 3; fio rompido lê porta aberta","grupo":"trava","cor":"#ffffff","x":[865.0,877.0],"y":[6,34],"z":[553.0,567.0]},{"nome":"Câmera interna","detalhe":"olha para as gavetas","grupo":"armario","cor":"#2f3438","x":[845.0,877.0],"y":[20.0,70.0],"z":[440.0,480.0]},{"nome":"Câmera externa","detalhe":"no tampo: olha quem está no teclado","grupo":"armario","cor":"#2f3438","x":[405.0,475.0],"y":[10.0,50.0],"z":[880.0,925.0]},{"nome":"Caixa da eletrônica","detalhe":"fonte, fusíveis, relés, LM2596 e Mega; só abrir fora da tomada","grupo":"armario","cor":"#3a6ea5","x":[260.0,616.0],"y":[430.0,676.0],"z":[880.0,971.0]}],"porta":[{"nome":"Porta (caixão de 30 mm)","detalhe":"duas peles de 3 mm + miolo de 24 mm; clique para abrir (só se a trava estiver solta)","grupo":"porta","cor":"#d9b47c","x":[-10.0,870.0],"y":[-39.0,-9.0],"z":[2.0,878.0]},{"nome":"LCD 16x2","detalhe":"","grupo":"porta","cor":"#7fae3c","x":[662.0,728.0],"y":[-40.5,-39.0],"z":[742.0,758.0],"tela":true},{"nome":"Leitor de digital AS608","detalhe":"","grupo":"porta","cor":"#1d2733","x":[769.5,810.5],"y":[-40.5,-39.0],"z":[739.5,760.5],"tela":false},{"nome":"Teclado 4x4","detalhe":"","grupo":"porta","cor":"#222","x":[685.5,754.5],"y":[-40.5,-39.0],"z":[551.5,628.5],"tela":false},{"nome":"Puxador (cava)","detalhe":"","grupo":"porta","cor":"#5a4026","x":[844.0,866.0],"y":[-40.5,-39.0],"z":[540.0,640.0],"tela":false},{"nome":"Tampa traseira do LCD e do leitor","detalhe":"entra 6 mm no compartimento: deixar a frente da prateleira vazia","grupo":"porta","cor":"#b98d55","x":[622.0,848.0],"y":[-9.0,6.0],"z":[677.0,793.0]},{"nome":"Batente (braço com a janela da lingueta)","detalhe":"preso por 2 parafusos dentro da cava do puxador: liberação de emergência","grupo":"porta","cor":"#8c6a3f","x":[840.0,846.0],"y":[-3.0,40.0],"z":[565.0,635.0]},{"nome":"Mata-junta","detalhe":"cobre a borda da lateral direita","grupo":"porta","cor":"#c49a62","x":[850.0,880.0],"y":[-9.0,-3.0],"z":[2.0,878.0]}],"eixo":{"x":-10.0,"y":-9.0}};
 (function () {
-  "use strict";
-  const $ = (id) => document.getElementById(id);
-  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const SENHA = "1234";
-  const T_LIBERA = 5000, T_BLOQUEIO = 30000, T_SESSAO = 60000, MAX_ERROS = 3;
-  const GAVETAS = ["A1", "A2", "A3", "A4", "B1", "B2", "C1", "C2"];
-  const FRIAS = { C1: "A", C2: "B" };
-
-  /* ---------------- estado (o mesmo que o firmware vai ter) ---------------- */
-  const st = {
-    entrada: "", erros: 0, bloqueioAte: 0,
-    trava: false, travaAte: 0, sessao: false,
-    portaAng: 0, portaAlvo: 0, tremeAte: 0, portaAbertaAntes: false, ultimaTecla: 0,
-    lingueta: 1,
-    gav: Object.fromEntries(GAVETAS.map((g) => [g, { pos: 0, alvo: 0 }])),
-    frio: { C1: false, C2: false },
-    msg: null, msgAte: 0,
-  };
-  const t0 = performance.now();
-
-  /* ---------------- buzzer ativo: frequência fixa, só muda o ritmo ---------------- */
-  let audio = null, somLigado = true;
-  function bip(padrao) {
-    if (!somLigado) return;
-    try {
-      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
-      let t = audio.currentTime + 0.01, liga = true;
-      for (const ms of padrao) {
-        if (liga) {
-          const o = audio.createOscillator(), g = audio.createGain();
-          o.type = "square"; o.frequency.value = 2400; g.gain.value = 0.035;
-          o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t + ms / 1000);
-        }
-        t += ms / 1000; liga = !liga;
-      }
-    } catch (e) { /* sem áudio, segue sem som */ }
+  // ---------------------------------------------------------- lógica da porta (resumo do firmware)
+  const st = { estado: "OCIOSO", buf: "", id: 0, erros: 0, desde: performance.now(), trava: false, porta: 0, alvo: 0,
+               alarme: false, l1: "", l2: "", gav: {}, tela_ate: 0 };
+  const TECLAS = ["1","2","3","A","4","5","6","B","7","8","9","C","*","0","#","D"];
+  const SENHAS = {1: "1357"};
+  const $ = id => document.getElementById(id);
+  function log(t) { const l = $("log"); l.textContent = (new Date().toLocaleTimeString() + "  " + t + "\n" + l.textContent).slice(0, 4000); }
+  function tela(a, b, ms) { st.l1 = a; st.l2 = b; st.tela_ate = ms ? performance.now() + ms : 0; }
+  function ir(e) { st.estado = e; st.desde = performance.now(); st.buf = ""; if (e === "OCIOSO") tela("Digital ou ID+#", "Dispensario"); }
+  function ev(t, u, v) { log(`EV t=${t} u=${u || 0} v=${v || 0}`); }
+  function autenticado(u, m) { st.erros = 0; st.id = u; ev("AUTH_OK", u, m); ev("MODO_AUTONOMO", u); ev("LIBERADO", u); ir("LIBERADO"); st.trava = true; tela("Pode abrir", "a porta"); }
+  function falhou(m) {
+    st.erros++; ev("AUTH_FALHA", 0, m);
+    if (st.erros >= 3) { ev("BLOQUEIO", 0, 30); ir("BLOQUEADO"); } else { ir("OCIOSO"); tela(m === 1 ? "Digital invalida" : "Senha errada", "Tente de novo", 3000); }
   }
-  const SOM = { tecla: [35], ok: [90, 70, 90], erro: [600], bloqueio: [250, 120, 250, 120, 250], porta: [60] };
-
-  /* ---------------- monitor serial ---------------- */
-  const serial = $("serial");
-  function log(txt) {
-    const s = ((performance.now() - t0) / 1000).toFixed(1).padStart(6, " ");
-    const linha = document.createElement("div");
-    linha.innerHTML = '<span class="t">' + s + "s</span>  " + txt.replace(/</g, "&lt;");
-    serial.appendChild(linha);
-    while (serial.childNodes.length > 60) serial.removeChild(serial.firstChild);
-    serial.scrollTop = serial.scrollHeight;
-  }
-
-  /* ---------------- LCD 16x2 ---------------- */
-  const lcdEl = $("lcd");
-  const celulas = [];
-  for (let r = 0; r < 2; r++) {
-    const linha = document.createElement("div"); linha.className = "linha";
-    const row = [];
-    for (let c = 0; c < 16; c++) { const d = document.createElement("span"); d.className = "c"; linha.appendChild(d); row.push(d); }
-    lcdEl.appendChild(linha); celulas.push(row);
-  }
-  let lcdAtual = ["", ""];
-  function lcd(tela) {
-    const linhas = (Array.isArray(tela) ? tela : [tela, ""]).map((t) => (t || "").padEnd(16).slice(0, 16));
-    if (linhas[0] === lcdAtual[0] && linhas[1] === lcdAtual[1]) return;
-    lcdAtual = linhas;
-    linhas.forEach((a, r) => { for (let c = 0; c < 16; c++) celulas[r][c].textContent = a[c] === " " ? " " : a[c]; });
-    lcdEl.setAttribute("aria-label", linhas.map((a) => a.trim()).join(" / "));
-    desenharLcd3d();
-  }
-  // duas linhas de 16 caracteres; mensagem curta ocupa a de cima
-  function mensagem(txt, ms) { st.msg = txt; st.msgAte = performance.now() + ms; }
-
-  function telaBase(agora) {
-    if (st.msg && agora < st.msgAte) return st.msg;
-    st.msg = null;
-    if (agora < st.bloqueioAte) return ["Bloqueado", "Aguarde " + Math.ceil((st.bloqueioAte - agora) / 1000) + "s"];
-    if (st.sessao && st.trava) return ["Acesso liberado", "Abra a porta " + Math.ceil((st.travaAte - agora) / 1000) + "s"];
-    if (st.sessao) return ["C1:" + (st.frio.C1 ? "LIG" : "DES") + "  C2:" + (st.frio.C2 ? "LIG" : "DES"), "D = encerrar"];
-    return ["Digite a senha", "Senha: " + "*".repeat(st.entrada.length) + "_".repeat(4 - st.entrada.length)];
-  }
-
-  /* ---------------- teclado 4x4 ---------------- */
-  const TECLAS = ["1", "2", "3", "A", "4", "5", "6", "B", "7", "8", "9", "C", "*", "0", "#", "D"];
-  const tecladoEl = $("teclado");
-  const botoes = {};
-  TECLAS.forEach((k) => {
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "tecla" + ("ABCD".includes(k) ? " vermelha" : ""); b.textContent = k;
-    b.setAttribute("aria-label", "Tecla " + k);
-    b.addEventListener("click", () => tecla(k));
-    tecladoEl.appendChild(b); botoes[k] = b;
-  });
-
-  function setTrava(on, motivo) {
-    if (st.trava === on) return;
-    st.trava = on;
-    log("Rele 1 (trava) " + (on ? "LIGADO" : "DESLIGADO") + (motivo ? " - " + motivo : ""));
-  }
-  function setFrio(g, on) {
-    st.frio[g] = on;
-    log("Rele " + (g === "C1" ? 2 : 3) + " (Peltier " + g + ") " + (on ? "LIGADO" : "DESLIGADO"));
-  }
-
-  function encerrar(motivo) {
-    if (st.trava) setTrava(false, motivo);
-    st.sessao = false; st.erros = 0;
-    log("Sessao encerrada (" + motivo + ")");
-    mensagem("Sessao encerrada", 2000);
-    bip(SOM.ok);
-  }
-
   function tecla(k) {
-    const agora = performance.now();
-    const b = botoes[k];
-    if (b) { b.classList.add("batida"); setTimeout(() => b.classList.remove("batida"), 90); }
-    if (agora < st.bloqueioAte) { bip([80]); return; }
-    bip(SOM.tecla);
-
-    st.ultimaTecla = agora;
-    if (k === "D") {
-      if (st.sessao) encerrar("tecla D");
-      else mensagem("Ja trancado", 1200);
-      return;
+    if (["BLOQUEADO","LIBERADO"].includes(st.estado)) return;
+    if (k === "*") { ir("OCIOSO"); return; }
+    const dig = /[0-9]/.test(k);
+    if (st.estado === "OCIOSO") { if (!dig) return; ir("ID"); }
+    if (st.estado === "PORTA_ABERTA") return;
+    if (dig) { if (st.buf.length < (st.estado === "ID" ? 2 : 8)) st.buf += k; }
+    else if (k === "#") {
+      if (st.estado === "ID") { const id = +st.buf; if (!(id >= 1 && id <= 20)) return falhou(2); st.id = id; ir("SENHA"); }
+      else if (st.estado === "SENHA") { return (st.buf.length >= 4 && SENHAS[st.id] === st.buf) ? autenticado(st.id, 2) : falhou(2); }
     }
-    if (k === "A" || k === "B") {
-      const g = k === "A" ? "C1" : "C2";
-      if (!st.sessao) { mensagem("Digite a senha", 1500); return; }
-      setFrio(g, !st.frio[g]);
-      mensagem("Frio " + g + (st.frio[g] ? " ligado" : " deslig."), 1300);
-      return;
-    }
-    if (k === "C") { mensagem("C sem funcao", 1200); return; }
-    if (st.sessao) return; // durante a sessão os números não fazem nada
-    if (k === "*") { st.entrada = st.entrada.slice(0, -1); st.msg = null; return; }
-    if (k === "#") {
-      if (st.entrada.length < 4) { mensagem("Senha incompleta", 1400); return; }
-      if (st.entrada === SENHA) {
-        st.entrada = ""; st.erros = 0; st.sessao = true; st.msg = null; st.ultimaTecla = agora;
-        setTrava(true, "senha correta");
-        st.travaAte = agora + T_LIBERA;
-        bip(SOM.ok);
-      } else {
-        st.entrada = ""; st.erros++;
-        log("Senha incorreta (" + st.erros + " de " + MAX_ERROS + ")");
-        if (st.erros >= MAX_ERROS) {
-          st.bloqueioAte = agora + T_BLOQUEIO; st.erros = 0; st.msg = null;
-          log("Teclado bloqueado por 30 s");
-          bip(SOM.bloqueio);
-        } else {
-          mensagem("Senha errada " + st.erros + "/3", 1600);
-          bip(SOM.erro);
-        }
-      }
-      return;
-    }
-    if (/\d/.test(k) && st.entrada.length < 4) { st.entrada += k; st.msg = null; }
+    tela(st.estado === "ID" ? "ID: " + st.buf : "Senha: " + "*".repeat(st.buf.length), "#=ok  *=apaga");
   }
-
-  document.addEventListener("keydown", (e) => {
-    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
-    let k = e.key;
-    if (k === "Enter") k = "#";
-    if (k === "Backspace") k = "*";
-    k = k.length === 1 ? k.toUpperCase() : k;
-    if (TECLAS.includes(k)) { e.preventDefault(); tecla(k); }
-  });
-
-  /* ---------------- porta e gavetas ---------------- */
+  function tick() {
+    const t = performance.now() - st.desde;
+    if (st.tela_ate && performance.now() > st.tela_ate && st.estado === "OCIOSO") { st.tela_ate = 0; tela("Digital ou ID+#", "Dispensario"); }
+    if (st.estado === "LIBERADO" && t > 3000) { st.trava = false; ev("LIBERACAO_EXPIROU", st.id); ir("OCIOSO"); }
+    if (st.estado === "PORTA_ABERTA" && t > 30000 && !st.alarme) { st.alarme = true; ev("PORTA_ABERTA_TEMPO", st.id, 30); tela("Feche a porta", ""); }
+    if (st.estado === "BLOQUEADO") { if (t > 30000) { st.erros = 0; ir("OCIOSO"); } else tela("Bloqueado", "Aguarde " + Math.ceil((30000 - t) / 1000) + "s"); }
+    if (["ID","SENHA"].includes(st.estado) && t > 15000) ir("OCIOSO");
+  }
   function puxarPorta() {
-    const agora = performance.now();
-    if (st.portaAlvo === 0) {
-      if (!st.trava) {
-        st.tremeAte = agora + 450; bip([80]);
-        mensagem("Porta trancada", 1500);
-        log("Puxaram a porta trancada: lingueta segurou");
-        return;
-      }
-      st.portaAlvo = 100;
-    } else {
-      const aberta = GAVETAS.find((g) => st.gav[g].alvo > 0 || st.gav[g].pos > 0.02);
-      if (aberta) { mensagem("Feche gaveta " + aberta, 1500); bip([80]); return; }
-      st.portaAlvo = 0;
+    if (st.alvo === 0) {                                     // abrir
+      if (!st.trava && st.estado !== "PORTA_ABERTA") { log("A lingueta segura a porta (trava sem energia)"); tremer = 12; return; }
+      if (st.estado === "LIBERADO") { st.trava = false; ev("PORTA_ABERTA", st.id); ir("PORTA_ABERTA"); tela("Porta aberta", "Feche ao sair"); }
+      st.alvo = 90;
+    } else {                                                 // fechar: o batente empurra o chanfro e tranca sozinho
+      st.alvo = 0;
+      setTimeout(() => { if (st.estado === "PORTA_ABERTA") { ev("PORTA_FECHADA", st.id); st.alarme = false; ir("OCIOSO"); } }, 900);
     }
   }
-  $("btn-porta").addEventListener("click", puxarPorta);
-
-  const gavEl = $("gavetas");
-  const gavBtn = {};
-  GAVETAS.forEach((g) => {
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "gav" + (FRIAS[g] ? " fria" : ""); b.textContent = g;
-    b.setAttribute("aria-pressed", "false");
-    b.setAttribute("aria-label", "Gaveta " + g + (FRIAS[g] ? " (fria)" : ""));
-    b.addEventListener("click", () => mexerGaveta(g));
-    gavEl.appendChild(b); gavBtn[g] = b;
-  });
-  function mexerGaveta(g) {
-    if (st.portaAng < 70) { mensagem("Abra a porta", 1200); return; }
-    st.gav[g].alvo = st.gav[g].alvo ? 0 : 1;
-  }
-
-  $("som").addEventListener("click", (e) => {
-    somLigado = !somLigado;
-    e.currentTarget.setAttribute("aria-pressed", String(somLigado));
-    e.currentTarget.textContent = somLigado ? "Som ligado" : "Som desligado";
-  });
-
-  /* ---------------- corte visto de cima (SVG) ---------------- */
-  const NS = "http://www.w3.org/2000/svg";
-  const svg = $("corte");
-  function el(tag, attrs, pai) { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); (pai || svg).appendChild(n); return n; }
-  el("rect", { x: 0, y: 0, width: 420, height: 270, fill: "var(--surface)" });
-  // interior do armário (fundo) e parede direita
-  el("rect", { x: 20, y: 18, width: 312, height: 186, fill: "var(--bg)" });
-  el("rect", { x: 332, y: 18, width: 16, height: 190, fill: "var(--mdf)", stroke: "var(--edge)", "stroke-width": 1 });
-  el("text", { x: 340, y: 14, "text-anchor": "middle", "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "parede direita";
-  // lingueta (desenhada antes do corpo para sumir atrás dele ao recolher)
-  const lingueta = el("polygon", { points: "284,132 300,132 300,148 291,148 284,141", fill: "#9aa3a8", stroke: "var(--ink)", "stroke-width": 1 });
-  const corpo = el("rect", { x: 300, y: 118, width: 32, height: 44, rx: 2, fill: "#3b4247", stroke: "var(--ink)", "stroke-width": 1 });
-  el("text", { x: 316, y: 113, "text-anchor": "middle", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "trava 12 V";
-  const bobina = el("rect", { x: 306, y: 128, width: 20, height: 24, rx: 2, fill: "none", stroke: "#9aa3a8", "stroke-width": 1.2, "stroke-dasharray": "2 2" });
-  // porta + batente (giram juntos em torno da dobradiça, bem à esquerda, fora do desenho)
-  const portaG = el("g", {});
-  el("rect", { x: -260, y: 208, width: 612, height: 12, fill: "var(--mdf)", stroke: "var(--edge)", "stroke-width": 1 }, portaG);
-  el("rect", { x: 262, y: 203, width: 34, height: 5, fill: "#7d868c" }, portaG);
-  el("rect", { x: 286, y: 116, width: 4, height: 14, fill: "#7d868c" }, portaG);
-  el("rect", { x: 286, y: 150, width: 4, height: 58, fill: "#7d868c" }, portaG);
-  el("text", { x: 130, y: 236, "text-anchor": "middle", "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }, portaG).textContent = "porta";
-  el("text", { x: 250, y: 176, "text-anchor": "end", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" }, portaG).textContent = "batente com janela";
-  el("line", { x1: 252, y1: 173, x2: 284, y2: 162, stroke: "var(--muted)", "stroke-width": 0.8 }, portaG);
-  el("text", { x: 236, y: 132, "text-anchor": "end", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "lingueta";
-  el("line", { x1: 238, y1: 129, x2: 282, y2: 137, stroke: "var(--muted)", "stroke-width": 0.8 });
-  el("text", { x: 22, y: 34, "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "dentro do armário";
-  el("text", { x: 22, y: 262, "font-size": 10, fill: "var(--muted)", "font-family": "var(--font-mono)" }).textContent = "frente (lado da enfermeira)";
-
-  function desenharCorte() {
-    const dx = (1 - st.lingueta) * 15;
-    lingueta.setAttribute("transform", "translate(" + dx.toFixed(2) + ",0)");
-    bobina.setAttribute("stroke", st.trava ? "var(--ok)" : "#9aa3a8");
-    bobina.setAttribute("stroke-dasharray", st.trava ? "0" : "2 2");
-    const a = Math.min(st.portaAng, 100) / 100 * 16 + tremor();
-    portaG.setAttribute("transform", "rotate(" + (a).toFixed(2) + " -260 214)");
-    let txt;
-    if (st.portaAng > 5) txt = "Porta aberta. A lingueta voltou, pronta para o próximo fechamento.";
-    else if (st.portaAng > 0.6 && st.lingueta < 0.99) txt = "Fechando: o batente desliza no chanfro e empurra a lingueta.";
-    else if (st.trava) txt = "Bobina com 12 V: lingueta recolhida, a porta pode sair.";
-    else txt = "Lingueta dentro da janela do batente: a porta não sai.";
-    $("corte-estado").textContent = txt;
-  }
-  function tremor() {
-    const agora = performance.now();
-    if (agora > st.tremeAte || reduzir) return 0;
-    return Math.sin(agora / 18) * 0.9;
-  }
-
-  /* ---------------- painel de estado ---------------- */
-  function chip(id, s, txt) { const c = $(id); if (s) c.dataset.s = s; else delete c.dataset.s; c.lastElementChild.textContent = txt; }
-  function hw(id, s, txt) { const v = $(id); if (s) v.dataset.s = s; else delete v.dataset.s; v.textContent = txt; }
-  let ultimoPainel = "";
+  let tremer = 0;
+  TECLAS.forEach(k => { const b = document.createElement("button"); b.textContent = k; b.onclick = () => tecla(k); $("tec").appendChild(b); });
+  $("b-dig").onclick = () => { if (st.estado === "OCIOSO") autenticado(1, 1); };
+  $("b-dig-x").onclick = () => { if (st.estado === "OCIOSO") falhou(1); };
   function painel() {
-    const chave = [st.trava, st.sessao, st.portaAng > 3, st.frio.C1, st.frio.C2, st.erros, st.lingueta > 0.5, st.portaAlvo, ...GAVETAS.map((g) => st.gav[g].alvo)].join();
-    if (chave === ultimoPainel) return;
-    ultimoPainel = chave;
-    const aberta = st.portaAng > 3;
-    chip("chip-trava", st.trava ? "ok" : "stop", st.trava ? "Tranca liberada" : (aberta ? "Tranca solta (porta aberta)" : "Tranca travada"));
-    chip("chip-porta", aberta ? "ok" : "stop", aberta ? "Porta aberta" : "Porta fechada");
-    chip("chip-c1", st.frio.C1 ? "cold" : "", "Frio C1 " + (st.frio.C1 ? "ligado" : "desligado"));
-    chip("chip-c2", st.frio.C2 ? "cold" : "", "Frio C2 " + (st.frio.C2 ? "ligado" : "desligado"));
-    hw("hw-r1", st.trava ? "ok" : "", st.trava ? "LIGADO" : "DESLIGADO");
-    hw("hw-r2", st.frio.C1 ? "cold" : "", st.frio.C1 ? "LIGADO" : "DESLIGADO");
-    hw("hw-r3", st.frio.C2 ? "cold" : "", st.frio.C2 ? "LIGADO" : "DESLIGADO");
-    hw("hw-sessao", st.sessao ? "ok" : "", st.sessao ? "ABERTA" : "ENCERRADA");
-    hw("hw-erros", st.erros ? "stop" : "", st.erros + " de 3");
-    $("btn-porta").textContent = st.portaAlvo ? "Fechar a porta" : "Puxar a porta";
-    GAVETAS.forEach((g) => {
-      gavBtn[g].setAttribute("aria-pressed", String(!!st.gav[g].alvo));
-      if (FRIAS[g]) gavBtn[g].classList.toggle("ligada", st.frio[g]);
-    });
+    $("lcd").textContent = (st.l1 + " ".repeat(16)).slice(0, 16) + "\n" + (st.l2 + " ".repeat(16)).slice(0, 16);
+    const c = [["Estado: " + st.estado, false], ["Trava " + (st.trava ? "energizada" : "sem energia"), st.trava],
+               ["Porta " + (st.porta > 2 ? "aberta" : "fechada"), st.porta > 2], ["Alarme", st.alarme]];
+    $("chips").innerHTML = c.map(([t, on]) => `<span class="chip ${on ? "on" : ""}">${t}</span>`).join("");
   }
+  ir("OCIOSO"); ev("BOOT", 0, 0);
 
-  /* ---------------- cena 3D (mm, x = largura, y = altura, z = frente +) ---------------- */
-  let three = null;
-  function cena3d() {
-    if (!window.THREE) { $("carregando").textContent = "Não deu para carregar o 3D. O resto da simulação funciona."; return; }
-    const THREE = window.THREE;
-    const canvas = $("palco");
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, 1, 10, 20000);
-    camera.position.set(1650, 1150, 2050);
-    const controls = new THREE.OrbitControls(camera, canvas);
-    controls.target.set(0, 430, 60); controls.enableDamping = true; controls.minDistance = 350; controls.maxDistance = 5200;
-    controls.maxPolarAngle = Math.PI * 0.52;
-
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x8f8a80, 0.85));
-    const sol = new THREE.DirectionalLight(0xffffff, 0.75);
-    sol.position.set(900, 1700, 1400); sol.castShadow = true;
-    sol.shadow.mapSize.set(2048, 2048);
-    Object.assign(sol.shadow.camera, { left: -1300, right: 1300, top: 1300, bottom: -600, near: 100, far: 5000 });
-    scene.add(sol);
-    const chao = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.ShadowMaterial({ opacity: 0.16 }));
-    chao.rotation.x = -Math.PI / 2; chao.receiveShadow = true; chao.userData.chao = true; scene.add(chao);
-
-    const mdf = new THREE.MeshStandardMaterial({ color: 0xc8a376, roughness: 0.88 });
-    const mdfPorta = new THREE.MeshStandardMaterial({ color: 0xd3b68f, roughness: 0.8 });
-    const linhaMat = new THREE.LineBasicMaterial({ color: 0x6c5a44, transparent: true, opacity: 0.55 });
-    const metal = new THREE.MeshStandardMaterial({ color: 0x9aa3a8, metalness: 0.6, roughness: 0.35 });
-    const escuro = new THREE.MeshStandardMaterial({ color: 0x2f3438, roughness: 0.6 });
-    const transparentes = [mdf, mdfPorta];
-    const clicaveis = [];
-    // nome que aparece ao passar o mouse; filhos herdam o nome do pai mais próximo
-    function nome(obj, titulo, detalhe) { obj.userData.nome = titulo; if (detalhe) obj.userData.detalhe = detalhe; return obj; }
-
-    function caixa(pai, w, h, d, x, y, z, mat, bordas = true) {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-      m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; pai.add(m);
-      if (bordas) { const l = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), linhaMat); m.add(l); }
-      return m;
-    }
-    function texto(txt, w, h, cor, fundo) {
-      const c = document.createElement("canvas"); c.width = 256; c.height = Math.round(256 * h / w);
-      const x = c.getContext("2d");
-      if (fundo) { x.fillStyle = fundo; x.fillRect(0, 0, c.width, c.height); }
-      x.fillStyle = cor; x.font = "700 " + Math.round(c.height * 0.62) + "px Archivo, Arial, sans-serif";
-      x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(txt, c.width / 2, c.height / 2 + 2);
-      const t = new THREE.CanvasTexture(c); t.anisotropy = 4;
-      return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, transparent: true }));
-    }
-
-    const corpoArm = new THREE.Group(); scene.add(corpoArm);
-    const FRENTE = 350, FF = 350 - 494, PROF = 494, ZC = (FRENTE + FF) / 2;
-    // caixa
-    nome(caixa(corpoArm, 880, 3, 700, 0, 1.5, 0, mdf), "Base", "MDF 3 mm");
-    nome(caixa(corpoArm, 880, 3, 700, 0, 878.5, 0, mdf), "Tampo", "MDF 3 mm");
-    nome(caixa(corpoArm, 3, 874, 700, -438.5, 440, 0, mdf), "Lateral esquerda", "furo de 10 mm a 660 mm para os cabos da porta");
-    nome(caixa(corpoArm, 3, 874, 700, 438.5, 440, 0, mdf), "Lateral direita", "a trava fica do lado de dentro, a 600 mm");
-    nome(caixa(corpoArm, 874, 874, 3, 0, 440, -348.5, mdf), "Traseiro", "furo embaixo à esquerda para o cabo de força");
-    nome(caixa(corpoArm, 874, 874, 3, 0, 440, FF, mdf), "Fundo falso", "separa as gavetas do vão da eletrônica; as Peltier ficam nele");
-    // gaveteiro e prateleiras
-    nome(caixa(corpoArm, 874, 3, PROF, 0, 397.5, ZC, mdf), "Teto do gaveteiro");
-    [-92.5, 72.5, 237.5].forEach((x) => nome(caixa(corpoArm, 3, 393, PROF, x, 199.5, ZC, mdf), "Divisória do gaveteiro"));
-    [["Prateleira 2", 530], ["Prateleira 1", 662], ["Piso do compartimento da câmera", 794]].forEach(([n, y]) => nome(caixa(corpoArm, 874, 3, PROF, 0, y, ZC, mdf), n));
-    // baia do dispensador por gravidade
-    const bx = 338, bw = 196;
-    const dz = (FRENTE - 20) - FF, dy = 333 - 245.9, L = Math.hypot(dz, dy), ang = Math.atan2(dy, dz);
-    const pista = nome(caixa(corpoArm, bw, 3, L, bx, (333 + 245.9) / 2, (FRENTE - 20 + FF) / 2, mdf), "Pista do dispensador por gravidade", "inclinada uns 10°");
-    pista.rotation.x = ang;
-    nome(caixa(corpoArm, bw, 40, 3, bx, 264.6, FRENTE - 12, mdf), "Retentor do dispensador", "segura os rolos na frente");
-    const rolo = new THREE.MeshStandardMaterial({ color: 0xe9e6dc, roughness: 0.5 });
-    for (let i = 0; i < 4; i++) {
-      const s = 0.12 + i * 0.105, z = (FRENTE - 20) - s * dz, y = 245.9 + s * dy + 24;
-      const r = new THREE.Mesh(new THREE.CylinderGeometry(22, 22, 170, 24), rolo);
-      r.rotation.z = Math.PI / 2; r.position.set(bx, y, z); r.castShadow = true; corpoArm.add(nome(r, "Rolo do dispensador"));
-    }
-
-    // gavetas
-    const gav3d = {};
-    const LEDS = {};
-    function gaveta(id, x0, x1, y0, y1) {
-      const g = new THREE.Group(); corpoArm.add(g);
-      nome(g, "Gaveta " + id + (FRIAS[id] ? " (fria)" : ""), FRIAS[id] ? "tecla " + FRIAS[id] + " liga a Peltier atrás dela; clique para abrir" : "clique para abrir");
-      const w = x1 - x0 - 4, h = y1 - y0 - 4, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
-      const frente = caixa(g, w, h, 3, cx, cy, FRENTE - 1.5, mdf);
-      frente.userData = { tipo: "gaveta", id }; clicaveis.push(frente);
-      const prof = 450, hh = h * 0.78, zb = FRENTE - 3 - prof / 2;
-      caixa(g, w - 8, 3, prof, cx, y0 + 6, zb, mdf);
-      caixa(g, 3, hh, prof, x0 + 6, y0 + 4 + hh / 2, zb, mdf);
-      caixa(g, 3, hh, prof, x1 - 6, y0 + 4 + hh / 2, zb, mdf);
-      caixa(g, w - 8, hh, 3, cx, y0 + 4 + hh / 2, FRENTE - 3 - prof, mdf);
-      const puxador = caixa(g, Math.min(70, w * 0.4), 9, 1, cx, cy + h * 0.28, FRENTE + 0.3, escuro, false);
-      puxador.userData = { tipo: "gaveta", id }; clicaveis.push(puxador);
-      const rot = texto(id, 40, 18, "#3a2c1c");
-      rot.position.set(cx, cy - h * 0.18, FRENTE + 0.4); g.add(rot);
-      if (FRIAS[id]) {
-        const led = new THREE.Mesh(new THREE.CircleGeometry(4, 16), new THREE.MeshBasicMaterial({ color: 0x3a4652 }));
-        led.position.set(cx + 22, cy - h * 0.18, FRENTE + 0.5); g.add(led); LEDS[id] = led;
-        const gelo = new THREE.Mesh(new THREE.BoxGeometry(w - 16, 2, prof - 10), new THREE.MeshStandardMaterial({ color: 0x9cc4ff, emissive: 0x2f6fd1, emissiveIntensity: 0.0, transparent: true, opacity: 0.0 }));
-        gelo.position.set(cx, y0 + 9, zb); g.add(gelo); LEDS[id + "gelo"] = gelo;
-      }
-      gav3d[id] = g;
-    }
-    const yA = [3, 101.25, 199.5, 297.75, 396];
-    gaveta("A1", -437, -94, yA[3], yA[4]); gaveta("A2", -437, -94, yA[2], yA[3]);
-    gaveta("A3", -437, -94, yA[1], yA[2]); gaveta("A4", -437, -94, yA[0], yA[1]);
-    gaveta("B1", -91, 71, 199.5, 396); gaveta("B2", -91, 71, 3, 199.5);
-    gaveta("C1", 74, 236, 199.5, 396); gaveta("C2", 74, 236, 3, 199.5);
-
-    // eletrônica no vão de trás (entre o fundo falso e o traseiro)
-    const ZE = -347 + 2;
-    const verde = new THREE.MeshStandardMaterial({ color: 0x0b7a8a, roughness: 0.5 });
-    const azul = new THREE.MeshStandardMaterial({ color: 0x1f4fa8, roughness: 0.5 });
-    const prata = new THREE.MeshStandardMaterial({ color: 0xaab2b7, metalness: 0.5, roughness: 0.4 });
-    const pretoMat = new THREE.MeshStandardMaterial({ color: 0x222426, roughness: 0.7 });
-    const comp = new THREE.Group(); corpoArm.add(comp);
-    nome(caixa(comp, 101.5, 53, 3, -150, 640, ZE, verde, false), "Arduino Mega 2560", "lê o teclado, mostra no LCD e liga os relés");
-    nome(caixa(comp, 75, 55, 16, 0, 640, ZE + 8, azul, false), "Módulo relé 4 canais", "1 trava · 2 Peltier C1 · 3 Peltier C2 · 4 livre");
-    nome(caixa(comp, 43, 21, 12, -260, 470, ZE + 6, azul, false), "Regulador LM2596", "12 V → 5 V para os relés");
-    nome(caixa(comp, 215, 50, 115, -230, 28, -250, prata, false), "Fonte 12 V 10 A", "alimenta tudo; terminais da tomada (127/220 V) expostos");
-    nome(caixa(comp, 30, 12, 12, -60, 40, -300, new THREE.MeshStandardMaterial({ color: 0xe6e1d3 }), false), "Porta-fusível 10 A", "na linha de 12 V");
-    // Peltier sem cooler e sem recorte (16/10): furo de 38 mm no fundo falso, pastilha tampando por trás, dissipador passivo
-    function peltier(id, y) {
-      const furo40 = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 3.4, 40), new THREE.MeshStandardMaterial({ color: 0xdcdcdc, roughness: 0.6 }));
-      furo40.rotation.x = Math.PI / 2; furo40.position.set(155, y, FF);
-      comp.add(nome(furo40, "Furo de 38 mm atrás da gaveta " + id, "serra copo no fundo falso; aparece a face fria da pastilha"));
-      nome(caixa(comp, 40, 40, 4, 155, y, FF - 3.5, new THREE.MeshStandardMaterial({ color: 0xf2f2f2 }), false), "Pastilha Peltier TEC1-12703 da gaveta " + id, "no vão de trás, tampando o furo de 38 mm; face fria virada para a gaveta, presa por abraçadeira");
-      nome(caixa(comp, 80, 80, 36, 155, y, FF - 24, prata, false), "Dissipador de alumínio da Peltier " + id, "lado quente, sem cooler; pasta térmica entre ele e a pastilha");
-    }
-    peltier("C1", 298); peltier("C2", 101);
-
-    // trava na parede direita (corpo fixo) e lingueta
-    const YT = 600, ZT = 318;
-    nome(caixa(corpoArm, 28, 40, 54, 437 - 14, YT, ZT, escuro, false), "Trava solenoide 12 V", "lingueta chanfrada; recolhe com 12 V, relé 1");
-    const lingueta3d = nome(caixa(corpoArm, 16, 10, 16, 413, YT, ZT, metal, false), "Lingueta da trava", "o batente da porta empurra o chanfro ao fechar");
-
-    // porta (dobradiça na esquerda, pivô na quina da frente)
-    const porta = new THREE.Group(); porta.position.set(-440, 0, FRENTE); scene.add(porta);
-    const folha = caixa(porta, 880, 880, 6, 440, 440, 3, mdfPorta);
-    folha.userData = { tipo: "porta", nome: "Porta", detalhe: "MDF 6 mm; clique para abrir" }; clicaveis.push(folha);
-    [120, 760].forEach((y) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60, 16), metal); d.position.set(0, y, 3); porta.add(nome(d, "Dobradiça")); });
-    const puxador = caixa(porta, 14, 140, 14, 838, 440, 22, escuro, false);
-    puxador.userData = { tipo: "porta", nome: "Puxador da porta", detalhe: "clique para abrir" }; clicaveis.push(puxador);
-    [404, 476].forEach((y) => nome(caixa(porta, 10, 8, 12, 838, y, 10, escuro, false), "Puxador da porta"));
-    // caixa do LCD + teclado
-    const furoLente = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 6.6, 24), new THREE.MeshBasicMaterial({ color: 0x111111 }));
-    furoLente.rotation.x = Math.PI / 2; furoLente.position.set(440, 835, 3); porta.add(nome(furoLente, "Furo da câmera", "15 mm, a 835 mm de altura; a webcam enxerga por ele com a porta fechada"));
-    nome(caixa(porta, 112, 190, 10, 760, 640, 11, new THREE.MeshStandardMaterial({ color: 0xe9ece6, roughness: 0.7 }), true), "Caixa do LCD e do teclado", "o buzzer fica nela");
-    const lcdCanvas = document.createElement("canvas"); lcdCanvas.width = 512; lcdCanvas.height = 200;
-    const lcdTex = new THREE.CanvasTexture(lcdCanvas); lcdTex.anisotropy = 4;
-    const lcdTela = new THREE.Mesh(new THREE.PlaneGeometry(64.5, 16), new THREE.MeshBasicMaterial({ map: lcdTex }));
-    lcdTela.position.set(760, 690, 16.2); porta.add(nome(lcdTela, "Display LCD 16x2", "sem I2C: pinos 38 (RS), 40 (E), 42 a 48 (D4 a D7)"));
-    nome(caixa(porta, 80, 36, 2, 760, 690, 15, new THREE.MeshStandardMaterial({ color: 0x1e5a2f }), false), "Display LCD 16x2", "potenciômetro de contraste e resistor de 220 Ω atrás da placa");
-    const tecCanvas = document.createElement("canvas"); tecCanvas.width = 276; tecCanvas.height = 304;
-    (function () {
-      const x = tecCanvas.getContext("2d");
-      x.fillStyle = "#1c1d1f"; x.fillRect(0, 0, 276, 304);
-      TECLAS.forEach((k, i) => {
-        const cx = 12 + (i % 4) * 65, cy = 12 + Math.floor(i / 4) * 72;
-        x.fillStyle = "ABCD".includes(k) ? "#b8352b" : "#2c2e31"; x.fillRect(cx, cy, 55, 62);
-        x.fillStyle = "#f2f2ee"; x.font = "700 32px Archivo, Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
-        x.fillText(k, cx + 27, cy + 33);
-      });
-    })();
-    const tecPlano = new THREE.Mesh(new THREE.PlaneGeometry(69, 76), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(tecCanvas) }));
-    tecPlano.position.set(760, 610, 16.2); porta.add(nome(tecPlano, "Teclado de membrana 4x4", "linhas nos pinos 22 a 28, colunas 30 a 36"));
-    // batente em L com janela (por dentro da porta)
-    const batente = new THREE.Group(); porta.add(nome(batente, "Batente em L com janela", "a lingueta encaixa na janela de 12 × 20 mm"));
-    caixa(batente, 40, 50, 3, 842, YT, -1.5, metal, false);
-    caixa(batente, 3, 19, 60, 842, YT + 15.5, -30, metal, false);
-    caixa(batente, 3, 19, 60, 842, YT - 15.5, -30, metal, false);
-    caixa(batente, 3, 12, 22, 842, YT, -11, metal, false);
-    caixa(batente, 3, 12, 18, 842, YT, -51, metal, false);
-    const buzzer = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 8, 20), pretoMat);
-    buzzer.rotation.x = Math.PI / 2; buzzer.position.set(800, 722, 20); porta.add(nome(buzzer, "Buzzer ativo 5 V", "pino 7"));
-
-    /* ---------- fios: um tubo por cabo, pelo caminho de verdade ---------- */
-    const fios = new THREE.Group(); fios.visible = false; scene.add(fios);
-    const fiosPorta = new THREE.Group(); fiosPorta.visible = false; porta.add(fiosPorta);
-    const CABOS = {};
-    function trajeto(pts) {
-      const c = new THREE.CurvePath();
-      for (let i = 0; i < pts.length - 1; i++) c.add(new THREE.LineCurve3(new THREE.Vector3(...pts[i]), new THREE.Vector3(...pts[i + 1])));
-      return c;
-    }
-    function registrar(id, mat) { (CABOS[id] = CABOS[id] || { mats: [] }).mats.push(mat); }
-    const NOME_CABO = {
-      teclado: ["Cabo do teclado", "cabo de rede 1, 8 fios"],
-      lcd: ["Cabo do LCD e do buzzer", "cabo de rede 2 (8 fios do LCD) + 1 fio do buzzer"],
-      trava: ["Fio da trava", "0,5 mm², relé 1"],
-      peltier: ["Fio da Peltier", "1,5 mm², relés 2 e 3"],
-      forca: ["Cabo de força", "tomada → fonte"],
-      v12: ["12 V", "1,5 mm², depois do fusível"],
-      gnd: ["GND", "terra comum da fonte e do Mega"],
-      v5: ["5 V dos relés", "saída do LM2596"],
-      controle: ["Controle dos relés", "pinos 8, 9 e 10 do Mega"],
-      camera: ["Cabo USB da câmera", "webcam → notebook, fora do armário; não passa pelo Arduino"],
-    };
-    function cabo(id, pts, cor, raio, pai) {
-      const mat = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.5, transparent: true, opacity: 1 });
-      registrar(id, mat);
-      const m = new THREE.Mesh(new THREE.TubeGeometry(trajeto(pts), (pts.length - 1) * 10, raio, 8, false), mat);
-      (pai || fios).add(nome(m, ...NOME_CABO[id]));
-      return m;
-    }
-    const furoMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
-    function furo(x, y, z, eixo, para) {
-      const f = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 6, 18), furoMat);
-      if (eixo === "x") f.rotation.z = Math.PI / 2; else f.rotation.x = Math.PI / 2;
-      f.position.set(x, y, z); corpoArm.add(nome(f, "Furo de 10 mm", para + "; fazer antes da cola"));
-    }
-    const COR = { teclado: 0xe8892a, lcd: 0x2f7fd1, trava: 0xd23b2b, peltier: 0xb3261e, v12: 0xe24a3b, gnd: 0x262626, v5: 0x2e8b57, controle: 0x8e5cc7, forca: 0x7d868c, camera: 0x1d9bb0 };
-
-    // furos que precisam ser feitos antes da cola
-    furo(-438.5, 660, 322, "x", "lateral esquerda, cabos da porta");
-    furo(-428, 660, FF, "z", "fundo falso, cabos da porta");
-    furo(430, 600, FF, "z", "fundo falso, fio da trava");
-    furo(-345, 28, -348.5, "z", "traseiro, cabo de força");
-
-    // câmera (22/10): webcam USB no compartimento de cima, olhando pra fora por um furo na porta, cabo até o notebook
-    [[0, 835, FF, "fundo falso"], [0, 835, -348.5, "traseiro"]].forEach(([x, y, z, onde]) => {
-      const f = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 6, 20), furoMat);
-      f.rotation.x = Math.PI / 2; f.position.set(x, y, z);
-      corpoArm.add(nome(f, "Furo de 16 mm", onde + ", cabo USB da câmera; o plugue tem 12 mm"));
-    });
-    const pretoCam = new THREE.MeshStandardMaterial({ color: 0x1b1c1e, roughness: 0.5 });
-    nome(caixa(corpoArm, 30, 24, 20, 0, 808, FRENTE - 30, pretoCam, false), "Suporte da webcam", "preso no piso do compartimento da câmera com dupla face");
-    nome(caixa(corpoArm, 90, 30, 25, 0, 835, FRENTE - 30, pretoCam, false), "Webcam USB", "olha para quem está na porta pelo furo de 15 mm; ligada no notebook, não no Arduino");
-    const lente = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 4, 24), new THREE.MeshStandardMaterial({ color: 0x223a5e, roughness: 0.15, metalness: 0.4 }));
-    lente.rotation.x = Math.PI / 2; lente.position.set(0, 835, FRENTE - 15.5);
-    corpoArm.add(nome(lente, "Lente da webcam", "alinhada com o furo de 15 mm da porta"));
-    cabo("camera", [[0, 830, FRENTE - 43], [0, 800, FRENTE - 70], [0, 800, -100], [0, 835, -130], [0, 835, -348], [0, 835, -440]], COR.camera, 2.5);
-
-    // porta: teclado (cabo de rede 1) e LCD + buzzer (cabo de rede 2) por dentro da folha até a dobradiça
-    cabo("teclado", [[760, 600, 4], [760, 600, -3], [760, 655, -3], [30, 655, -3], [12, 655, -6]], COR.teclado, 3, fiosPorta);
-    cabo("lcd", [[760, 690, 4], [760, 690, -3], [790, 690, -3], [800, 722, -3], [730, 665, -3], [30, 665, -3], [12, 665, -6]], COR.lcd, 3, fiosPorta);
-    // laço de folga na dobradiça: refeito quando a porta gira
-    const lacos = [
-      { id: "teclado", y: 655, ancora: new THREE.Vector3(12, 655, -6), mesh: null, mat: null },
-      { id: "lcd", y: 665, ancora: new THREE.Vector3(12, 665, -6), mesh: null, mat: null },
-    ];
-    lacos.forEach((l) => { l.mat = new THREE.MeshStandardMaterial({ color: COR[l.id], roughness: 0.5, transparent: true, opacity: 1 }); registrar(l.id, l.mat); });
-    let anguloLaco = null;
-    function refazerLacos() {
-      if (anguloLaco === st.portaAng) return;
-      anguloLaco = st.portaAng;
-      porta.updateMatrixWorld(true);
-      lacos.forEach((l) => {
-        const a = porta.localToWorld(l.ancora.clone());
-        const curva = new THREE.CatmullRomCurve3([a, new THREE.Vector3(-462, l.y, 372), new THREE.Vector3(-476, l.y, 340), new THREE.Vector3(-452, l.y, 322), new THREE.Vector3(-436, l.y, 322)]);
-        const g = new THREE.TubeGeometry(curva, 40, 3, 8, false);
-        if (l.mesh) { l.mesh.geometry.dispose(); l.mesh.geometry = g; } else { l.mesh = nome(new THREE.Mesh(g, l.mat), NOME_CABO[l.id][0], "laço de folga na dobradiça"); fios.add(l.mesh); }
-      });
-    }
-    // dentro do armário: lateral esquerda, embaixo da PRAT_1, até o fundo falso e o Arduino
-    cabo("teclado", [[-436, 655, 322], [-428, 655, 300], [-428, 655, -200], [-428, 650, -330], [-205, 650, -341]], COR.teclado, 3);
-    cabo("lcd", [[-436, 665, 322], [-422, 665, 300], [-422, 665, -200], [-422, 636, -330], [-205, 636, -341]], COR.lcd, 3);
-    // trava: parede direita a 600 mm
-    cabo("trava", [[423, YT, 290], [430, YT, 280], [430, YT, -200], [430, 615, -330], [40, 615, -339]], COR.trava, 2.5);
-    // Peltier C1 e C2: já saem no vão de trás
-    cabo("peltier", [[180, 298, -150], [200, 298, -205], [200, 600, -330], [35, 605, -339]], COR.peltier, 3.5);
-    cabo("peltier", [[180, 101, -150], [210, 101, -205], [210, 595, -330], [30, 600, -339]], COR.peltier, 3.5);
-    // energia: tomada, 12 V com fusível, GND, 5 V do LM2596, controle dos relés
-    cabo("forca", [[-337, 28, -250], [-345, 28, -300], [-345, 28, -360], [-345, 20, -460], [-345, 2, -620]], COR.forca, 3.5);
-    // sem bornes: 12 V do fusível direto no COM 1, COM 1 → 2 → 3 por pedaços de fio, COM 3 → LM2596 → Vin
-    cabo("v12", [[-122, 40, -250], [-75, 40, -300], [-45, 40, -300], [-45, 40, -334], [-45, 600, -334], [-30, 618, -334]], COR.v12, 3);
-    cabo("v12", [[-30, 618, -333], [30, 618, -333]], COR.v12, 2.2);
-    cabo("v12", [[30, 616, -334], [-120, 520, -339], [-238, 470, -339]], COR.v12, 2.2);
-    cabo("v12", [[-250, 481, -339], [-215, 560, -341], [-195, 618, -341]], COR.v12, 2.2);
-    // GND direto nos parafusos V− da fonte, dois fios por parafuso
-    cabo("gnd", [[-122, 25, -240], [-65, 25, -322], [-65, 25, -340], [-65, 585, -340], [0, 590, -340]], COR.gnd, 3);
-    cabo("gnd", [[-122, 20, -235], [-200, 60, -300], [-262, 459, -339]], COR.gnd, 1.8);
-    cabo("gnd", [[-122, 30, -245], [-110, 300, -341], [-130, 614, -341]], COR.gnd, 1.8);
-    cabo("v5", [[-238, 470, -337], [-180, 540, -337], [-35, 590, -337]], COR.v5, 1.8);
-    cabo("controle", [[-100, 645, -341], [-38, 645, -339]], COR.controle, 1.8);
-    cabo("controle", [[-100, 635, -341], [-38, 635, -339]], COR.controle, 1.8);
-
-    let destacado = null;
-    function destacar(id) {
-      destacado = destacado === id ? null : id;
-      Object.keys(CABOS).forEach((k) => CABOS[k].mats.forEach((m) => { m.opacity = !destacado || k === destacado ? 1 : 0.12; m.depthWrite = !destacado || k === destacado; }));
-      document.querySelectorAll("[data-cabo]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cabo === destacado)));
-      if (destacado && !raiox) setRaiox(true);
-    }
-
-    function desenharLcdTela() {
-      const x = lcdCanvas.getContext("2d");
-      x.fillStyle = "#9fc23a"; x.fillRect(0, 0, 512, 200);
-      x.fillStyle = "#1f2a12"; x.font = "800 58px Doto, 'IBM Plex Mono', monospace"; x.textBaseline = "middle";
-      lcdAtual.forEach((l, r) => { for (let c = 0; c < 16; c++) x.fillText(l[c] || " ", 14 + c * 30.4, 52 + r * 96); });
-      lcdTex.needsUpdate = true;
-    }
-
-    // raio-X
-    let raiox = false;
-    function setRaiox(on) {
-      raiox = on;
-      transparentes.forEach((m) => { m.transparent = on; m.opacity = on ? 0.16 : 1; m.depthWrite = !on; m.needsUpdate = true; });
-      fios.visible = on; fiosPorta.visible = on;
-      if (on) refazerLacos();
-      $("raiox").setAttribute("aria-pressed", String(on));
-    }
-    $("raiox").addEventListener("click", () => setRaiox(!raiox));
-
-    // vistas
-    const VISTAS = {
-      geral: { p: [1650, 1150, 2050], t: [0, 430, 60], x: null },
-      porta: { p: [520, 760, 1150], t: [300, 620, 330], x: null },
-      tranca: { p: [760, 900, 760], t: [400, 600, 310], x: true },
-      eletronica: { p: [-900, 1300, -1500], t: [-80, 400, -250], x: true },
-      fios: { p: [-1350, 1250, 1250], t: [-40, 430, -60], x: true },
-    };
-    let voo = null;
-    function vista(nome) {
-      const v = VISTAS[nome];
-      Object.keys(VISTAS).forEach((k) => $("v-" + k).setAttribute("aria-pressed", String(k === nome)));
-      if (v.x !== null) setRaiox(v.x); else if (nome === "geral") setRaiox(false);
-      voo = { de: camera.position.clone(), deT: controls.target.clone(), para: new THREE.Vector3(...v.p), paraT: new THREE.Vector3(...v.t), ini: performance.now(), dur: reduzir ? 1 : 900 };
-    }
-    Object.keys(VISTAS).forEach((k) => $("v-" + k).addEventListener("click", () => vista(k)));
-
-    // cliques
-    const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
-    let baixo = null;
-    canvas.addEventListener("pointerdown", (e) => { baixo = [e.clientX, e.clientY]; });
-    canvas.addEventListener("pointerup", (e) => {
-      if (!baixo || Math.hypot(e.clientX - baixo[0], e.clientY - baixo[1]) > 6) return;
-      const r = canvas.getBoundingClientRect();
-      mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-      ray.setFromCamera(mouse, camera);
-      const hit = ray.intersectObjects(clicaveis, false)[0];
-      if (!hit) return;
-      const u = hit.object.userData;
-      if (u.tipo === "porta") puxarPorta(); else if (u.tipo === "gaveta") mexerGaveta(u.id);
-    });
-    canvas.addEventListener("pointermove", (e) => {
-      const r = canvas.getBoundingClientRect();
-      mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-      ray.setFromCamera(mouse, camera);
-      canvas.style.cursor = ray.intersectObjects(clicaveis, false).length ? "pointer" : "grab";
-      // arrastando (girando a câmera) a etiqueta some; no toque ela aparece no tap
-      if (e.pointerType === "mouse" && !e.buttons) etiquetar(e); else esconderEtiqueta();
-    });
-    canvas.addEventListener("pointerleave", esconderEtiqueta);
-
-    // etiqueta com o nome da peça sob o cursor
-    const etiqueta = $("etiqueta");
-    let etiquetaAte = 0;
-    function visivel(o) { for (; o; o = o.parent) if (!o.visible) return false; return true; }
-    function apagado(o) { const m = o.material; return m && m.transparent && m.opacity < 0.3; }
-    function pecaSob() {
-      // no raio-X o MDF fica translúcido e é ignorado, então dá para apontar o que está dentro
-      for (const hit of ray.intersectObjects(scene.children, true)) {
-        const o = hit.object;
-        if (o.userData.chao) return null;
-        if (!o.isMesh || !visivel(o) || apagado(o)) continue;
-        for (let p = o; p; p = p.parent) if (p.userData.nome) return p.userData;
-        return null;
-      }
-      return null;
-    }
-    function etiquetar(e, ms) {
-      const u = pecaSob();
-      if (!u) { esconderEtiqueta(); return; }
-      etiqueta.firstElementChild.textContent = u.nome;
-      etiqueta.lastElementChild.textContent = u.detalhe || "";
-      etiqueta.lastElementChild.hidden = !u.detalhe;
-      etiqueta.hidden = false;
-      const caixaCena = etiqueta.parentElement.getBoundingClientRect();
-      let x = e.clientX - caixaCena.left + 14, y = e.clientY - caixaCena.top + 16;
-      if (x + etiqueta.offsetWidth > caixaCena.width - 8) x = e.clientX - caixaCena.left - etiqueta.offsetWidth - 14;
-      if (y + etiqueta.offsetHeight > caixaCena.height - 8) y = e.clientY - caixaCena.top - etiqueta.offsetHeight - 12;
-      etiqueta.style.transform = "translate(" + Math.max(8, x) + "px," + Math.max(8, y) + "px)";
-      etiquetaAte = ms ? performance.now() + ms : 0;
-    }
-    function esconderEtiqueta() { etiqueta.hidden = true; etiquetaAte = 0; }
-    canvas.addEventListener("pointerup", (e) => {
-      if (e.pointerType === "mouse" || !baixo || Math.hypot(e.clientX - baixo[0], e.clientY - baixo[1]) > 6) return;
-      const r = canvas.getBoundingClientRect();
-      mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-      ray.setFromCamera(mouse, camera);
-      etiquetar(e, 2500);
-    });
-
-    function tema() {
-      renderer.setClearColor(new THREE.Color(css("--stage") || "#dfe3dd"));
-      linhaMat.color.set(css("--edge") || "#6c5a44");
-    }
-    tema();
-    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tema);
-    new MutationObserver(tema).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-
-    function tamanho() {
-      const w = canvas.clientWidth, h = canvas.clientHeight;
-      if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
-        renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-      }
-    }
-
-    three = {
-      quadro(agora, dt) {
-        tamanho();
-        if (voo) {
-          const k = Math.min(1, (agora - voo.ini) / voo.dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-          camera.position.lerpVectors(voo.de, voo.para, e); controls.target.lerpVectors(voo.deT, voo.paraT, e);
-          if (k >= 1) voo = null;
-        }
-        porta.rotation.y = -THREE.MathUtils.degToRad(st.portaAng + tremor());
-        if (fios.visible) refazerLacos();
-        if (etiquetaAte && agora > etiquetaAte) esconderEtiqueta();
-        lingueta3d.position.x = 413 - 12 * st.lingueta;
-        GAVETAS.forEach((g) => { gav3d[g].position.z = st.gav[g].pos * 330; });
-        Object.keys(FRIAS).forEach((g) => {
-          LEDS[g].material.color.set(st.frio[g] ? 0x4f8dff : 0x3a4652);
-          const gelo = LEDS[g + "gelo"].material; gelo.opacity += ((st.frio[g] ? 0.55 : 0) - gelo.opacity) * Math.min(1, dt * 3); gelo.emissiveIntensity = gelo.opacity;
-        });
-        controls.update();
-        renderer.render(scene, camera);
-      },
-      lcd: desenharLcdTela,
-      destacar,
-      vista,
-    };
-    document.querySelectorAll("[data-cabo]").forEach((b) => b.addEventListener("click", () => {
-      if (!$("v-fios").getAttribute("aria-pressed") || $("v-fios").getAttribute("aria-pressed") === "false") vista("fios");
-      destacar(b.dataset.cabo);
-    }));
-    $("carregando").hidden = true;
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => desenharLcdTela());
+  // ---------------------------------------------------------- cena 3D (X direita, Y fundo, Z cima -> three: x, z=-Y, y=Z)
+  setInterval(() => { tick(); painel(); }, 100);       // a lógica não depende da animação (que para com a aba escondida)
+  if (!window.THREE) { $("cena").innerHTML = "<p style='padding:12px'>Sem internet para carregar o three.js: a lógica da porta funciona assim mesmo.</p>"; return; }
+  const box = $("cena");
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
+  box.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 5, 10000);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x887766, 0.9));
+  const sol = new THREE.DirectionalLight(0xffffff, 0.6); sol.position.set(-800, 1600, -1400); scene.add(sol);
+  const centro = new THREE.Vector3(440, 440, -300);
+  function vista(n) {
+    const p = { f: [440, 520, -2100], e: [-1500, 700, -150], c: [440, 2300, -350] }[n];
+    camera.position.set(...p); controls.target.copy(centro); controls.update();
   }
-  function desenharLcd3d() { if (three) three.lcd(); }
-
-  /* ---------------- laço principal ---------------- */
-  let antes = performance.now();
-  function passo(agora) {
-    const dt = Math.min(0.05, (agora - antes) / 1000); antes = agora;
-
-    // liberação expira sem abrir
-    if (st.trava && agora > st.travaAte) setTrava(false, "fim dos 5 s");
-    // sessão esquecida aberta
-    if (st.sessao && agora - st.ultimaTecla > T_SESSAO) encerrar("60 s sem tecla");
-    // bloqueio terminou
-    if (st.bloqueioAte && agora > st.bloqueioAte) { st.bloqueioAte = 0; log("Teclado liberado"); }
-
-    // porta
-    const vel = reduzir ? 1000 : 150;
-    if (st.portaAng < st.portaAlvo) st.portaAng = Math.min(st.portaAlvo, st.portaAng + vel * dt);
-    else if (st.portaAng > st.portaAlvo) st.portaAng = Math.max(st.portaAlvo, st.portaAng - vel * dt);
-    const aberta = st.portaAng > 3;
-    // sem sensor: o Arduino não sabe da porta; o log só narra o que acontece no mundo físico
-    if (aberta && !st.portaAbertaAntes) st.portaAbertaAntes = true;
-    if (!aberta && st.portaAbertaAntes && st.portaAng <= 0.01) {
-      st.portaAbertaAntes = false;
-      log("(mecanico) porta fechou e a lingueta encaixou");
-    }
-
-    // lingueta: recolhe com a bobina, é empurrada pelo batente ao fechar, mola devolve
-    let alvoL = 1;
-    if (st.trava) alvoL = 0;
-    else if (st.portaAlvo === 0 && st.portaAng > 0.6 && st.portaAng < 5) alvoL = st.portaAng > 4 ? st.portaAng - 4 : 0;
-    st.lingueta += (alvoL - st.lingueta) * Math.min(1, dt * (alvoL > st.lingueta ? 30 : 18));
-
-    // gavetas
-    GAVETAS.forEach((g) => { const o = st.gav[g]; o.pos += (o.alvo - o.pos) * Math.min(1, dt * (reduzir ? 60 : 5)); if (Math.abs(o.alvo - o.pos) < 0.001) o.pos = o.alvo; });
-
-    const tela = telaBase(agora);
-    lcd(tela);
-    Object.values(botoes).forEach((b) => { b.disabled = agora < st.bloqueioAte; });
-    painel();
-    desenharCorte();
-    if (three) three.quadro(agora, dt);
-    requestAnimationFrame(passo);
+  const clicaveis = [], todos = [];
+  function malha(d, pai) {
+    const w = d.x[1] - d.x[0], h = d.z[1] - d.z[0], p = d.y[1] - d.y[0];
+    const mat = new THREE.MeshStandardMaterial({ color: d.cor, roughness: 0.75, transparent: !!d.transparente, opacity: d.transparente ? 0.45 : 1 });
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, p), mat);
+    m.position.set((d.x[0] + d.x[1]) / 2, (d.z[0] + d.z[1]) / 2, -(d.y[0] + d.y[1]) / 2);
+    m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25 })));
+    m.userData = d; (pai || scene).add(m); todos.push(m); clicaveis.push(m);
+    return m;
   }
-
-  log("Armario pronto. Senha de teste: 1234");
-  try { cena3d(); } catch (e) { $("carregando").textContent = "Não deu para abrir o 3D neste aparelho. O resto da simulação funciona."; }
-  requestAnimationFrame(passo);
+  DADOS.pecas.forEach(d => { const m = malha(d); if (d.gaveta) { st.gav[d.gaveta] = { m, alvo: 0, pos: 0, z0: m.position.z }; } });
+  // a porta gira em torno do eixo da dobradiça (vertical)
+  const pivo = new THREE.Group(); pivo.position.set(DADOS.eixo.x, 0, -DADOS.eixo.y); scene.add(pivo);
+  DADOS.porta.forEach(d => { const m = malha(d, pivo); m.position.x -= DADOS.eixo.x; m.position.z += DADOS.eixo.y; });
+  const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+  function sob(e) {
+    const r = renderer.domElement.getBoundingClientRect();
+    mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(mouse, camera);
+    const hit = ray.intersectObjects(clicaveis, false).find(h => h.object.visible && h.object.material.opacity > 0.3);
+    return hit ? hit.object : null;
+  }
+  renderer.domElement.addEventListener("mousemove", e => {
+    const o = sob(e), etq = $("etq");
+    if (!o) { etq.style.display = "none"; return; }
+    const r = box.getBoundingClientRect();
+    etq.innerHTML = `<b>${o.userData.nome}</b>${o.userData.detalhe ? "<br>" + o.userData.detalhe : ""}`;
+    etq.style.display = "block"; etq.style.left = (e.clientX - r.left + 12) + "px"; etq.style.top = (e.clientY - r.top + 12) + "px";
+  });
+  renderer.domElement.addEventListener("click", e => {
+    const o = sob(e); if (!o) return;
+    if (o.userData.grupo === "porta") puxarPorta();
+    else if (o.userData.gaveta) { if (st.porta < 80) { log("Abra a porta antes de puxar a gaveta"); return; } const g = st.gav[o.userData.gaveta]; g.alvo = g.alvo ? 0 : 300; }
+  });
+  let raio = false;
+  $("b-raio").onclick = () => { raio = !raio; todos.forEach(m => { const d = m.userData; if (["Lateral esquerda","Lateral direita","Tampo","Traseiro","Fundo falso"].includes(d.nome) || d.grupo === "porta" && d.nome.startsWith("Porta")) { m.material.transparent = raio || !!d.transparente; m.material.opacity = raio ? 0.15 : (d.transparente ? 0.45 : 1); } }); };
+  $("b-vista-f").onclick = () => vista("f"); $("b-vista-e").onclick = () => vista("e"); $("b-vista-c").onclick = () => vista("c");
+  function tamanho() { const w = box.clientWidth, h = box.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  window.addEventListener("resize", tamanho); tamanho(); vista("f");
+  function quadro() {
+    st.porta += (st.alvo - st.porta) * 0.12;
+    let a = -st.porta * Math.PI / 180;
+    if (tremer > 0) { a += Math.sin(tremer) * 0.004; tremer--; }
+    pivo.rotation.y = -a;
+    Object.values(st.gav).forEach(g => { g.pos += (g.alvo - g.pos) * 0.15; g.m.position.z = g.z0 + g.pos; });
+    renderer.render(scene, camera); requestAnimationFrame(quadro);
+  }
+  quadro();
 })();
 </script>
 </body>

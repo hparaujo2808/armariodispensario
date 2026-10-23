@@ -1,5 +1,7 @@
-"""Calcula, a partir do config.py da V2.3, as posições que o LIGACOES.md e a
-simulação usam, e aponta onde eles não batem.
+"""Evidência da auditoria de 22/10 (docs/AUDITORIA.md, itens 15 e 18 e N03):
+calcula, a partir do config.py da V2.3, as posições que o LIGACOES.md e a
+simulação de 21/10 (hoje em legado/) usavam, e aponta onde eles não batiam.
+As "divergências" impressas são as daqueles arquivos antigos, já corrigidas.
 
     python calculos/conferir_geometria.py [pasta/do/gerador]
 
