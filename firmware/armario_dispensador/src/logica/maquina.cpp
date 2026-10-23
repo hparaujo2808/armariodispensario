@@ -31,7 +31,9 @@ void Maquina::ir(Estado e, uint32_t agora) {
   nbuf_ = 0;
   buf_[0] = 0;
   // só os estados que importam depois de um reset vão para a EEPROM (poupa gravações)
-  if (e == Estado::OCIOSO || e == Estado::LIBERADO || e == Estado::PORTA_ABERTA) mem_.salvar_estado((uint8_t)e);
+  // BLOQUEADO também: um reset (tirar a USB) não zera o bloqueio
+  if (e == Estado::OCIOSO || e == Estado::LIBERADO || e == Estado::PORTA_ABERTA || e == Estado::BLOQUEADO)
+    mem_.salvar_estado((uint8_t)e);
   msg_temporaria_ = false;
   if (e == Estado::OCIOSO) {
     usuario_ = 0;
@@ -49,6 +51,10 @@ void Maquina::iniciar(bool porta_aberta, uint32_t agora) {
     ir(Estado::PORTA_ABERTA, agora);
     usuario_ = 0;
     tela("Porta aberta", "Feche a porta");
+  } else if (salvo == Estado::BLOQUEADO) {
+    erros_ = par::MAX_ERROS;
+    ir(Estado::BLOQUEADO, agora);      // recomeça os 30 s inteiros
+    tela("Bloqueado", "");
   } else {
     ir(Estado::OCIOSO, agora);
   }
@@ -56,6 +62,7 @@ void Maquina::iniciar(bool porta_aberta, uint32_t agora) {
 
 void Maquina::autenticado(uint8_t u, Metodo m, uint32_t agora) {
   erros_ = 0;
+  erros_digital_ = 0;
   usuario_ = u;
   som_ = Som::OK;
   saida_.evento(Ev::AUTH_OK, u, (int16_t)m);
@@ -66,15 +73,27 @@ void Maquina::autenticado(uint8_t u, Metodo m, uint32_t agora) {
     snprintf(b, sizeof b, "Ola, usuario %u", u);
     tela(b, "Digite o CPF");
   } else {
-    liberar(agora, true);
+    sem_notebook(agora);
   }
 }
 
+void Maquina::sem_notebook(uint32_t agora) {
+  if (autonomo_ok_) {
+    liberar(agora, true);
+    return;
+  }
+  saida_.evento(Ev::CANCELADO, usuario_, 2);   // 2 = notebook fora do ar e modo autônomo desligado
+  ir(Estado::OCIOSO, agora);
+  tela("Sistema fora", "do ar");
+  msg_temporaria_ = true;
+}
+
 void Maquina::falhou(Metodo m, uint32_t agora) {
-  erros_++;
+  uint8_t& erros = m == Metodo::DIGITAL ? erros_digital_ : erros_;
+  erros++;
   som_ = Som::ERRO;
   saida_.evento(Ev::AUTH_FALHA, 0, (int16_t)m);
-  if (erros_ >= par::MAX_ERROS) {
+  if (erros >= par::MAX_ERROS) {
     saida_.evento(Ev::BLOQUEIO, 0, (int16_t)(par::BLOQUEIO_MS / 1000));
     ir(Estado::BLOQUEADO, agora);
     tela("Bloqueado", "");
@@ -173,6 +192,14 @@ void Maquina::porta(bool aberta, uint32_t agora) {
       ir(Estado::PORTA_ABERTA, agora);   // a trava desliga ao sair de LIBERADO
       usuario_ = u;
       tela("Porta aberta", "Feche ao sair");
+    } else if (expirou_u_ && agora - expirou_em_ < par::JANELA_ABERTURA_MS && estado_ != Estado::PORTA_ABERTA) {
+      // a lingueta soltou no pulso, mas o reed só abriu depois de a liberação expirar:
+      // a abertura ainda é do último usuário (valor 1 = abertura tardia)
+      uint8_t u = expirou_u_;
+      saida_.evento(Ev::PORTA_ABERTA, u, 1);
+      ir(Estado::PORTA_ABERTA, agora);
+      usuario_ = u;
+      tela("Porta aberta", "Feche ao sair");
     } else if (estado_ != Estado::PORTA_ABERTA) {
       // abriu sem autenticação (chave, força ou liberação de emergência): RNF03
       saida_.evento(Ev::ABERTURA_NAO_AUTORIZADA, 0, (int16_t)estado_);
@@ -182,6 +209,7 @@ void Maquina::porta(bool aberta, uint32_t agora) {
       tela("ABERTURA SEM", "AUTORIZACAO");
     }
     aviso_tempo_dado_ = false;
+    expirou_u_ = 0;
   } else if (estado_ == Estado::PORTA_ABERTA) {
     uint32_t s = (agora - desde_) / 1000;
     saida_.evento(Ev::PORTA_FECHADA, usuario_, (int16_t)(s > 32767 ? 32767 : s));
@@ -201,12 +229,14 @@ void Maquina::tick(uint32_t agora) {
         saida_.evento(Ev::CANCELADO, usuario_, 1);
         ir(Estado::OCIOSO, agora);
       } else if (!notebook_online(agora)) {
-        liberar(agora, true);          // notebook caiu: o Mega segue sozinho
+        sem_notebook(agora);           // notebook caiu: o Mega segue sozinho (se a farmácia permitir)
       }
       break;
     case Estado::LIBERADO:
       if (agora - desde_ >= par::TRAVA_MAX_MS) {   // trava nunca fica ligada mais que isso
         saida_.evento(Ev::LIBERACAO_EXPIROU, usuario_, 0);
+        expirou_u_ = usuario_;
+        expirou_em_ = agora;
         ir(Estado::OCIOSO, agora);
       }
       break;
@@ -222,6 +252,7 @@ void Maquina::tick(uint32_t agora) {
       uint32_t passou = agora - desde_;
       if (passou >= par::BLOQUEIO_MS) {
         erros_ = 0;
+        erros_digital_ = 0;
         ir(Estado::OCIOSO, agora);
       } else {
         char b[17];

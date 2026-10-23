@@ -58,13 +58,19 @@ Também abre e grava pela Arduino IDE, com as mesmas bibliotecas instaladas.
 
 - **Relés no reset:** cada saída recebe o nível desligado **antes** de `pinMode(OUTPUT)` (lista `SAIDAS` do `pinos.h`). Conferir na bancada (`docs/TESTES_DE_BANCADA.md`, passo 3).
 - **Trava:** fica energizada no máximo 3 s e desliga assim que a porta abre.
-- **Intertravamento:** com a trava energizada, os relés das Peltier ficam desligados, no controle e de novo na saída.
+- **Intertravamento:** a cada passada do laço, as Peltier desligam primeiro e a trava só energiza 20 ms depois; com a trava energizada, os relés das Peltier ficam desligados.
+- **Relés com o Mega desligado:** o VCC dos LEDs do módulo vem do 5 V do Mega (sem o jumper JD-VCC). Sem USB, nenhum relé arma (`docs/DECISOES.md` 1.3, teste 3.6).
+- **Baia que não esfria:** Peltier ligadas há 20 min com a baia acima de 6 °C e sem cair 1 °C → desliga, `FRIO_SEM_EFEITO`, nova tentativa em 30 min (pastilha solta ou prensa frouxa, que o sensor do cooler não percebe).
+- **Leitor de digital:** depois de cada leitura, espera o dedo sair e mais 2 s. Os erros de digital e de senha são contados separados (3 de cada bloqueiam por 30 s). O bloqueio fica na EEPROM: tirar a USB não zera.
+- **Porta aberta logo depois da liberação expirar** (até 5 s): conta como abertura do último usuário liberado (`PORTA_ABERTA` com `v=1`), porque o reed só abre com a porta já afastada.
+- **Mapa dos sensores:** `SET mapa=` só aceita uma permutação de 0, 1 e 2 (cada sensor com um papel só).
 - **Watchdog de 2 s:** se o laço travar, o Mega reinicia com tudo desligado. Ao voltar:
   - se a porta estiver aberta, registra `RECUPERADO`;
   - os eventos que ainda não foram confirmados continuam na EEPROM e são reenviados.
 - **Abrir a serial reinicia o Mega** (DTR). Isso é seguro: ele volta com a trava desligada e nunca libera sem uma autenticação nova.
-- **Notebook fora do ar há mais de 5 s:** o Mega libera sozinho depois da autenticação (`MODO_AUTONOMO`) e guarda os eventos para mandar depois.
-- **Horário:** o Mega não tem relógio. O notebook dá a hora a cada evento (`ms` e `b` = número da inicialização servem para ordenar). Eventos guardados com o notebook desligado recebem hora aproximada, calculada pelo `ms` dentro da mesma inicialização.
+- **Notebook fora do ar há mais de 5 s:** o Mega libera sozinho depois da autenticação (`MODO_AUTONOMO`) e guarda os eventos para mandar depois. Nesse caso não há CPF nem vídeo: é uma exceção aos RF03 e RF07, que a farmácia aceita ou não. Com `SET auto=0` (no app: `modo_autonomo: false`), o Mega recusa e mostra "Sistema fora do ar".
+- **Horário:** o Mega não tem relógio. A linha `ST` leva o `b` (número da inicialização) e o `ms` atual. Com isso, o notebook calcula a hora de cada evento guardado da mesma inicialização e marca `hora_estimada` na auditoria. Eventos de uma inicialização anterior ficam com a hora de chegada.
+- **ACK cumulativo:** o notebook só confirma até o último evento sem buraco. Se um evento sumir da fila, o notebook espera 60 s e registra `MEGA_EVENTOS_PERDIDOS`. Se a EEPROM for formatada (o `seq` volta a 1), o notebook abre uma nova época e registra `MEGA_SEQUENCIA_REINICIADA`.
 
 ## Protocolo serial
 
@@ -73,14 +79,14 @@ Também abre e grava pela Arduino IDE, com as mesmas bibliotecas instaladas.
 | Sentido | Mensagem | Para quê |
 |---|---|---|
 | Mega → notebook | `EV seq=12 t=AUTH_OK u=3 v=1 ms=123456 b=7` | Evento. Repete até receber `ACK` |
-| Mega → notebook | `ST e=OCIOSO u=0 pend=2` | Estado, a cada 1 s |
+| Mega → notebook | `ST e=OCIOSO u=0 pend=2 b=7 ms=123999` | Estado, a cada 1 s (com o relógio do Mega) |
 | Mega → notebook | `TEMP baia=54 q1=401 q2=398 ok=111 p1=1 p2=1 al=0 v12=12040` | Temperaturas (décimos de °C) e 12 V (mV), a cada 2 s |
 | Mega → notebook | `OK id=5` / `ERRO id=5 m=ESTADO` | Resposta a um comando |
 | notebook → Mega | `HELLO`, `PING` | Mandar a cada 1 s (é como o Mega sabe que o notebook está vivo) |
 | notebook → Mega | `ACK seq=12` | Confirma os eventos até o 12 |
 | notebook → Mega | `LIB id=5 u=3` | Libera o usuário 3 depois do CPF e da confirmação |
 | notebook → Mega | `CANC id=6`, `CAD id=7 u=3`, `SENHA id=8 u=3 pin=2468`, `DEL id=9 u=3` | Cancelar, cadastrar digital, trocar senha, desativar |
-| notebook → Mega | `SET id=10 sp=50` / `vol=30` / `alarme=30` / `mapa=012` | Setpoint, volume, alarme da porta, mapa dos sensores |
+| notebook → Mega | `SET id=10 sp=50` / `vol=30` / `alarme=30` / `mapa=012` / `auto=1` | Setpoint, volume, alarme da porta, mapa dos sensores, modo autônomo |
 
 Números dos eventos: `src/logica/tipos.h` (`enum class Ev`). Não renumerar: eles ficam gravados na EEPROM.
 
@@ -92,7 +98,7 @@ Na raiz do repositório:
 pytest tests/test_firmware.py -v
 ```
 
-O comando compila e roda os 25 testes da lógica no PC (máquina de estados, bloqueio, trava, alarme de porta, abertura sem autorização, reset com a porta aberta, fila na EEPROM, hash das senhas, controle térmico) e compila para o Mega se houver `arduino-cli`.
+O comando compila e roda os 32 testes da lógica no PC (máquina de estados, bloqueio, trava, alarme de porta, abertura sem autorização e tardia, reset com a porta aberta e bloqueado, fila na EEPROM, hash das senhas, controle térmico, intertravamento, baia que não esfria) e compila para o Mega se houver `arduino-cli`.
 
 ## Simulação (Wokwi)
 

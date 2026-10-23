@@ -19,7 +19,8 @@ const uint8_t VERSAO = 1;
 // Cabeçalho: [0..1] mágico, [2] versão, [3..4] boot, [5..8] próximo seq,
 // [9..12] último seq confirmado pelo notebook, [13] estado salvo,
 // [14..15] setpoint (décimos °C), [16..17] alarme da porta (s), [18] volume,
-// [19..21] qual sensor DS18B20 (índice no barramento) é a baia, o cooler 1 e o cooler 2
+// [19..21] qual sensor DS18B20 (índice no barramento) é a baia, o cooler 1 e o cooler 2,
+// [22] modo autônomo permitido (0 = não; qualquer outro valor = sim, o padrão)
 class Memoria {
  public:
   explicit Memoria(Armazenamento& a) : a_(a) {}
@@ -37,6 +38,8 @@ class Memoria {
 
   uint8_t estado_salvo() const;
   void salvar_estado(uint8_t e);
+  bool autonomo() const;
+  void salvar_autonomo(bool p);
   int16_t setpoint() const;
   void salvar_setpoint(int16_t sp);
   uint16_t alarme_porta_s() const;

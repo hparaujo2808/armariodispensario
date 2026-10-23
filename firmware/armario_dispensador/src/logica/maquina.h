@@ -26,6 +26,9 @@ class Maquina {
   bool cmd_cadastrar(uint8_t usuario, uint32_t agora);
   void cadastro_terminou(bool ok, uint8_t posicao, uint32_t agora);
   void definir_alarme_porta_ms(uint32_t ms) { alarme_porta_ms_ = ms; }
+  // Modo autônomo (notebook fora do ar): libera só com a autenticação, sem CPF nem vídeo.
+  // A farmácia decide (SET auto=0|1); com 0, o Mega recusa e mostra "Sistema fora do ar".
+  void permitir_autonomo(bool p) { autonomo_ok_ = p; }
 
   // Saídas
   Estado estado() const { return estado_; }
@@ -42,6 +45,7 @@ class Maquina {
   void autenticado(uint8_t u, Metodo m, uint32_t agora);
   void falhou(Metodo m, uint32_t agora);
   void liberar(uint32_t agora, bool autonomo);
+  void sem_notebook(uint32_t agora);
   void tela(const char* a, const char* b);
   void tela_padrao();
 
@@ -55,7 +59,11 @@ class Maquina {
   bool teve_notebook_ = false;
   uint32_t alarme_porta_ms_ = 30000;
   uint8_t usuario_ = 0;
-  uint8_t erros_ = 0;
+  uint8_t erros_ = 0;             // erros de senha seguidos
+  uint8_t erros_digital_ = 0;     // erros de digital seguidos (contados à parte: RF01 e RF02)
+  uint8_t expirou_u_ = 0;         // último usuário cuja liberação expirou (JANELA_ABERTURA_MS)
+  uint32_t expirou_em_ = 0;
+  bool autonomo_ok_ = true;
   uint8_t id_digitado_ = 0;
   bool alarme_ = false;
   bool aviso_tempo_dado_ = false;

@@ -25,6 +25,7 @@ const char* nome_evento(Ev e) {
     case Ev::SENHA_ALTERADA: return "SENHA_ALTERADA";
     case Ev::RECUPERADO: return "RECUPERADO";
     case Ev::MODO_AUTONOMO: return "MODO_AUTONOMO";
+    case Ev::FRIO_SEM_EFEITO: return "FRIO_SEM_EFEITO";
     default: return "?";
   }
 }

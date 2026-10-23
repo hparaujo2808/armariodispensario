@@ -68,9 +68,9 @@ const uint8_t PINO_TECLADO_C4 = 36;
 const uint8_t ATIVO_TECLADO_C4 = LOW;
 // DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V
 const uint8_t PINO_ONEWIRE = 4;
-// Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND)
+// Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND), por mais 4,7 kΩ em série
 const uint8_t PINO_MEDE_12V = A0;
 
 // Saídas em ordem de inicialização segura: nível inativo antes de pinMode(OUTPUT)
-const uint8_t SAIDAS[15] = {PINO_RELE_TRAVA, PINO_RELE_PELTIER_1, PINO_RELE_PELTIER_2, PINO_RELE_LIVRE, PINO_BUZZER, PINO_LCD_RS, PINO_LCD_E, PINO_LCD_D4, PINO_LCD_D5, PINO_LCD_D6, PINO_LCD_D7, PINO_TECLADO_L1, PINO_TECLADO_L2, PINO_TECLADO_L3, PINO_TECLADO_L4};
+const uint8_t SAIDAS[15] = {PINO_RELE_TRAVA, PINO_RELE_PELTIER_1, PINO_RELE_PELTIER_2, PINO_RELE_LIVRE, PINO_BUZZER, PINO_LCD_RS, PINO_LCD_E, PINO_LCD_D4, PINO_LCD_D5, PINO_LCD_D6, PINO_LCD_D7, PINO_TECLADO_C1, PINO_TECLADO_C2, PINO_TECLADO_C3, PINO_TECLADO_C4};
 const uint8_t SAIDAS_INATIVO[15] = {HIGH, HIGH, HIGH, HIGH, LOW, LOW, LOW, LOW, LOW, LOW, LOW, HIGH, HIGH, HIGH, HIGH};

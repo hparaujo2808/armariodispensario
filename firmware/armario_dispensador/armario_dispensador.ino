@@ -115,12 +115,20 @@ void iniciar_saidas_seguras() {
   }
 }
 
-void aplicar_reles() {
-  bool trava = maquina.trava();
+uint32_t t_peltier_ligada = 0;          // última passada com alguma Peltier ligada
+
+void aplicar_reles(uint32_t agora) {
+  // intertravamento (docs/DECISOES.md 1.4): primeiro as Peltier desligam; a trava só
+  // energiza TRAVA_ATRASO_MS depois. Com a trava ligada, as Peltier nunca ligam.
+  bool quer_trava = maquina.trava();
+  termico.intertravar(quer_trava, agora);
+  bool p1 = termico.peltier1() && !quer_trava;
+  bool p2 = termico.peltier2() && !quer_trava;
+  saida_digital(PINO_RELE_PELTIER_1, ATIVO_RELE_PELTIER_1, p1);
+  saida_digital(PINO_RELE_PELTIER_2, ATIVO_RELE_PELTIER_2, p2);
+  if (p1 || p2) t_peltier_ligada = agora;
+  bool trava = quer_trava && !p1 && !p2 && agora - t_peltier_ligada >= par::TRAVA_ATRASO_MS;
   saida_digital(PINO_RELE_TRAVA, ATIVO_RELE_TRAVA, trava);
-  // intertravamento: com a trava energizada as Peltier nunca ligam (docs/DECISOES.md 1.4)
-  saida_digital(PINO_RELE_PELTIER_1, ATIVO_RELE_PELTIER_1, termico.peltier1() && !trava);
-  saida_digital(PINO_RELE_PELTIER_2, ATIVO_RELE_PELTIER_2, termico.peltier2() && !trava);
   saida_digital(PINO_RELE_LIVRE, ATIVO_RELE_LIVRE, false);
 }
 
@@ -224,12 +232,25 @@ void ler_temperaturas(uint32_t agora) {
   }
 }
 
+bool esperar_tirar_dedo = false;        // depois de uma leitura: um dedo parado não vira 3 erros
+uint32_t t_dedo_saiu = 0;
+
 void ler_leitor(uint32_t agora) {
   if (!leitor_ok || agora - t_leitor < 250) return;
   t_leitor = agora;
   if (maquina.estado() == Estado::OCIOSO) {
-    if (leitor.getImage() != FINGERPRINT_OK) return;   // sem dedo: volta logo
+    uint8_t img = leitor.getImage();
+    if (esperar_tirar_dedo) {
+      if (img == FINGERPRINT_NOFINGER) {
+        esperar_tirar_dedo = false;
+        t_dedo_saiu = agora;
+      }
+      return;
+    }
+    if (agora - t_dedo_saiu < par::DIGITAL_INTERVALO_MS) return;   // e mais um intervalo antes da próxima
+    if (img != FINGERPRINT_OK) return;   // sem dedo: volta logo
     if (leitor.image2Tz() != FINGERPRINT_OK) return;
+    esperar_tirar_dedo = true;
     if (leitor.fingerFastSearch() == FINGERPRINT_OK) maquina.digital(leitor.fingerID, agora);
     else maquina.digital(-1, agora);
     return;
@@ -275,6 +296,17 @@ void responder(long id, bool ok, const char* motivo = "") {
   enviar(c);
 }
 
+// "201" sim; "000" ou "013" não: cada sensor só pode ter um papel, senão o corte a 60 °C fica cego
+bool mapa_valido(const char* t) {
+  if (!t || strlen(t) != 3) return false;
+  bool usado[3] = {false, false, false};
+  for (uint8_t i = 0; i < 3; i++) {
+    if (t[i] < '0' || t[i] > '2' || usado[t[i] - '0']) return false;
+    usado[t[i] - '0'] = true;
+  }
+  return true;
+}
+
 void tratar(const Mensagem& m, uint32_t agora) {
   maquina.notebook_vivo(agora);
   long id = m.numero("id", 0);
@@ -305,10 +337,11 @@ void tratar(const Mensagem& m, uint32_t agora) {
     if (m.tem("sp")) { termico.definir_setpoint((int16_t)m.numero("sp")); memoria.salvar_setpoint(termico.setpoint()); ok = true; }
     if (m.tem("vol")) { long v = m.numero("vol"); if (v >= 0 && v <= 100) { volume = (uint8_t)v; memoria.salvar_volume(volume); ok = true; } }
     if (m.tem("alarme")) { long s = m.numero("alarme"); if (s >= 5 && s <= 600) { maquina.definir_alarme_porta_ms((uint32_t)s * 1000); memoria.salvar_alarme_porta_s((uint16_t)s); ok = true; } }
-    if (m.tem("mapa") && strlen(m.texto("mapa")) == 3) {   // ex.: mapa=201 -> baia é o sensor 2, cooler 1 o 0, cooler 2 o 1
+    if (m.tem("mapa") && mapa_valido(m.texto("mapa"))) {   // ex.: mapa=201 -> baia é o sensor 2, cooler 1 o 0, cooler 2 o 1
       for (uint8_t i = 0; i < 3; i++) memoria.salvar_mapa_sensor(i, (uint8_t)(m.texto("mapa")[i] - '0'));
       ok = true;
     }
+    if (m.tem("auto")) { bool p = m.numero("auto") != 0; maquina.permitir_autonomo(p); memoria.salvar_autonomo(p); ok = true; }
     responder(id, ok, "PARAMETRO");
   } else {
     responder(id, false, "COMANDO");
@@ -346,7 +379,9 @@ void enviar_periodicos(uint32_t agora) {
   if (agora - t_status >= 1000) {
     t_status = agora;
     char c[80];
-    snprintf(c, sizeof c, "ST e=%s u=%u pend=%u", nome_estado(maquina.estado()), maquina.usuario(), memoria.pendentes());
+    // b e ms: o notebook usa para datar os eventos guardados enquanto ele estava fora do ar
+    snprintf(c, sizeof c, "ST e=%s u=%u pend=%u b=%u ms=%lu", nome_estado(maquina.estado()), maquina.usuario(),
+             memoria.pendentes(), memoria.boot(), (unsigned long)agora);
     enviar(c);
   }
   if (agora - t_tempmsg >= 2000) {
@@ -378,6 +413,7 @@ void setup() {
   termico.definir_setpoint(memoria.setpoint());
   volume = memoria.volume();
   maquina.definir_alarme_porta_ms((uint32_t)memoria.alarme_porta_s() * 1000);
+  maquina.permitir_autonomo(memoria.autonomo());
 
   sensores.begin();
   sensores.setResolution(12);
@@ -404,7 +440,7 @@ void loop() {
   ler_leitor(agora);
   ler_temperaturas(agora);
   maquina.tick(agora);
-  aplicar_reles();
+  aplicar_reles(agora);
   tocar(maquina.som());
   atualizar_som(agora);
   atualizar_lcd();

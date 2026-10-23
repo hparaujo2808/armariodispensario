@@ -59,8 +59,22 @@ void Termico::atualizar(const Leituras& l, bool pausa, uint32_t agora) {
     }
   }
 
-  // 4. decisão final: cortes desligam na hora; ligar e desligar pela histerese respeitam os tempos mínimos
-  if (falha || corte_quente_ || corte_congelar_) {
+  // 4. ligada sem efeito: o DS18B20 do cooler não vê pastilha solta (a face quente esquenta,
+  // a base do cooler não). Se a baia não cai 1 °C em 20 min, desliga e alarma.
+  if (sem_efeito_ && agora - sem_efeito_desde_ >= par::SEM_EFEITO_ESPERA_MS) sem_efeito_ = false;
+  if (!falha && ligado_ && !sem_efeito_) {
+    if (l.baia <= ref_baia_ - par::SEM_EFEITO_QUEDA || l.baia < sp_ + par::HISTERESE) {
+      ref_baia_ = l.baia;
+      ref_t_ = agora;
+    } else if (agora - ref_t_ >= par::SEM_EFEITO_MS) {
+      sem_efeito_ = true;
+      sem_efeito_desde_ = agora;
+      saida_.evento(Ev::FRIO_SEM_EFEITO, 0, l.baia);
+    }
+  }
+
+  // 5. decisão final: cortes desligam na hora; ligar e desligar pela histerese respeitam os tempos mínimos
+  if (falha || corte_quente_ || corte_congelar_ || sem_efeito_) {
     desligar(agora);
     return;
   }
@@ -68,9 +82,15 @@ void Termico::atualizar(const Leituras& l, bool pausa, uint32_t agora) {
     ligado_ = true;
     mudou_ = agora;
     escalona_desde_ = agora;
+    ref_baia_ = l.baia;
+    ref_t_ = agora;
   } else if (!querer_ && ligado_ && agora - mudou_ >= par::MIN_LIGADO_MS) {
     desligar(agora);
   }
+  intertravar(pausa, agora);
+}
+
+void Termico::intertravar(bool pausa, uint32_t agora) {
   // intertravamento: durante o pulso da trava as saídas desligam, mas a histerese e os
   // tempos mínimos continuam valendo; quando a pausa acaba, volta escalonado
   if (pausa) {

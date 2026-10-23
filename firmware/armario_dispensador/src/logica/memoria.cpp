@@ -32,6 +32,7 @@ void Memoria::formatar() {
   escrever16(16, (uint16_t)(par::ALARME_PORTA_MS_PADRAO / 1000));
   a_.escrever(18, par::VOLUME_PADRAO);
   for (uint8_t i = 0; i < 3; i++) a_.escrever(19 + i, i);
+  a_.escrever(22, 1);
 }
 
 bool Memoria::iniciar() {
@@ -106,6 +107,8 @@ uint8_t Memoria::mapa_sensor(uint8_t i) const {
   return v > 2 ? i : v;
 }
 void Memoria::salvar_mapa_sensor(uint8_t i, uint8_t indice) { a_.escrever(19 + i, indice); }
+bool Memoria::autonomo() const { return a_.ler(22) != 0; }
+void Memoria::salvar_autonomo(bool p) { a_.escrever(22, p ? 1 : 0); }
 
 // ----------------------------------------------------------- Usuarios --
 bool Usuarios::valido(uint8_t id) const {

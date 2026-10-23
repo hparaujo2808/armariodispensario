@@ -40,6 +40,7 @@ enum class Ev : uint8_t {
   SENHA_ALTERADA = 19,
   RECUPERADO = 20,       // reiniciou com a porta aberta
   MODO_AUTONOMO = 21,    // liberou sem o notebook (notebook fora do ar)
+  FRIO_SEM_EFEITO = 22,  // Peltier ligadas há 20 min sem a baia esfriar: desliga e alarma
 };
 
 const char* nome_evento(Ev e);

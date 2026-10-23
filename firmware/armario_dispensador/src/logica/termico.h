@@ -17,10 +17,13 @@ class Termico {
 
   // Chamar a cada leitura (≈ 1 s). `pausa` = intertravamento com a trava.
   void atualizar(const Leituras& l, bool pausa, uint32_t agora);
+  // Chamar a cada passada do loop: aplica a pausa da trava na hora, sem esperar a próxima leitura.
+  void intertravar(bool pausa, uint32_t agora);
 
   bool peltier1() const { return p1_; }
   bool peltier2() const { return p2_; }
-  bool em_alarme() const { return alarme_faixa_ || falha_sensor_ || corte_quente_; }
+  bool em_alarme() const { return alarme_faixa_ || falha_sensor_ || corte_quente_ || sem_efeito_; }
+  bool sem_efeito() const { return sem_efeito_; }
   bool corte_quente() const { return corte_quente_; }
   bool falha_sensor() const { return falha_sensor_; }
 
@@ -39,6 +42,10 @@ class Termico {
   bool fora_faixa_ = false;
   bool iniciado_ = false;
   bool em_pausa_ = false;
+  bool sem_efeito_ = false;
+  int16_t ref_baia_ = 0;         // última temperatura em que a baia mostrou que está esfriando
+  uint32_t ref_t_ = 0;
+  uint32_t sem_efeito_desde_ = 0;
   uint32_t mudou_ = 0;           // última vez que ligou ou desligou (tempos mínimos)
   uint32_t escalona_desde_ = 0;  // quando a primeira Peltier entrou (ou a pausa acabou)
   uint32_t fora_desde_ = 0;

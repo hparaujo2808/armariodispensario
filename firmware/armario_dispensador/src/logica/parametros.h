@@ -13,11 +13,15 @@ const uint8_t TAM_SENHA_MIN = 4;
 const uint8_t TAM_SENHA_MAX = 8;
 const uint32_t AGUARDA_NOTEBOOK_MS = 120000;  // tempo para o notebook mandar LIBERAR
 const uint32_t NOTEBOOK_SILENCIO_MS = 5000;   // sem linha do notebook por isso = fora do ar
+const uint32_t DIGITAL_INTERVALO_MS = 2000;   // depois de uma leitura, espera o dedo sair e mais isso
 
 // --- trava e porta ---
 const uint32_t TRAVA_MAX_MS = 3000;        // trava nunca energizada mais que isso
 const uint32_t ALARME_PORTA_MS_PADRAO = 30000;   // RF09: porta aberta além disso -> alarme
 const uint32_t REED_FILTRO_MS = 50;        // reed precisa ficar estável esse tempo
+const uint32_t JANELA_ABERTURA_MS = 5000;  // porta aberta até 5 s depois de a liberação expirar ainda é
+                                           // do último usuário (o reed só abre com ~15–25 mm de folga)
+const uint32_t TRAVA_ATRASO_MS = 20;       // trava só energiza 20 ms depois de as Peltier desligarem
 
 // --- frio ---
 const int16_t SETPOINT_PADRAO = 50;        // décimos de °C
@@ -36,6 +40,9 @@ const int16_t SENSOR_MAX = 600;            // acima disso: absurda no ar da baia
 const int16_t SENSOR_QUENTE_MAX = 1250;    // acima disso: absurda no cooler (limite do DS18B20)
 const int16_t QUENTE_CORTE = 600;          // cooler acima de 60,0 °C: desliga
 const int16_t QUENTE_RELIGA = 450;         // e só religa abaixo de 45,0 °C
+const uint32_t SEM_EFEITO_MS = 1200000;    // ligada 20 min acima de sp+1 sem cair 1,0 °C: pastilha solta
+const int16_t SEM_EFEITO_QUEDA = 10;       //   ou prensa frouxa -> desliga e alarma
+const uint32_t SEM_EFEITO_ESPERA_MS = 1800000;   // tenta de novo depois de 30 min
 
 // --- energia (12 V medido no A0) ---
 const uint16_t ENERGIA_FALTA_MV = 9000;

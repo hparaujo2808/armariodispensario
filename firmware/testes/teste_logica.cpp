@@ -411,6 +411,90 @@ TESTE(termico_alarme_fora_da_faixa) {
   CHECA(x.s.teve(Ev::TEMP_NORMAL));
 }
 
+// ---------------------------------------------- revisão independente (23/10) --
+TESTE(termico_baia_que_nao_esfria_desliga) {
+  T x;
+  x.t.atualizar(lei(120), false, x.agora);
+  x.t.atualizar(lei(120), false, x.agora += par::MIN_DESLIGADO_MS);   // liga
+  CHECA(x.t.peltier1());
+  for (uint32_t k = 0; k < par::SEM_EFEITO_MS; k += 60000) x.t.atualizar(lei(118), false, x.agora += 60000);
+  x.t.atualizar(lei(118), false, x.agora += 1000);
+  CHECA(x.s.teve(Ev::FRIO_SEM_EFEITO));
+  CHECA(!x.t.peltier1() && x.t.em_alarme());
+}
+
+TESTE(termico_baia_esfriando_devagar_nao_alarma) {
+  T x;
+  int16_t b = 250;
+  x.t.atualizar(lei(b), false, x.agora);
+  x.t.atualizar(lei(b), false, x.agora += par::MIN_DESLIGADO_MS);
+  for (int k = 0; k < 60; k++) x.t.atualizar(lei(b -= 1), false, x.agora += 60000);   // cai 0,1 °C/min
+  CHECA(!x.s.teve(Ev::FRIO_SEM_EFEITO));
+  CHECA(x.t.peltier1());
+}
+
+TESTE(intertravamento_na_hora_sem_esperar_leitura) {
+  T x;
+  x.t.atualizar(lei(70), false, x.agora);
+  x.t.atualizar(lei(70), false, x.agora += par::MIN_DESLIGADO_MS);
+  x.t.atualizar(lei(70), false, x.agora += par::ESCALONA_MS);
+  CHECA(x.t.peltier2());
+  x.t.intertravar(true, x.agora += 10);            // trava pedida entre duas leituras
+  CHECA(!x.t.peltier1() && !x.t.peltier2());
+  x.t.intertravar(false, x.agora += 500);          // pulso curto: volta escalonada mesmo assim
+  CHECA(x.t.peltier1() && !x.t.peltier2());
+}
+
+TESTE(dedo_errado_nao_bloqueia_a_senha) {
+  Cenario c;
+  for (int i = 0; i < 2; i++) c.maq.digital(-1, c.t += 3000);
+  c.digitar("3#1111#");                            // 1 erro de senha + 2 de digital: não bloqueia
+  CHECA(c.maq.estado() == Estado::OCIOSO);
+  c.digitar("3#2468#");
+  CHECA(c.maq.estado() == Estado::LIBERADO);
+}
+
+TESTE(porta_aberta_logo_depois_de_expirar_e_do_usuario) {
+  Cenario c;
+  c.digitar("3#2468#");
+  c.passar(par::TRAVA_MAX_MS + 100);
+  CHECA(c.saida.teve(Ev::LIBERACAO_EXPIROU));
+  c.maq.porta(true, c.t += 1000);                  // o reed só abriu agora
+  CHECA(!c.saida.teve(Ev::ABERTURA_NAO_AUTORIZADA));
+  CHECA_IGUAL(c.saida.us.back(), 3);
+  CHECA(c.maq.estado() == Estado::PORTA_ABERTA);
+}
+
+TESTE(bloqueio_sobrevive_a_reset) {
+  EepromFalsa ee;
+  {
+    Memoria mem(ee);
+    mem.iniciar();
+    Usuarios u(mem);
+    SaidaFalsa s;
+    Maquina m(s, u, mem);
+    m.iniciar(false, 0);
+    uint32_t t = 0;
+    for (const char* k = "5#1111#5#1111#5#1111#"; *k; k++) m.tecla(*k, t += 100);
+    CHECA(m.estado() == Estado::BLOQUEADO);
+  }
+  Memoria mem(ee);                                 // tirou a USB
+  mem.iniciar();
+  Usuarios u(mem);
+  SaidaFalsa s;
+  Maquina m(s, u, mem);
+  m.iniciar(false, 0);
+  CHECA(m.estado() == Estado::BLOQUEADO);
+}
+
+TESTE(sem_modo_autonomo_recusa_sem_notebook) {
+  Cenario c;
+  c.maq.permitir_autonomo(false);
+  c.digitar("3#2468#");
+  CHECA(!c.maq.trava() && c.maq.estado() == Estado::OCIOSO);
+  CHECA(!c.saida.teve(Ev::MODO_AUTONOMO));
+}
+
 int main() {
   for (auto& c : casos()) {
     int antes = falhas();
