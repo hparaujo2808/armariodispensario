@@ -144,7 +144,7 @@ def escrever(caminho, arquivos, colocados, cupom, validacao):
     w(f"  - Aba da porta: **{len(z_b)} parafusos M3 × 10**, com as porcas presas no montante.")
     w(f"- **Bloco da dobradiça** (3 camadas, 45 × {c.DOB_COMPRIMENTO:g}):")
     w(f"  - colado na face de fora da lateral esquerda, com a frente {c.AFASTAMENTO_PORTA:g} mm à frente da caixa;")
-    w(f"  - preso por **{len(c.BLOCO_DOB_PARAFUSOS_Z)} parafusos M4 × 20** passantes, em Y {c.BLOCO_DOB_PARAFUSO_Y:g} e Z "
+    w(f"  - preso por **{len(c.BLOCO_DOB_PARAFUSOS_Z)} parafusos M4 × 16** passantes, em Y {c.BLOCO_DOB_PARAFUSO_Y:g} e Z "
       + ", ".join(f"{z:g}" for z in c.BLOCO_DOB_PARAFUSOS_Z) + ";")
     w("  - os furos de cima são feitos usando o próprio bloco como gabarito: fure pelos furos dele, já colado.")
     w("- **A porta abre até 90°** (a dobradiça chega a 180° entre as abas). Não force além: os coolers ficam do lado esquerdo.")
@@ -193,7 +193,7 @@ def escrever(caminho, arquivos, colocados, cupom, validacao):
     w("  2. Apoie a borda \"MESA\" na mesa e encoste a régua na borda da frente da lateral.")
     w("  3. Fure pelos furos do gabarito.")
     w("  4. Nos quadrados das Peltier: risque por dentro da janela, fure os cantos com broca de 10 mm e termine com estilete.")
-    w("- **Berços dos coolers** (`BERCO_1_*`, `BERCO_2_*`): placa na lateral (4 parafusos M4 × 20 passantes), duas "
+    w("- **Berços dos coolers** (`BERCO_1_*`, `BERCO_2_*`): placa na lateral (4 parafusos M4 × 12 passantes: mais compridos, a ponta raspa nas gavetas A1 e A2), duas "
       "mãos-francesas encaixadas e a grade por cima. A ventoinha do cooler fica sobre a grade, soprando para cima.")
     w(f"- **Baia fria** (`BAIA_*`):")
     w(f"  - 6 taquinhos (3 camadas cada) colados pela frente, com a face de cima em Z {c.BAIA_PISO_Z:g}; o piso desliza pela "

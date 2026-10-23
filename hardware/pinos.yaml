@@ -31,9 +31,9 @@ pinos:
   - {nome: RELE_TRAVA, pino: 8, modo: saida, ativo: baixo, liga_em: "IN1 do módulo de relés", cabo: jumper,
      nota: "Relé 1: trava solenoide. digitalWrite(HIGH) antes de pinMode(OUTPUT)"}
   - {nome: RELE_PELTIER_1, pino: 9, modo: saida, ativo: baixo, liga_em: "IN2 do módulo de relés", cabo: jumper,
-     nota: "Relé 2: Peltier 1 (X 110) + ventoinha fria 1"}
+     nota: "Relé 2: Peltier 1 (lateral esquerda, Y 160) + ventoinha fria 1"}
   - {nome: RELE_PELTIER_2, pino: 10, modo: saida, ativo: baixo, liga_em: "IN3 do módulo de relés", cabo: jumper,
-     nota: "Relé 3: Peltier 2 (X 240) + ventoinha fria 2"}
+     nota: "Relé 3: Peltier 2 (lateral esquerda, Y 330) + ventoinha fria 2"}
   - {nome: RELE_LIVRE, pino: 11, modo: saida, ativo: baixo, liga_em: "IN4 do módulo de relés", cabo: jumper,
      nota: "Relé 4: sem carga. O firmware mantém desligado"}
 
@@ -54,20 +54,21 @@ pinos:
   - {nome: LCD_D6, pino: 46, modo: saida, ativo: alto, liga_em: "D6 do LCD", cabo: porta_2}
   - {nome: LCD_D7, pino: 48, modo: saida, ativo: alto, liga_em: "D7 do LCD", cabo: porta_2}
 
-  - {nome: TECLADO_L1, pino: 22, modo: saida, ativo: baixo, liga_em: "Linha 1 do teclado (pino 1 do flat)", cabo: porta_1}
-  - {nome: TECLADO_L2, pino: 24, modo: saida, ativo: baixo, liga_em: "Linha 2 (pino 2)", cabo: porta_1}
-  - {nome: TECLADO_L3, pino: 26, modo: saida, ativo: baixo, liga_em: "Linha 3 (pino 3)", cabo: porta_1}
-  - {nome: TECLADO_L4, pino: 28, modo: saida, ativo: baixo, liga_em: "Linha 4 (pino 4)", cabo: porta_1}
-  - {nome: TECLADO_C1, pino: 30, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 1 (pino 5)", cabo: porta_1}
-  - {nome: TECLADO_C2, pino: 32, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 2 (pino 6)", cabo: porta_1}
-  - {nome: TECLADO_C3, pino: 34, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 3 (pino 7)", cabo: porta_1}
-  - {nome: TECLADO_C4, pino: 36, modo: entrada_pullup, ativo: baixo, liga_em: "Coluna 4 (pino 8)", cabo: porta_1}
+  # A biblioteca Keypad varre as colunas (saída em LOW, uma de cada vez) e lê as linhas com pull-up.
+  - {nome: TECLADO_L1, pino: 22, modo: entrada_pullup, ativo: baixo, liga_em: "Linha 1 do teclado (pino 1 do flat)", cabo: porta_1}
+  - {nome: TECLADO_L2, pino: 24, modo: entrada_pullup, ativo: baixo, liga_em: "Linha 2 (pino 2)", cabo: porta_1}
+  - {nome: TECLADO_L3, pino: 26, modo: entrada_pullup, ativo: baixo, liga_em: "Linha 3 (pino 3)", cabo: porta_1}
+  - {nome: TECLADO_L4, pino: 28, modo: entrada_pullup, ativo: baixo, liga_em: "Linha 4 (pino 4)", cabo: porta_1}
+  - {nome: TECLADO_C1, pino: 30, modo: saida, ativo: baixo, liga_em: "Coluna 1 (pino 5)", cabo: porta_1}
+  - {nome: TECLADO_C2, pino: 32, modo: saida, ativo: baixo, liga_em: "Coluna 2 (pino 6)", cabo: porta_1}
+  - {nome: TECLADO_C3, pino: 34, modo: saida, ativo: baixo, liga_em: "Coluna 3 (pino 7)", cabo: porta_1}
+  - {nome: TECLADO_C4, pino: 36, modo: saida, ativo: baixo, liga_em: "Coluna 4 (pino 8)", cabo: porta_1}
 
   # --- frio e energia -----------------------------------------------------------
   - {nome: ONEWIRE, pino: 4, modo: barramento, liga_em: "DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V", cabo: sensores,
      nota: "Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço. Até ~2 m de cabo"}
-  - {nome: MEDE_12V, pino: A0, modo: analogico, grupo: medicao, liga_em: "Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND)", cabo: jumper,
-     nota: "12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia"}
+  - {nome: MEDE_12V, pino: A0, modo: analogico, grupo: medicao, liga_em: "Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND), por mais 4,7 kΩ em série", cabo: jumper,
+     nota: "12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia. O 4,7 kΩ em série limita a corrente que entra no Mega desligado"}
 
 # Ligações que não são pino de sinal, mas usam o 5 V e o GND do Mega.
 alimentacao_mega:
@@ -76,6 +77,8 @@ alimentacao_mega:
   - {liga_em: "VDD dos 3 DS18B20 (vermelho) e pull-up de 4,7 kΩ", de: 5V, cabo: sensores}
   - {liga_em: "GND do LCD, do AS608 e do buzzer", de: GND, cabo: "porta_2 e porta_3"}
   - {liga_em: "GND dos DS18B20 (preto) e do reed", de: GND, cabo: "sensores e reed"}
+  - {liga_em: "VCC do módulo de relés (pino ao lado do IN1: só os LEDs dos optoacopladores, ~3 mA por canal)", de: 5V, cabo: jumper,
+     nota: "Sem o jumper JD-VCC. Mega desligado = LEDs apagados = relés desligados. As bobinas vão no JD-VCC, pelo LM2596"}
   - {liga_em: "GND do módulo de relés (ponto único de terra)", de: GND, cabo: jumper,
      nota: "Único fio entre o terra do Mega e o terra do 12 V. Nenhuma corrente de carga passa por ele"}
 

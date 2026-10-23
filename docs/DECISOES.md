@@ -31,20 +31,23 @@ O grupo não sabe com certeza o que já está colado. Por isso o projeto supõe 
 
 | Baia | Pastilhas | Isolamento | Volume da bandeja | 25 °C | 28 °C | 32 °C | Dá para montar com o armário colado? |
 |---|---:|---|---:|---:|---:|---:|---|
-| C2 (coluna C, em cima) | 1 | XPS 50 mm | 1,4 L | −0,4 | 2,1 | 5,4 | **Não**: a coluna C não encosta em parede externa, então o cooler teria que ficar no vão de trás |
-| A3+A4, cooler no vão de trás | 2 | EPS 50 mm | 6,7 L | −0,4 | 2,1 | 5,5 | **Não**: vão de trás fechado |
-| **A3+A4, cooler fora da lateral esquerda** | **2** | **EPS 50 mm** | **5,8 L** | **−1,4** | **1,2** | **4,6** | **Sim**: tudo por fora ou pela frente |
+| C2 (coluna C, em cima) | 1 | XPS 50 mm | 0,2 L | −1,7 | 0,8 | 4,2 | **Não**: quase não sobra volume, e a coluna C não encosta em parede externa (o cooler teria que ficar no vão de trás) |
+| C2 (coluna C, em cima) | 1 | XPS 25 mm | 3,1 L | 8,8 | 11,5 | 15,1 | **Não**: não chega a 8 °C |
+| A3+A4 | 2 | XPS 40 mm | 8,2 L | −0,3 | 2,3 | 5,7 | Possível, mas a 32 °C a mínima fica em 5,7 °C: sem folga para o setpoint de 5 °C |
+| **A3+A4, cooler fora da lateral esquerda** | **2** | **EPS 50 mm** | **5,6 L** | **−1,5** | **1,0** | **4,4** | **Sim**: tudo por fora ou pela frente |
 
-As resistências térmicas dos coolers são estimativas [est] e serão medidas na bancada. O EPS escolhido tem 10 kg/m³; usamos condutividade 0,044 W/m·K [est]. Do lado de fora, o cooler pega o ar da sala; no vão de trás o ar ficaria 2 K mais quente. Por isso a opção escolhida é até um pouco melhor.
+Todas as linhas saem do script (revisado em 23/10: a altura agora desconta o piso de MDF de 3 mm). A opção "cooler no vão de trás" foi descartada antes das contas, porque o vão de trás fica fechado com o armário colado.
+
+As resistências térmicas dos coolers são estimativas [est] e serão medidas na bancada. O EPS escolhido tem 10 kg/m³; usamos condutividade 0,044 W/m·K [est]. Do lado de fora, o cooler pega o ar da sala (no vão de trás o ar ficaria ~2 K mais quente [est]).
 
 ### Escolha
 
 **Baia fria fixa no lugar das gavetas A3 e A4 (coluna A, metade de cima), com as duas TEC1-12703 atravessando a lateral esquerda e isolamento de EPS de 50 mm em todas as faces.**
 
-- **Volume:** bandeja de **186 × 82 × 382 mm (5,8 L)**. Cabem ~100 frascos de 10 mL em pé (Ø ~25 mm, ~50 mm de altura [est]: 7 × 15), ou canetas deitadas.
+- **Volume:** bandeja de **186 × 79 × 382 mm (5,6 L)**. Cabem ~100 frascos de 10 mL em pé (Ø ~25 mm, ~50 mm de altura [est]: 7 × 15), ou canetas deitadas.
 - **Medidas da baia** [calc, `hardware/layout.py`]:
   - por fora: X 3 a 346, Z 205 a 399, Y 0 a 494;
-  - por dentro do EPS: 243 × 94 × 394 mm;
+  - por dentro do EPS: 243 × 91 × 394 mm (o piso de MDF de 3 mm fica sobre os taquinhos, em Z 205 a 208);
   - os dissipadores frios ocupam 45 mm na parede esquerda.
 - **O que não precisa desmontar:**
   - As corrediças de A3 e A4, se já estiverem presas, **ficam onde estão**. O EPS das paredes leva um entalhe de 13 mm onde passa cada corrediça (sobram 37 mm de isolamento ali).
@@ -112,9 +115,11 @@ As resistências térmicas dos coolers são estimativas [est] e serão medidas n
 | Sem notebook | Precisa de um carregador USB de celular (5 V, 1 A) como reserva | Funciona sozinho |
 
 Cuidados:
-- Os relés continuam alimentados pelo LM2596, nunca pelo 5 V do Mega (0,21 A só das bobinas).
-- O GND do Mega vai ao GND do módulo de relés **por um fio só** (ponto único de terra), e nenhuma corrente de carga passa pelo Mega. Não vale a pena isolar pelo jumper JD-VCC do módulo: o divisor que mede o 12 V já precisa do terra comum.
-- O Mega mede o 12 V por um divisor (4,7 kΩ / 2,2 kΩ → 3,8 V numa entrada analógica). Assim registra "falta de energia" e "energia voltou" no log de auditoria.
+- **As bobinas dos relés** (0,21 A) vão no **JD-VCC** do módulo, alimentado pelo LM2596, nunca pelo 5 V do Mega. **Tire o jumper JD-VCC–VCC.** O pino VCC ao lado do IN1 (só os LEDs dos optoacopladores, ~3 mA por canal [calc]) vai no 5 V do Mega.
+  - **Por quê (revisão independente de 23/10, item 1):** com o VCC dos LEDs no LM2596, se o notebook dormir ou a USB sair com o 12 V ligado, a corrente atravessa o LED do optoacoplador até o pino do Mega desligado (≈ (5 − 1,2 − 0,6) / 1 kΩ ≈ 3 mA [calc]). Isso pode bastar para armar o relé: trava ligada direto e Peltier sem controle. Com os LEDs no 5 V do Mega, Mega desligado = relés desligados.
+  - **Se o módulo comprado não tiver o jumper JD-VCC**, não monte: troque por um que tenha (é o modelo comum de 4 canais com optoacoplador).
+- O GND do Mega vai ao GND do módulo de relés **por um fio só** (ponto único de terra), e nenhuma corrente de carga passa pelo Mega. O terra comum continua necessário para o divisor que mede o 12 V.
+- O Mega mede o 12 V por um divisor (4,7 kΩ / 2,2 kΩ → 3,8 V), ligado à entrada analógica por **mais um 4,7 kΩ em série**. Esse resistor limita a ~0,5 mA [calc] a corrente que entraria no Mega desligado pelo diodo de proteção do pino. Assim o Mega registra "falta de energia" e "energia voltou" no log de auditoria.
 - A abertura da porta serial reinicia o Mega (DTR). O firmware inicia com tudo desligado e só libera a trava com um comando novo (item 4 da auditoria).
 
 ## 1.4 Energia: pior caso na fonte de 10 A

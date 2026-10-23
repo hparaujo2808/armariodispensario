@@ -100,7 +100,7 @@ Os mapas de corte estão em `mapas/`; a lista completa de peças, em `LISTA_PECA
   - Aba da porta: **11 parafusos M3 × 10**, com as porcas presas no montante.
 - **Bloco da dobradiça** (3 camadas, 45 × 840):
   - colado na face de fora da lateral esquerda, com a frente 8 mm à frente da caixa;
-  - preso por **6 parafusos M4 × 20** passantes, em Y 22 e Z 100, 185, 440, 600, 720, 840;
+  - preso por **6 parafusos M4 × 16** passantes, em Y 22 e Z 100, 185, 440, 600, 720, 840;
   - os furos de cima são feitos usando o próprio bloco como gabarito: fure pelos furos dele, já colado.
 - **A porta abre até 90°** (a dobradiça chega a 180° entre as abas). Não force além: os coolers ficam do lado esquerdo.
 - **Trava FE-91:** corpo na face de dentro da lateral direita, em Z 600. A lingueta aponta para o meio do armário (−X), com o lado chanfrado virado para a frente. As medidas da trava não são publicadas: meçam e ajustem `TRAVA_*` antes de cortar o cupom.
@@ -147,7 +147,7 @@ A lingueta só entra na conta com a porta fechada: para abrir, a trava recolhe a
   2. Apoie a borda "MESA" na mesa e encoste a régua na borda da frente da lateral.
   3. Fure pelos furos do gabarito.
   4. Nos quadrados das Peltier: risque por dentro da janela, fure os cantos com broca de 10 mm e termine com estilete.
-- **Berços dos coolers** (`BERCO_1_*`, `BERCO_2_*`): placa na lateral (4 parafusos M4 × 20 passantes), duas mãos-francesas encaixadas e a grade por cima. A ventoinha do cooler fica sobre a grade, soprando para cima.
+- **Berços dos coolers** (`BERCO_1_*`, `BERCO_2_*`): placa na lateral (4 parafusos M4 × 12 passantes: mais compridos, a ponta raspa nas gavetas A1 e A2), duas mãos-francesas encaixadas e a grade por cima. A ventoinha do cooler fica sobre a grade, soprando para cima.
 - **Baia fria** (`BAIA_*`):
   - 6 taquinhos (3 camadas cada) colados pela frente, com a face de cima em Z 205; o piso desliza pela frente e apoia neles;
   - a tampa leva o bloco de EPS colado atrás e uma alça (furo de 28 mm);

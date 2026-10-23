@@ -56,9 +56,10 @@ FOLGA_BANDEJA = 3.0     # mm de folga da bandeja contra o isolamento, por lado
 PAREDE_BANDEJA = c.MATERIAL_T
 
 # ---- baias possíveis (medidas do config.py da V2.3) --------------------------
-# Z da baia: do piso novo (205, acima da gaveta A2, que vai até 199,8, com
-# folga) ao teto do gaveteiro (399). Ver docs/DECISOES.md, 1.1.
-Z0, Z1 = 205.0, c.GAVETEIRO_Z[1]
+# Z da baia: da face de cima do piso de MDF novo (apoiado nos taquinhos em
+# Z 205, acima da gaveta A2, que vai até 199,8) ao teto do gaveteiro (399).
+# Ver docs/DECISOES.md, 1.1.
+Z0, Z1 = c.BAIA_PISO_Z + c.MATERIAL_T, c.GAVETEIRO_Z[1]
 BAIAS = {
     "C2 (coluna C, em cima)": (c.COL_C_W, Z1 - Z0, c.SHELF_DEPTH),
     "A3+A4 (coluna A, em cima)": (c.COL_A_W, Z1 - Z0, c.SHELF_DEPTH),

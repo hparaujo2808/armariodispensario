@@ -59,7 +59,7 @@ def pecas():
     bz0, bz1 = L.BAIA_Z
     p.append(caixa("Baia fria (piso)", bx0, bx1, 0, c.SHELF_DEPTH, bz0, bz0 + T, mdf2, "piso a 205 mm, apoiado em taquinhos"))
     p.append(caixa("Baia fria — isopor 50 mm", bx0, bx1, T, c.SHELF_DEPTH, bz0 + T, bz1, "#eef2f5",
-                   "EPS 50 mm em todas as faces; bandeja de 186 × 82 × 382 mm (5,8 L)", "baia", transparente=True))
+                   "EPS 50 mm em todas as faces; bandeja de 186 × 79 × 382 mm (5,6 L)", "baia", transparente=True))
     p.append(caixa("Baia fria — tampa isolada", bx0, bx1, 0, T, bz0 + T, bz1 - 2, "#dfe7ee",
                    "frente de MDF + bloco de EPS; sai pela alça", "baia"))
     # dispensador por gravidade (estrutura passiva)

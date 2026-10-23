@@ -46,8 +46,8 @@ O Mega é alimentado **pela USB do notebook**. O Vin fica sem nada. O módulo de
 | Pino | Nome no firmware | Tipo | Liga em | Cabo | Observação |
 |---|---|---|---|---|---|
 | 8 | `PINO_RELE_TRAVA` | saída, ativo em baixo | IN1 do módulo de relés | jumper macho-fêmea | Relé 1: trava solenoide. digitalWrite(HIGH) antes de pinMode(OUTPUT) |
-| 9 | `PINO_RELE_PELTIER_1` | saída, ativo em baixo | IN2 do módulo de relés | jumper macho-fêmea | Relé 2: Peltier 1 (X 110) + ventoinha fria 1 |
-| 10 | `PINO_RELE_PELTIER_2` | saída, ativo em baixo | IN3 do módulo de relés | jumper macho-fêmea | Relé 3: Peltier 2 (X 240) + ventoinha fria 2 |
+| 9 | `PINO_RELE_PELTIER_1` | saída, ativo em baixo | IN2 do módulo de relés | jumper macho-fêmea | Relé 2: Peltier 1 (lateral esquerda, Y 160) + ventoinha fria 1 |
+| 10 | `PINO_RELE_PELTIER_2` | saída, ativo em baixo | IN3 do módulo de relés | jumper macho-fêmea | Relé 3: Peltier 2 (lateral esquerda, Y 330) + ventoinha fria 2 |
 | 11 | `PINO_RELE_LIVRE` | saída, ativo em baixo | IN4 do módulo de relés | jumper macho-fêmea | Relé 4: sem carga. O firmware mantém desligado |
 | 7 | `PINO_BUZZER` | saída, ativo em alto | Buzzer passivo (+) por resistor de 1 kΩ | cabo de rede 3 (8 fios, 3 sobrando) | Volume pelo ciclo de trabalho do PWM (RNF10). O (−) vai no GND do cabo |
 | 3 | `PINO_SENSOR_PORTA` | entrada com pull-up, ativo em baixo | Reed MC-38 (o outro fio no GND) | fio do próprio MC-38 + emenda de 0,5 mm² | LOW = ímã perto = porta fechada. Fio rompido lê HIGH = aberta (falha segura) |
@@ -59,16 +59,16 @@ O Mega é alimentado **pela USB do notebook**. O Vin fica sem nada. O módulo de
 | 44 | `PINO_LCD_D5` | saída, ativo em alto | D5 do LCD | cabo de rede 2 (8 fios) |  |
 | 46 | `PINO_LCD_D6` | saída, ativo em alto | D6 do LCD | cabo de rede 2 (8 fios) |  |
 | 48 | `PINO_LCD_D7` | saída, ativo em alto | D7 do LCD | cabo de rede 2 (8 fios) |  |
-| 22 | `PINO_TECLADO_L1` | saída, ativo em baixo | Linha 1 do teclado (pino 1 do flat) | cabo de rede 1 (8 fios) |  |
-| 24 | `PINO_TECLADO_L2` | saída, ativo em baixo | Linha 2 (pino 2) | cabo de rede 1 (8 fios) |  |
-| 26 | `PINO_TECLADO_L3` | saída, ativo em baixo | Linha 3 (pino 3) | cabo de rede 1 (8 fios) |  |
-| 28 | `PINO_TECLADO_L4` | saída, ativo em baixo | Linha 4 (pino 4) | cabo de rede 1 (8 fios) |  |
-| 30 | `PINO_TECLADO_C1` | entrada com pull-up, ativo em baixo | Coluna 1 (pino 5) | cabo de rede 1 (8 fios) |  |
-| 32 | `PINO_TECLADO_C2` | entrada com pull-up, ativo em baixo | Coluna 2 (pino 6) | cabo de rede 1 (8 fios) |  |
-| 34 | `PINO_TECLADO_C3` | entrada com pull-up, ativo em baixo | Coluna 3 (pino 7) | cabo de rede 1 (8 fios) |  |
-| 36 | `PINO_TECLADO_C4` | entrada com pull-up, ativo em baixo | Coluna 4 (pino 8) | cabo de rede 1 (8 fios) |  |
+| 22 | `PINO_TECLADO_L1` | entrada com pull-up, ativo em baixo | Linha 1 do teclado (pino 1 do flat) | cabo de rede 1 (8 fios) |  |
+| 24 | `PINO_TECLADO_L2` | entrada com pull-up, ativo em baixo | Linha 2 (pino 2) | cabo de rede 1 (8 fios) |  |
+| 26 | `PINO_TECLADO_L3` | entrada com pull-up, ativo em baixo | Linha 3 (pino 3) | cabo de rede 1 (8 fios) |  |
+| 28 | `PINO_TECLADO_L4` | entrada com pull-up, ativo em baixo | Linha 4 (pino 4) | cabo de rede 1 (8 fios) |  |
+| 30 | `PINO_TECLADO_C1` | saída, ativo em baixo | Coluna 1 (pino 5) | cabo de rede 1 (8 fios) |  |
+| 32 | `PINO_TECLADO_C2` | saída, ativo em baixo | Coluna 2 (pino 6) | cabo de rede 1 (8 fios) |  |
+| 34 | `PINO_TECLADO_C3` | saída, ativo em baixo | Coluna 3 (pino 7) | cabo de rede 1 (8 fios) |  |
+| 36 | `PINO_TECLADO_C4` | saída, ativo em baixo | Coluna 4 (pino 8) | cabo de rede 1 (8 fios) |  |
 | 4 | `PINO_ONEWIRE` | 1-Wire | DQ dos 3 DS18B20 (amarelo), pull-up de 4,7 kΩ para 5 V | cabos dos DS18B20 (90 cm) + emenda de 0,5 mm² | Baia fria, cooler 1 e cooler 2 no mesmo fio; o firmware separa pelo endereço. Até ~2 m de cabo |
-| A0 | `PINO_MEDE_12V` | analógica | Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND) | jumper macho-fêmea | 12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia |
+| A0 | `PINO_MEDE_12V` | analógica | Meio do divisor 4,7 kΩ (do +12 V) / 2,2 kΩ (do GND), por mais 4,7 kΩ em série | jumper macho-fêmea | 12 V -> 3,83 V. Abaixo de 9 V o firmware registra falta de energia. O 4,7 kΩ em série limita a corrente que entra no Mega desligado |
 
 | Do Mega | Liga em | Cabo | Observação |
 |---|---|---|---|
@@ -77,6 +77,7 @@ O Mega é alimentado **pela USB do notebook**. O Vin fica sem nada. O módulo de
 | 5V | VDD dos 3 DS18B20 (vermelho) e pull-up de 4,7 kΩ | sensores |  |
 | GND | GND do LCD, do AS608 e do buzzer | porta_2 e porta_3 |  |
 | GND | GND dos DS18B20 (preto) e do reed | sensores e reed |  |
+| 5V | VCC do módulo de relés (pino ao lado do IN1: só os LEDs dos optoacopladores, ~3 mA por canal) | jumper | Sem o jumper JD-VCC. Mega desligado = LEDs apagados = relés desligados. As bobinas vão no JD-VCC, pelo LM2596 |
 | GND | GND do módulo de relés (ponto único de terra) | jumper | Único fio entre o terra do Mega e o terra do 12 V. Nenhuma corrente de carga passa por ele |
 
 Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conversa com o notebook)); 13 (LED da placa; pisca no bootloader, não serve para relé).
@@ -100,15 +101,15 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 | `p1_tf1` | P1 | TF1 | 1,5 mm² | 3,05 A [calc] 12 V / 3,93 Ω | 10 A | F1 |  |
 | `tf1_peltier1` | TF1 | Peltier 1 (+, vermelho) | do próprio componente | 3,05 A [calc] | — | F1 | Queda nos 1,2 m de ida e volta em 1,5 mm²: 0,08 V [calc 2 × 0,0172 × 1,2 / 1,5 × 3,05] |
 | `peltier1_gnd` | Peltier 1 (−, preto) | GND (parafuso V− 1 da fonte) | 1,5 mm² | 3,05 A [calc] | 10 A | F1 |  |
-| `p1_vf1` | P1 | Ventoinha fria 1 (+) | 0,5 mm² | 0,18 A [ds] Eletrogate 180 mA | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s |
-| `vf1_gnd` | Ventoinha fria 1 (−) | GND | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s |
+| `p1_vf1` | P1 | Ventoinha fria 1 (+) | 0,5 mm² | 0,18 A [ds] Eletrogate 180 mA | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4 |
+| `vf1_gnd` | Ventoinha fria 1 (−) | GND | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4 |
 | `b12_rele3` | B12 | COM do relé 3 | 1,5 mm² | 3,23 A [calc] 3,05 + 0,18 | 10 A | F1 |  |
 | `rele3_p2` | NA do relé 3 | P2 | 1,5 mm² | 3,23 A [calc] | 10 A | F1 |  |
 | `p2_tf2` | P2 | TF2 | 1,5 mm² | 3,05 A [calc] | 10 A | F1 |  |
 | `tf2_peltier2` | TF2 | Peltier 2 (+, vermelho) | do próprio componente | 3,05 A [calc] | — | F1 |  |
 | `peltier2_gnd` | Peltier 2 (−, preto) | GND (parafuso V− 2 da fonte) | 1,5 mm² | 3,05 A [calc] | 10 A | F1 |  |
-| `p2_vf2` | P2 | Ventoinha fria 2 (+) | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s |
-| `vf2_gnd` | Ventoinha fria 2 (−) | GND | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s |
+| `p2_vf2` | P2 | Ventoinha fria 2 (+) | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4 |
+| `vf2_gnd` | Ventoinha fria 2 (−) | GND | 0,5 mm² | 0,18 A [ds] | 3 A | F1 | Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4 |
 | `b12_f2` | B12 | F2 (2 A) | 1,5 mm² | 1,14 A [calc] 0,5 + 0,52 + 0,10 + 0,02 | 10 A | F1 |  |
 | `f2_t12` | F2 | T12 | 0,5 mm² | 1,14 A [calc] | 3 A | F2 |  |
 | `t12_vq1` | T12 | Ventoinha do cooler 1 (+, pino 2) | 0,5 mm² | 0,26 A [ds] KaBuM 0,26 A | 3 A | F2 | Sempre ligada com a fonte: a Peltier nunca funciona sem ventoinha |
@@ -118,12 +119,12 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 | `trava_gnd` | Trava (−) | GND | 0,5 mm² | 0,5 A [ds] | 3 A | F2 |  |
 | `t12_lm` | T12 (pelo COM do relé 1, segundo fio) | LM2596 IN+ | 0,5 mm² | 0,1 A [calc] 0,23 A em 5 V / 12 V / 0,85 | 3 A | F2 |  |
 | `lm_gnd` | LM2596 IN− | GND | 0,5 mm² | 0,1 A [calc] | 3 A | F2 |  |
-| `lm_reles` | LM2596 OUT+ (5,0 V) | VCC do módulo de relés | 0,5 mm² | 0,23 A [ds] 3 bobinas de 70 Ω + LEDs | 3 A | F2 |  |
-| `lm_reles_gnd` | LM2596 OUT− | GND do módulo de relés | 0,5 mm² | 0,23 A [calc] | 3 A | F2 |  |
+| `lm_reles` | LM2596 OUT+ (5,0 V) | JD-VCC do módulo de relés (jumper JD-VCC–VCC tirado) | 0,5 mm² | 0,23 A [ds] 3 bobinas de 70 Ω + LEDs | 3 A | F2 |  |
+| `lm_reles_gnd` | LM2596 OUT− | GND do módulo de relés (pino ao lado do JD-VCC) | 0,5 mm² | 0,23 A [calc] | 3 A | F2 |  |
 | `vq_gnd` | Ventoinhas dos coolers (−, pino 1) | GND | 0,5 mm² | 0,52 A [ds] | 3 A | F2 |  |
 | `gnd_fonte` | GND (conectores) | Fonte V− (parafuso 3) | 1,5 mm² | 1,5 A [calc] tudo menos as Peltier | 10 A | F1 |  |
 | `mega_gnd` | GND do Mega | GND do módulo de relés | do próprio componente | 0,01 A [calc] só referência de sinal | — | - | Jumper. Único ponto entre o terra do Mega e o terra do 12 V |
-| `divisor_12v` | B12 | 4,7 kΩ -> A0 -> 2,2 kΩ -> GND do Mega | do próprio componente | 0,002 A [calc] 12 / 6,9 kΩ | — | F1 |  |
+| `divisor_12v` | B12 | 4,7 kΩ -> meio do divisor -> 2,2 kΩ -> GND do Mega; meio do divisor -> 4,7 kΩ -> A0 | do próprio componente | 0,002 A [calc] 12 / 6,9 kΩ | — | F1 | Com o Mega desligado, entram no máximo (3,83 − 0,5) / 6,2 kΩ ≈ 0,5 mA pelo diodo do A0 [calc]: não alimenta o Mega por trás |
 
 | Fusível | Corrente | Tipo | Onde |
 |---|---|---|---|
@@ -142,8 +143,8 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 |---|---|
 | B12 | Barramento +12 V: conectores de alavanca de 3 vias em cadeia, ligados por fio de 1,5 mm² |
 | T12 | Ramo fino +12 V (depois do F2): conector de alavanca de 3 vias |
-| P1 | Saída do relé 2: conector de 3 vias (Peltier 1 + ventoinha fria 1 + diodo) |
-| P2 | Saída do relé 3: conector de 3 vias (Peltier 2 + ventoinha fria 2 + diodo) |
+| P1 | Saída do relé 2: conector de 4 vias (NA do relé + fusível térmico da Peltier 1 + ventoinha fria 1 + diodo) |
+| P2 | Saída do relé 3: conector de 4 vias (NA do relé + fusível térmico da Peltier 2 + ventoinha fria 2 + diodo) |
 | GND | Terra: parafusos V− da fonte + conectores de alavanca de 3 vias em cadeia |
 | V5 | 5,0 V do LM2596 para o módulo de relés |
 <!-- /gerado:potencia -->
@@ -153,7 +154,7 @@ Pinos reservados: 0 (RX0 da USB (conversa com o notebook)); 1 (TX0 da USB (conve
 1. **+12 V (B12).** Fonte V+ → porta-fusível F1 → conector de alavanca de 3 vias. Daí, conectores de 3 vias em cadeia, ligados entre si por pedaços de fio de 1,5 mm². Cada conector recebe no máximo 3 fios. Do B12 saem os COM dos relés 2 e 3 (1,5 mm²), o F2 (1,5 mm²) e o divisor do 12 V.
 2. **Ramo fino (T12).** Saída do F2 → conector de 3 vias com as duas ventoinhas dos coolers → segundo conector com o COM do relé 1 e o IN+ do LM2596.
 3. **GND.** As Peltier voltam direto nos parafusos V− da fonte (um parafuso para cada). Todo o resto (ventoinhas, trava, LM2596, diodos) vai para uma cadeia de conectores de 3 vias, ligada no terceiro parafuso V− por fio de 1,5 mm².
-4. **GND do Mega.** **Um** jumper do GND do Mega ao GND do módulo de relés, e só ele. O 5 V do Mega não se liga a nada do lado de 12 V.
+4. **GND e 5 V do Mega no módulo de relés.** **Tire o jumper JD-VCC–VCC do módulo.** No conector dos IN: **um** jumper do GND do Mega ao GND, e um do 5 V do Mega ao VCC (só os LEDs dos optoacopladores). No conector de 3 pinos do jumper: LM2596 OUT+ no JD-VCC e OUT− no GND ao lado. Assim, com o Mega desligado, nenhum relé arma (DECISOES 1.3). O 5 V do Mega não se liga a mais nada do lado de 12 V.
 5. **Ventoinhas dos coolers** (conector de 4 pinos): pino 1 = GND (preto), pino 2 = +12 V (amarelo ou vermelho). Os pinos 3 e 4 ficam soltos; sem sinal de PWM, a ventoinha gira no máximo. Encaixe um jumper fêmea em cada pino e leve a ponta macho até o conector de alavanca.
 6. **Fusível térmico:** os dois terminais vão para os fios por **luva de emenda crimpada** (alicate de crimpar), nunca solda.
 
@@ -166,7 +167,7 @@ Tudo corre por fora do armário, preso com abraçadeiras em bases adesivas, até
 | Cabos de rede 1, 2 e 3 | Porta → caixa da eletrônica | Canal no alto do miolo da porta; saem pela borda de cima da porta, a 22–48 mm da dobradiça. Laço de folga de 15 cm até o tampo e a caixa |
 | Peltier, ventoinhas e DS18B20 dos coolers | Coolers → caixa | Sobem pela face de fora da lateral esquerda, atrás dos coolers (Y ~450), até o tampo |
 | DS18B20 da baia e ventoinhas frias | Baia → caixa | Furo de 10 mm na lateral esquerda entre os coolers (Y 245, Z 300); depois sobem junto com os fios dos coolers |
-| Trava e reed | Lateral direita → caixa | Por dentro, pela face da lateral direita, até o furo de 10 mm (Y 40, Z 580). Depois sobem por fora da lateral direita até o tampo. Diodo D3 nos terminais da trava |
+| Trava e reed | Lateral direita → caixa | Por dentro, pela face da lateral direita, até o furo de 10 mm (Y 40, Z 570, logo abaixo do corpo da trava). Depois sobem por fora da lateral direita até o tampo. Diodo D3 nos terminais da trava |
 | Webcam interna | → notebook | Furo de 38 mm na lateral direita (Y 60, Z 460); o plugue USB passa pelo furo |
 | USB do Mega | Caixa → notebook | Direto |
 | Webcam externa | Tampo → notebook | Por fora, sem furo |
@@ -177,10 +178,6 @@ Tudo corre por fora do armário, preso com abraçadeiras em bases adesivas, até
 Todos nas duas laterais, **pela face de fora**, com o armário montado. Os gabaritos, o bloco da dobradiça, os berços e a caixa da eletrônica são cortados a laser (`armario/MANUAL_PORTA.md`). As posições são marcadas com os gabaritos cortados a laser (Fase 5), que se apoiam na mesa e na borda da frente da lateral.
 - Os quadrados de 41 mm das Peltier: broca de 10 mm nos 4 cantos de dentro do quadrado e estilete pela janela do gabarito.
 - Os furos redondos: broca do diâmetro indicado. O de 38 mm, com a serra copo.
-
-## 6. Furos para fazer à mão
-
-Todos em peças já cortadas: só furos, sem recortar contorno. Os dois furos quadrados de 40 mm das Peltier são feitos com broca nos cantos e estilete, pela frente, com a gaveta tirada. Os de 38 mm, com a serra copo da lista antiga.
 
 <!-- gerado:furos -->
 | Lateral | Y (da frente) | Z (de baixo) | Tamanho | Para |
@@ -206,9 +203,9 @@ Todos em peças já cortadas: só furos, sem recortar contorno. Os dois furos qu
 | lateral esquerda | 22 | 600 | Ø 4,5 mm | bloco da dobradiça (M4) |
 | lateral esquerda | 22 | 720 | Ø 4,5 mm | bloco da dobradiça (M4) |
 | lateral esquerda | 22 | 840 | Ø 4,5 mm | bloco da dobradiça (M4) |
-| lateral direita | 12 | 600 | Ø 4,5 mm | fixação da trava (M4) [medir na trava] |
-| lateral direita | 42 | 600 | Ø 4,5 mm | fixação da trava (M4) [medir na trava] |
-| lateral direita | 40 | 580 | Ø 10 mm | fios da trava e do reed |
+| lateral direita | 24 | 600 | Ø 4,5 mm | fixação da trava (M4) [medir na trava] |
+| lateral direita | 54 | 600 | Ø 4,5 mm | fixação da trava (M4) [medir na trava] |
+| lateral direita | 40 | 570 | Ø 10 mm | fios da trava e do reed |
 | lateral direita | 60 | 460 | Ø 38 mm | cabo USB da câmera interna (plugue passa) |
 <!-- /gerado:furos -->
 

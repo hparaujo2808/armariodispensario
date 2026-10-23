@@ -97,8 +97,10 @@ BLOCO_DOB_PARAFUSOS_Z = c.BLOCO_DOB_PARAFUSOS_Z
 TRAVA_Z = c.TRAVA_Z                # entre a Prateleira 2 (533,7) e as nervuras da Prateleira 1 (624,3)
 TRAVA_CORPO = c.TRAVA_CORPO        # [est] medir a FE-91
 TRAVA_FUROS_DY = c.TRAVA_FUROS_DY
+TRAVA_FUROS_Y = tuple(c.TRAVA_Y0 + d for d in c.TRAVA_FUROS_DY)   # medidos da face da frente do corpo
 REED_Z = c.REED_Z
-FURO_FIOS_TRAVA = (40.0, 580.0, 10.0)            # (Y, Z, Ø) na LAT_D
+# (Y, Z, Ø) na LAT_D: logo abaixo do corpo da trava, para não ficar tampado por ele
+FURO_FIOS_TRAVA = (40.0, c.TRAVA_Z - c.TRAVA_CORPO[2] / 2 - 10.0, 10.0)
 CAMERA_INTERNA = (60.0, 460.0, 38.0)             # (Y, Z, Ø) na LAT_D, cabo com plugue USB passa
 
 # --- tampo: câmera externa e caixa da eletrônica -----------------------------

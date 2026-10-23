@@ -38,6 +38,9 @@ PROIBIDO = {
     # perfil do dispensador colado na face interna da LAT_D (até 333 mm de altura)
     "lateral direita": _comum + [("perfil do dispensador", 0, c.SHELF_DEPTH, 0, 334)],
 }
+# o corpo da trava tampa a face de dentro da LAT_D: só os furos de fixação dela podem ficar embaixo
+CORPO_TRAVA = ("corpo da trava", c.TRAVA_Y0, c.TRAVA_Y0 + c.TRAVA_CORPO[1],
+               c.TRAVA_Z - c.TRAVA_CORPO[2] / 2, c.TRAVA_Z + c.TRAVA_CORPO[2] / 2)
 LIMITES = {p: (0, c.EXT_D, c.BASE_Z[1], c.TOP_Z[0]) for p in PROIBIDO}
 BORDA_MIN = 8.0
 ALMA_MIN = 8.0
@@ -62,8 +65,8 @@ def furos() -> list[dict]:
     for z in L.BLOCO_DOB_PARAFUSOS_Z:
         add(E, L.BLOCO_DOB_PARAFUSO_Y, z, L.FURO_M4, "bloco da dobradiça (M4)")
 
-    for dy in L.TRAVA_FUROS_DY:
-        add(D, dy, L.TRAVA_Z, L.FURO_M4, "fixação da trava (M4) [medir na trava]")
+    for y in L.TRAVA_FUROS_Y:
+        add(D, y, L.TRAVA_Z, L.FURO_M4, "fixação da trava (M4) [medir na trava]")
     y, z, d = L.FURO_FIOS_TRAVA
     add(D, y, z, d, "fios da trava e do reed")
     y, z, d = L.CAMERA_INTERNA
@@ -84,7 +87,14 @@ def conferir(lista=None) -> list[str]:
         lim = LIMITES[f["peca"]]
         if a0 - lim[0] < BORDA_MIN or lim[1] - a1 < BORDA_MIN or b0 - lim[2] < BORDA_MIN or lim[3] - b1 < BORDA_MIN:
             erros.append(f"{f['peca']} (Y {f['a']:.0f}, Z {f['b']:.0f}): menos de {BORDA_MIN:.0f} mm da borda")
-        for nome, p0, p1, q0, q1 in PROIBIDO[f["peca"]]:
+        zonas = list(PROIBIDO[f["peca"]])
+        if f["peca"] == "lateral direita" and not f["para"].startswith("fixação da trava"):
+            zonas.append(CORPO_TRAVA)
+        elif f["para"].startswith("fixação da trava"):
+            n, p0, p1, q0, q1 = CORPO_TRAVA            # e precisam cair dentro do corpo, com folga da borda
+            if a0 < p0 + 3 or a1 > p1 - 3:
+                erros.append(f"fixação da trava (Y {f['a']:.0f}): fora do corpo da trava (Y {p0:.0f}–{p1:.0f})")
+        for nome, p0, p1, q0, q1 in zonas:
             if a0 < p1 and a1 > p0 and b0 < q1 and b1 > q0:
                 erros.append(f"{f['peca']} (Y {f['a']:.0f}, Z {f['b']:.0f}) Ø{f['d']}: cai em {nome}")
     for i, f in enumerate(lista):

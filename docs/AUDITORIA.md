@@ -333,3 +333,56 @@ Todos os requisitos **Must** estão atendidos no software e testados com o Mega 
 - **RNF14:** parcial justificado; na banca, grampos na mesa.
 - **RNF13 (prazo):** a montagem e os testes de bancada são o caminho crítico até 18/11.
 
+
+---
+
+## 10. Revisão independente (23/10/2026)
+
+Um revisor que não participou do trabalho leu todo o repositório e rodou os testes, sem mudar nenhum arquivo. Ele apontou 34 problemas. A tabela mostra o que foi feito com cada um. Os números são os do relatório dele.
+
+### 10.1 Corrigidos
+
+| Nº | Gravidade | Problema | Correção | Onde |
+|---|---|---|---|---|
+| 1 | crítica | Com o Mega sem energia (notebook dormindo, USB fora) e o 12 V ligado, os LEDs dos optoacopladores podiam acender pelo pino do Mega e armar os relés: trava e Peltier ligadas sem controle | Jumper JD-VCC tirado: as bobinas ficam no LM2596 e os LEDs no 5 V do Mega. Mais um 4,7 kΩ em série no A0. Testes de bancada 3.6 e 3.7 | DECISOES 1.3, LIGACOES 4, `pinos.yaml`, `potencia.yaml`, TESTES 3 |
+| 3 | alta | EEPROM formatada (o `seq` volta a 1): todo evento novo seria descartado como repetido | Chave (época, seq). Se o seq volta com conteúdo diferente, abre uma época nova e registra `MEGA_SEQUENCIA_REINICIADA` | `app/storage.py`, `app/core.py` + teste |
+| 4 | alta | Desativar no painel não apagava o usuário no Mega | O painel chama `DEL` no Mega e avisa se ele não respondeu | `app/core.py` (`definir_ativo`), `app/api.py` + teste |
+| 7 | média | ACK cumulativo apagava da fila um evento que se perdeu | O app só confirma até o último evento sem buraco. Depois de 60 s, registra `MEGA_EVENTOS_PERDIDOS` e segue | `app/core.py` + teste |
+| 8 | média | Eventos guardados entravam com a hora de chegada | A linha `ST` leva `b` e `ms`. O app calcula a hora do evento e marca `hora_estimada` | firmware, `app/hal/serial_mega.py`, `app/core.py` + teste |
+| 9 | média | Um dedo parado no leitor virava 3 erros e bloqueava também a senha | Espera o dedo sair e mais 2 s. Erros de digital e de senha são contados separados | firmware + teste |
+| 10 | média | Pela API dava para tirar o frio de um compartimento com insulina | `salvar_compartimento` recusa | `app/storage.py` + teste |
+| 11 | média | `SET mapa=000` deixava o corte de 60 °C cego | Só aceita permutação de 0, 1 e 2 | firmware |
+| 13 | média | Pastilha solta (sem pasta ou com a prensa frouxa) não era detectada | Ligada há 20 min acima de 6 °C sem cair 1 °C → desliga e alarma `FRIO_SEM_EFEITO` | `termico.cpp` + 2 testes; TESTES 8.5 |
+| 14 | média | Confirmação da retirada sem atomicidade (baixa pela metade) | Uma transação só; a confirmação automática que falha vira alarme | `app/core.py`, `app/storage.py` + teste |
+| 15 | média (parte) | O bloqueio de 30 s sumia com um reset | Estado BLOQUEADO gravado na EEPROM | firmware + teste |
+| 16 | média | Porta aberta logo depois de a liberação expirar virava "abertura não autorizada" | Janela de 5 s que atribui a abertura ao último usuário liberado | firmware, app, simulador + testes |
+| 18 | média | Um erro inesperado matava a thread da serial (e os PING) | Erro registrado no log, linha ignorada | `app/hal/serial_mega.py` |
+| 19 | média | Ponta do M4 × 20 do berço raspava nas gavetas A1 e A2 | M4 × 12 nos berços e M4 × 16 no bloco da dobradiça | LISTA, MANUAL_PORTA |
+| 20 | baixa | Seção 6 do LIGACOES duplicada, com medidas velhas | Removida | LIGACOES |
+| 21 | baixa | "Peltier X 110 / X 240" no mapa de pinos | Y 160 e Y 330 na lateral esquerda | `pinos.yaml` (e os gerados) |
+| 22 | baixa | Tabela 1.1 diferente do script, e o script sem o piso de 3 mm | Script com o piso; tabela refeita com a saída dele: bandeja de 186 × 79 × 382 mm (5,6 L), mínima de 4,4 °C a 32 °C | `calculos/gaveta_fria.py`, DECISOES 1.1 |
+| 23 | baixa | P1 e P2 recebiam 4 fios num conector de 3 vias | Conectores de 4 vias (+2 na lista, +R$ 13,58) | `potencia.yaml`, LISTA |
+| 24 | baixa | Furos da trava usados como Y absoluto; furo dos fios embaixo do corpo da trava | Furos medidos da frente do corpo; furo dos fios em Z 570; o conferidor de furos agora considera o corpo da trava | `hardware/layout.py`, `hardware/furos.py`, gabarito regenerado |
+| 25 | baixa | Trava e Peltier comutavam na mesma passada; a pausa só era vista a cada leitura | Peltier desligam primeiro, trava 20 ms depois; a pausa é aplicada a cada passada do laço | firmware + teste |
+| 30 | baixa | `gerar_simulacao.py` fora do git | Já estava no commit ac7980f (a revisão começou antes dele) | — |
+| 31 | baixa | Modos do teclado invertidos no `pinos.yaml` | Linhas com pull-up, colunas varridas, como a biblioteca Keypad faz | `pinos.yaml` |
+| 32 | baixa | Pequenas contradições | Lingueta em −X (config); M3 × 10 na lista; `ok=`, `b=`, `ms=` e `auto=` no `protocolo.h`; `hal/base.py` corrigido. Conferidos e certos: a tampa traseira avança 12 + 3 = 15 mm; o preço dos 2 Hyper 212 (R$ 69,99 cada no Pix, conferido hoje) | vários |
+| 12 | média (parte) | "O F1 abre em menos de 1 s num curto" não vale com uma fonte de 10 A | Texto corrigido. Novo teste 1.4: a proteção da fonte tem que cortar num curto; se não cortar, usar a fonte fechada | `potencia.yaml`, TESTES 1.4 |
+| 17 | média (parte) | Fonte e MDF numa caixa fechada podem esquentar | Teste 9.6: medir o ar dentro da caixa | TESTES 9.6 |
+| 34 | baixa (parte) | Água do lado frio no MDF | Teste 9.7 e vedação com silicone neutro se aparecer água | TESTES 9.7 |
+
+### 10.2 Ficam em aberto (decisão do grupo ou medição)
+
+| Nº | Problema | Proposta | Quem decide |
+|---|---|---|---|
+| 2 | A liberação de emergência (2 parafusos M4 na cava do puxador) abre a porta travada por fora, o que fere o RNF03. O reed registra a abertura, mas não a impede | Para a banca: registrar como risco aceito (a abertura sai na auditoria como `ABERTURA_NAO_AUTORIZADA`, com vídeo). Para uso real: parafuso antifurto com lacre numerado, ou liberação por chave | grupo e orientador |
+| 5 | As cabeças e porcas dos M4 das corrediças da coluna A ficam na face de fora da lateral esquerda. A placa dos berços e o bloco da dobradiça podem assentar em cima delas | **Antes de cortar os berços e o bloco:** marcar na lateral esquerda, por fora, cada cabeça ou porca de parafuso de corrediça em duas regiões: Y 95 a 395 com Z 90 a 230 (berços) e Y 0 a 40 em toda a altura (bloco da dobradiça). Se alguma cair embaixo dessas peças, informar Y e Z para abrir um furo de alívio (Ø 14 mm) na camada que encosta na lateral | medição (Júlia, Pedro, Henrique) |
+| 6 | Modo autônomo: sem notebook, a porta abre só com a digital ou a senha, sem CPF e sem vídeo (exceção aos RF03 e RF07) | Agora é configurável (`modo_autonomo`, `SET auto=`). Fica ligado por padrão para a enfermagem não ficar sem acesso. A farmácia decide | farmácia |
+| 12 | O F1 de 10 A trabalha a 71% no pior caso com intertravamento e, dentro da caixa, pode queimar sem defeito | Medir no teste 9.1. Se passar de 7 A, fusível de 5 A em cada ramo de Peltier (precisa cotar 2 porta-fusíveis) | medição |
+| 15 | PIN de 4 dígitos e senhas de demonstração no repositório | Trocar todas antes de qualquer uso fora da banca (está no README). Senha mínima de 6 dígitos fica como sugestão para a Fase 2 | grupo |
+| 26 | Desgaste da EEPROM: seq e ack gravados a cada evento (~2 meses de vida da célula com 1.600 eventos/dia) | Para o protótipo, irrelevante. Para uso real: contador rotativo | Fase 2 |
+| 27 | A cadeia HMAC não detecta corte do fim do log, e a chave fica no mesmo disco | Ancorar o último hash fora do notebook (no MV) | Fase 2 |
+| 28 | O CPF vai na query string para o MV | O MV real ainda não existe; quando existir, POST com corpo, por HTTPS | quando o MV for liberado |
+| 29 | A câmera só abre depois do `PORTA_ABERTA` (1–3 s sem imagem) | Medir com as webcams reais. Se perder o começo, abrir as câmeras no `LIBERADO` | medição |
+| 33 | A barra chata da prensa (Y ± 35) pode cruzar os heat pipes do Hyper 212 | Conferir com o cooler na mão, antes de furar. Se cruzar, usar o suporte original do cooler | medição |
+| 17 | Temperatura da caixa da eletrônica | Teste 9.6 | medição |

@@ -14,7 +14,7 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 | Buzzer ativo | Reserva. O alarme passa a ser o buzzer passivo (volume ajustável, RNF10) |
 | Webcam (de alguém do grupo) | Câmera externa (quem abre) |
 | Notebook | Quiosque, auditoria, gravação |
-| Comprados em 21/10 (lista antiga em `legado/`): trava FE-91, módulo de relés de 4 canais, LM2596, porta-fusível e fusíveis de 10 A, diodos 1N4007, jumpers, dissipadores 65×46×24 (2), pasta térmica, extensor USB, 2 × TEC1-12703, serra copo 38 mm, fios de 1,5 e 0,5 mm², 2 cabos de rede, termo-retrátil, fita isolante, abraçadeiras | Tudo continua em uso. Os dissipadores 65×46×24 vão para o **lado frio**, com ventoinha. O termo-retrátil isola o corpo do fusível térmico |
+| Comprados em 21/10 (lista antiga em `legado/`): trava FE-91, módulo de relés de 4 canais, LM2596, porta-fusível e fusíveis de 10 A, diodos 1N4007, jumpers, dissipadores 65×46×24 (2), pasta térmica, extensor USB, 2 × TEC1-12703, serra copo 38 mm, fios de 1,5 e 0,5 mm², 2 cabos de rede, termo-retrátil, fita isolante, abraçadeiras | Tudo continua em uso. **Módulo de relés:** conferir se tem o jumper JD-VCC (3 pinos ao lado do conector das bobinas); sem ele, trocar por um que tenha (docs/DECISOES.md 1.3). Os dissipadores 65×46×24 vão para o **lado frio**, com ventoinha. O termo-retrátil isola o corpo do fusível térmico |
 
 ## Carrinho 1 — Eletrogate (Belo Horizonte, tem entrega por moto)
 
@@ -24,7 +24,7 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 | 1 | Buzzer passivo 5 V | Alarme de volume ajustável por PWM (RNF10) | [link](https://www.eletrogate.com/buzzer-passivo-5v) | 1,80 |
 | 1 | Porta-fusível de meio de fio 5×20 | Fusível do ramo fino (trava, LM2596, ventoinhas dos coolers) | [link](https://www.eletrogate.com/porta-fusivel-meio-de-fio-5x20) | 1,80 |
 | 2 | Fusível de vidro 5×20 **2 A** (1 de reserva) | Protege os fios de 0,5 mm² | [link](https://www.eletrogate.com/fusivel-de-vidro-5x20-2a) | 0,76 |
-| 1 pct | Resistor 4,7 kΩ (10 un.) | Pull-up dos DS18B20 e divisor que mede o 12 V | [link](https://www.eletrogate.com/resistor-4k7-1-4w-10-unidades) | 0,86 |
+| 1 pct | Resistor 4,7 kΩ (10 un.) | Pull-up dos DS18B20, divisor que mede o 12 V e o resistor em série do A0 | [link](https://www.eletrogate.com/resistor-4k7-1-4w-10-unidades) | 0,86 |
 | 1 pct | Resistor 2,2 kΩ (10 un.) | Divisor do 12 V e divisor do RX do leitor de digital | [link](https://www.eletrogate.com/resistor-2k2-1-4w-10-unidades) | 0,86 |
 | 1 pct | Resistor 1 kΩ (10 un.) | Divisor do RX do leitor e resistor do buzzer | [link](https://www.eletrogate.com/resistor-1k-1-4w-10-unidades) | 0,86 |
 | | | | **Subtotal** | **27,16** |
@@ -38,8 +38,8 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 | 4 | Fusível térmico 85 °C 10 A (2 de reserva) | Corta a Peltier por hardware se o cooler parar. Não é rearmável: se queimar, troca | [link](https://www.usinainfo.com.br/fusivel-termico/fusivel-termico-85c-10a-250v-5054.html) | 8,32 |
 | 2 kits | Conector de alavanca 3 vias 32 A (5 un.) | Barramento 12 V e GND sem solda | [link](https://www.usinainfo.com.br/conectores-e-adaptadores/conector-de-emenda-rapida-com-alavancas-3-vias-32a-250v-kit-com-5-unidades-5817.html) | 24,98 |
 | 1 kit | Conector de alavanca 2 vias 32 A (5 un.) | Emendas simples | [link](https://www.usinainfo.com.br/conectores-e-adaptadores/conector-de-emenda-rapida-com-alavancas-2-vias-32a-250v-kit-com-5-unidades-5818.html) | 9,38 |
-| 2 | Conector de alavanca em linha 4 vias 32 A | Ponto único de 12 V e ponto único de GND | [link](https://www.usinainfo.com.br/conectores-e-adaptadores/conector-de-emenda-rapida-em-linha-com-alavancas-4-vias-32a-600v-8641.html) | 13,58 |
-| | | | **Subtotal** | **94,62** |
+| 4 | Conector de alavanca em linha 4 vias 32 A | Ponto único de 12 V, ponto único de GND e as saídas P1 e P2 dos relés das Peltier (4 fios cada) | [link](https://www.usinainfo.com.br/conectores-e-adaptadores/conector-de-emenda-rapida-em-linha-com-alavancas-4-vias-32a-600v-8641.html) | 27,16 |
+| | | | **Subtotal** | **108,20** |
 
 ## Carrinho 3 — MakerHero
 
@@ -74,7 +74,7 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 | Qtd | Peça | Para quê | Estimativa |
 |---:|---|---|---:|
 | 2 pedaços de 50 mm | Barra **quadrada** de alumínio maciça 1 1/2" (38,1 mm). Serve também barra chata 1 1/2" × 1/2" (38,1 × 12,7 mm) cortada em 8 pedaços de 38 mm, empilhados 4 a 4 com pasta térmica | Espaçador que leva o frio da Peltier através do EPS | ~R$ 20 |
-| 1 kit | 50 parafusos M3 × 16 com porca e arruela (dobradiça e bloco da dobradiça); 30 parafusos M4 × 20 e 10 M4 × 30 com porca e arruela **larga** (berços, trava, caixa); 1 m de barra roscada M3 com 8 porcas e arruelas; 2 pedaços de 80 mm de barra chata de aço ou alumínio (~20 × 3 mm) | Tudo passante: MDF de 3 mm não segura rosca | ~R$ 40 |
+| 1 kit | 50 parafusos M3 × 10 com porca e arruela (dobradiça e bloco da dobradiça); com porca e arruela **larga**: 10 M4 × 12 (berços: a ponta não pode raspar nas gavetas A1 e A2), 8 M4 × 16 (bloco da dobradiça), 15 M4 × 20 (trava, caixa) e 10 M4 × 30; 1 m de barra roscada M3 com 8 porcas e arruelas; 2 pedaços de 80 mm de barra chata de aço ou alumínio (~20 × 3 mm) | Tudo passante: MDF de 3 mm não segura rosca | ~R$ 40 |
 | 2,5 m | Cabo de rede (UTP Cat5e, 8 fios), por metro | Terceiro cabo da porta: leitor de digital e buzzer | ~R$ 5 |
 | 2 + 2 m | Cabo flexível 1,5 mm², vermelho e preto | As Peltier ficam a ~1,2 m da caixa da eletrônica | ~R$ 8 |
 | 2 m | Fita de espuma EVA adesiva (perfil de vedação de porta) | Vedação da tampa da baia fria e batentes da porta | ~R$ 10 |
@@ -95,13 +95,13 @@ Esta versão já considera o **pior caso de montagem** (armário todo colado): o
 
 | | Valor |
 |---|---:|
-| Itens com preço conferido hoje (carrinhos 1 a 6) | **R$ 541,77** |
+| Itens com preço conferido hoje (carrinhos 1 a 6) | **R$ 555,35** |
 | Itens estimados, sem link | ~R$ 273 |
-| **Total do que falta** | **~R$ 815 + fretes** |
+| **Total do que falta** | **~R$ 829 + fretes** |
 | Se a fonte colmeia não chegou | + R$ 94,40 |
 | Se não houver segunda webcam | + R$ 66,61 |
 | Se precisar comprar o alicate | + R$ 78,90 |
-| **Pior caso (os três condicionais)** | **~R$ 1.055 + fretes** |
+| **Pior caso (os três condicionais)** | **~R$ 1.069 + fretes** |
 
 Para economizar frete: a Eletrogate fica em BH e entrega por moto. Antes de pagar a Usinainfo, vejam se a Eletrogate tem os mesmos itens (DS18B20, MC-38, conectores de alavanca) e juntem tudo num carrinho só.
 

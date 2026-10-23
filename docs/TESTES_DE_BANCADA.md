@@ -27,10 +27,11 @@ Roteiro para montar e testar a eletrônica **por partes**, do passo mais seguro 
 | 1.1 | Fonte ligada na tomada **sem nada** nos bornes de saída. Medir V+ e V− | 12,0 V (11,4 a 12,6) | | Fora disso: ajustar o trimpot da fonte (se tiver). Se não mudar, não usar a fonte |
 | 1.2 | LM2596 ligado no 12 V, **sem nada na saída**. Girar o trimpot até a saída dar 5,0 V | 4,95 a 5,05 V | | Se não chega a 5 V ou não muda: módulo com defeito |
 | 1.3 | Saída do LM2596 com o módulo de relés ligado (sem nenhum IN ativo) | Ainda 4,9 a 5,1 V | | Caiu muito: módulo de relés em curto ou LM2596 fraco |
+| 1.4 | Proteção da fonte: **só a fonte**, sem nada ligado. Com a fonte na tomada, encostar por 1 s um fio de 1,5 mm² entre V+ e V− (o professor segura o fio; usem óculos) | A fonte corta e volta sozinha ao soltar ("hiccup"), sem cheiro nem estalo | | Não corta (a tensão não cai), aquece ou estala: **não usar essa fonte**; comprar a fechada da lista. É essa proteção que salva os fios de 0,5 mm² das ventoinhas frias (o F1 de 10 A não abre rápido com uma fonte de 10 A) |
 
 ## Passo 2 — Relés sem carga
 
-Fonte → F1 → B12 → F2 → LM2596 → módulo de relés. **Nada** ligado nos contatos dos relés. Mega ainda desligado.
+Fonte → F1 → B12 → F2 → LM2596 → módulo de relés. **Nada** ligado nos contatos dos relés. Mega ainda desligado. Neste passo, e só nele, o jumper JD-VCC–VCC do módulo fica **no lugar** (os LEDs precisam de 5 V para o teste).
 
 | # | O que fazer | Esperado | Medido | Se der diferente |
 |---|---|---|---|---|
@@ -40,7 +41,7 @@ Fonte → F1 → B12 → F2 → LM2596 → módulo de relés. **Nada** ligado no
 
 ## Passo 3 — Mega pela USB e relés no reset
 
-Mega ligado pela USB do notebook. GND do Mega ao GND do módulo de relés (um jumper só). IN1–IN4 nos pinos 8 a 11. Ainda **sem carga** nos relés.
+**Tire o jumper JD-VCC–VCC do módulo** (DECISOES 1.3). LM2596 no JD-VCC; 5 V e GND do Mega no VCC e no GND do conector dos IN. IN1–IN4 nos pinos 8 a 11. Mega ligado pela USB do notebook. Ainda **sem carga** nos relés.
 
 | # | O que fazer | Esperado | Medido | Se der diferente |
 |---|---|---|---|---|
@@ -49,6 +50,8 @@ Mega ligado pela USB do notebook. GND do Mega ao GND do módulo de relés (um ju
 | 3.3 | Tirar e pôr o cabo USB 5 vezes | Nenhum relé estala | | Idem |
 | 3.4 | Corrente do Mega na USB (adaptador USB com bornes ou multímetro em série no 5 V do cabo), com LCD aceso e AS608 ligado | 0,15 a 0,35 A [est] | | Acima de 0,45 A: perto do limite da USB (0,5 A). Tirar a luz de fundo do LCD do 5 V do Mega |
 | 3.5 | Medir o 12 V no pino A0 (multímetro entre A0 e GND) | 3,7 a 3,9 V [calc: 12 × 2,2 / 6,9] | | Acima de 5 V: divisor invertido. **Desligar já** |
+| 3.6 | Com o 12 V ligado, **tirar a USB** do Mega. Esperar 10 s. Depois pôr a USB e fechar o app (notebook "dormindo") | Nenhum relé arma, nenhum LED de relé acende | | Algum arma: o VCC dos LEDs ainda está no LM2596 (jumper JD-VCC no lugar). **Não ligar a trava nem as Peltier** até corrigir |
+| 3.7 | Com a USB fora, medir a tensão no 5 V do Mega (pino 5V ao GND) | Abaixo de 1 V | | Acima: alguma ligação alimenta o Mega por trás (divisor sem o 4,7 kΩ em série, ou fio do lado de 12 V no 5 V) |
 
 ## Passo 4 — Porta: LCD, teclado, leitor, buzzer, reed
 
@@ -101,7 +104,8 @@ Repetir para a segunda pastilha.
 | 8.1 | Com as Peltier ligadas, pôr o DS18B20 de um cooler num copo de água quente da torneira (> 60 °C, conferir com termômetro) | Relés 2 e 3 desligam; evento `CORTE_QUENTE` no notebook; só religam abaixo de 45 °C | | Conferir o mapa dos sensores (`SET mapa=`) |
 | 8.2 | Soltar o fio de dados (amarelo) dos DS18B20 | Peltier desligadas; evento `SENSOR_FALHA` | | Corrigir o firmware |
 | 8.3 | **Não** testar o fusível térmico queimando: ele não volta. Conferir a continuidade (0.3), que a luva de crimpar não sai puxando com a mão e que ele está encostado na base do cooler | — | | |
-| 8.4 | Intertravamento: pedir abertura da trava com as duas Peltier ligadas | Relés 2 e 3 desligam antes do relé 1 ligar; voltam depois (segunda Peltier 2 s após a primeira) | | Corrigir o firmware |
+| 8.4 | Intertravamento: pedir abertura da trava com as duas Peltier ligadas | Relés 2 e 3 desligam antes do relé 1 ligar (20 ms antes); voltam depois (segunda Peltier 2 s após a primeira) | | Corrigir o firmware |
+| 8.5 | Baia que não esfria: com a baia acima de 6 °C, tirar o fio de uma Peltier do conector P1 e P2 (relés ligam, pastilhas não) e esperar 20 min | Evento `FRIO_SEM_EFEITO`, relés 2 e 3 desligam, alarme "baia não esfria" no painel; nova tentativa em 30 min | | Corrigir o firmware |
 
 ## Passo 9 — Tudo junto no armário, 30 minutos
 
@@ -114,6 +118,8 @@ Baia fria montada e fechada com a tampa isolada. Porta do armário fechada. Ambi
 | 9.3 | Base dos coolers em 30 min | Abaixo de 50 °C [calc ~46 °C a 32 °C de ambiente] | | Acima de 55 °C: falta ar. Conferir se a ventoinha sopra para cima e se nada tampa a grade do berço |
 | 9.4 | Ar saindo por cima dos coolers | Morno, nunca quente | | |
 | 9.5 | Deixar mais 30–60 min | A baia chega a 5 °C e as Peltier começam a ligar e desligar (histerese 4–6 °C) | | Não chega a 6 °C em 90 min com ambiente abaixo de 28 °C: refazer as contas com os valores medidos |
+| 9.6 | Temperatura do ar **dentro da caixa da eletrônica**, em cima da fonte, depois de 60 min (DS18B20 de reserva ou termômetro) | Até 20 K acima do ambiente [est: ~15 W de perda da fonte] | | Mais: abrir mais rasgos ou trocar pela fonte fechada metálica, com 3 cm de ar livre acima dela. MDF é combustível e o borne de 127/220 V está ali |
+| 9.7 | Em 1 h de funcionamento, olhar o furo das Peltier por dentro da baia | Seco: sem água escorrendo no MDF | | Água ou gelo: vedar a borda da pastilha e do espaçador com silicone neutro (RTV) por dentro e conferir a manta de vedação. MDF molhado incha e a água corrói a pastilha |
 
 ## Passo 10 — Queda de energia (RNF07.1)
 

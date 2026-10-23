@@ -2,7 +2,7 @@
 
 Protótipo de dispensário eletrônico de medicamentos e insumos, do Projeto Aplicado do IBMEC-BH (Gustavo, Henrique, Júlia, Miguel e Pedro), feito para a rede Mario Penna. É um armário de MDF com gaveteiro e uma baia refrigerada. A porta só abre depois da autenticação na porta e da conferência da prescrição do paciente. Cada abertura fica registrada, com quem abriu, quando, o que saiu e o vídeo das duas câmeras.
 
-Escopo: `Dispensários Eletrônicos.docx` (Fase 1, RF01–RF13 e RNF01–RNF14). A revisão completa do projeto está em [docs/AUDITORIA.md](docs/AUDITORIA.md) e as decisões, em [docs/DECISOES.md](docs/DECISOES.md).
+Escopo: `Dispensários Eletrônicos.docx` (Fase 1, RF01–RF13 e RNF01–RNF14). A revisão completa do projeto está em [docs/AUDITORIA.md](docs/AUDITORIA.md) (a seção 10 traz a revisão independente de 23/10 e o que ficou em aberto) e as decisões, em [docs/DECISOES.md](docs/DECISOES.md).
 
 ## Como funciona
 
@@ -15,7 +15,7 @@ Escopo: `Dispensários Eletrônicos.docx` (Fase 1, RF01–RF13 e RNF01–RNF14).
 
 **Baia fria:** fica no lugar das gavetas A3 e A4, com duas Peltier, isopor de 50 mm e controle automático com setpoint de 5 °C (faixa de 2 a 8 °C).
 
-**Se o notebook cair:** o Arduino continua funcionando sozinho e guarda os eventos para mandar depois.
+**Se o notebook cair:** o Arduino continua funcionando sozinho e guarda os eventos para mandar depois. Nesse modo a porta abre só com a digital ou a senha, sem CPF nem vídeo. A farmácia decide se aceita (`modo_autonomo` na configuração do app).
 
 ## Arquitetura
 
@@ -90,8 +90,8 @@ CPFs de teste do MV simulado (fictícios): `11122233344`, `55566677788` e a rece
 pytest -q
 ```
 
-Em 23/10/2026: **36 testes passando**. Eles cobrem:
-- os 25 testes da lógica do firmware, rodados no PC, e a compilação para o Mega (12% da flash, 25% da RAM);
+Em 23/10/2026: **43 testes passando**. Eles cobrem:
+- os 32 testes da lógica do firmware, rodados no PC, e a compilação para o Mega (12% da flash, 26% da RAM);
 - o app com o Mega simulado (fluxo da banca, auditoria, LGPD, recuperação, API);
 - os geradores do armário e da porta, com checagem de colisão e de folgas;
 - o mapa de pinos, a fiação e os furos;

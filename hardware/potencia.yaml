@@ -23,8 +23,8 @@ fusiveis:
 nos:
   B12: "Barramento +12 V: conectores de alavanca de 3 vias em cadeia, ligados por fio de 1,5 mm²"
   T12: "Ramo fino +12 V (depois do F2): conector de alavanca de 3 vias"
-  P1: "Saída do relé 2: conector de 3 vias (Peltier 1 + ventoinha fria 1 + diodo)"
-  P2: "Saída do relé 3: conector de 3 vias (Peltier 2 + ventoinha fria 2 + diodo)"
+  P1: "Saída do relé 2: conector de 4 vias (NA do relé + fusível térmico da Peltier 1 + ventoinha fria 1 + diodo)"
+  P2: "Saída do relé 3: conector de 4 vias (NA do relé + fusível térmico da Peltier 2 + ventoinha fria 2 + diodo)"
   GND: "Terra: parafusos V− da fonte + conectores de alavanca de 3 vias em cadeia"
   V5: "5,0 V do LM2596 para o módulo de relés"
 
@@ -41,16 +41,16 @@ trechos:
   - {id: tf1_peltier1, de: "TF1", para: "Peltier 1 (+, vermelho)", bitola_mm2: 0, corrente_a: 3.05, origem: "[calc]", protegido_por: F1,
      nota: "Queda nos 1,2 m de ida e volta em 1,5 mm²: 0,08 V [calc 2 × 0,0172 × 1,2 / 1,5 × 3,05]"}
   - {id: peltier1_gnd, de: "Peltier 1 (−, preto)", para: "GND (parafuso V− 1 da fonte)", bitola_mm2: 1.5, corrente_a: 3.05, origem: "[calc]", protegido_por: F1}
-  - {id: p1_vf1, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s", de: "P1", para: "Ventoinha fria 1 (+)", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds] Eletrogate 180 mA", protegido_por: F1}
-  - {id: vf1_gnd, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s", de: "Ventoinha fria 1 (−)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}
+  - {id: p1_vf1, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4", de: "P1", para: "Ventoinha fria 1 (+)", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds] Eletrogate 180 mA", protegido_por: F1}
+  - {id: vf1_gnd, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4", de: "Ventoinha fria 1 (−)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}
 
   - {id: b12_rele3, de: "B12", para: "COM do relé 3", bitola_mm2: 1.5, corrente_a: 3.23, origem: "[calc] 3,05 + 0,18", protegido_por: F1}
   - {id: rele3_p2, de: "NA do relé 3", para: "P2", bitola_mm2: 1.5, corrente_a: 3.23, origem: "[calc]", protegido_por: F1}
   - {id: p2_tf2, de: "P2", para: "TF2", bitola_mm2: 1.5, corrente_a: 3.05, origem: "[calc]", protegido_por: F1}
   - {id: tf2_peltier2, de: "TF2", para: "Peltier 2 (+, vermelho)", bitola_mm2: 0, corrente_a: 3.05, origem: "[calc]", protegido_por: F1}
   - {id: peltier2_gnd, de: "Peltier 2 (−, preto)", para: "GND (parafuso V− 2 da fonte)", bitola_mm2: 1.5, corrente_a: 3.05, origem: "[calc]", protegido_por: F1}
-  - {id: p2_vf2, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s", de: "P2", para: "Ventoinha fria 2 (+)", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}
-  - {id: vf2_gnd, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A e num curto o F1 abre em menos de 1 s", de: "Ventoinha fria 2 (−)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}
+  - {id: p2_vf2, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4", de: "P2", para: "Ventoinha fria 2 (+)", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}
+  - {id: vf2_gnd, curto_ok: "Fio de 30 cm; ventoinha travada puxa < 0,3 A. Num curto franco quem corta é a proteção da fonte (o F1 de 10 A não abre rápido com uma fonte de 10 A): conferir no teste 1.4", de: "Ventoinha fria 2 (−)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.18, origem: "[ds]", protegido_por: F1}
 
   - {id: b12_f2, de: "B12", para: "F2 (2 A)", bitola_mm2: 1.5, corrente_a: 1.14, origem: "[calc] 0,5 + 0,52 + 0,10 + 0,02", protegido_por: F1}
   - {id: f2_t12, de: "F2", para: "T12", bitola_mm2: 0.5, corrente_a: 1.14, origem: "[calc]", protegido_por: F2}
@@ -62,13 +62,14 @@ trechos:
   - {id: trava_gnd, de: "Trava (−)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.5, origem: "[ds]", protegido_por: F2}
   - {id: t12_lm, de: "T12 (pelo COM do relé 1, segundo fio)", para: "LM2596 IN+", bitola_mm2: 0.5, corrente_a: 0.10, origem: "[calc] 0,23 A em 5 V / 12 V / 0,85", protegido_por: F2}
   - {id: lm_gnd, de: "LM2596 IN−", para: "GND", bitola_mm2: 0.5, corrente_a: 0.10, origem: "[calc]", protegido_por: F2}
-  - {id: lm_reles, de: "LM2596 OUT+ (5,0 V)", para: "VCC do módulo de relés", bitola_mm2: 0.5, corrente_a: 0.23, origem: "[ds] 3 bobinas de 70 Ω + LEDs", protegido_por: F2}
-  - {id: lm_reles_gnd, de: "LM2596 OUT−", para: "GND do módulo de relés", bitola_mm2: 0.5, corrente_a: 0.23, origem: "[calc]", protegido_por: F2}
+  - {id: lm_reles, de: "LM2596 OUT+ (5,0 V)", para: "JD-VCC do módulo de relés (jumper JD-VCC–VCC tirado)", bitola_mm2: 0.5, corrente_a: 0.23, origem: "[ds] 3 bobinas de 70 Ω + LEDs", protegido_por: F2}
+  - {id: lm_reles_gnd, de: "LM2596 OUT−", para: "GND do módulo de relés (pino ao lado do JD-VCC)", bitola_mm2: 0.5, corrente_a: 0.23, origem: "[calc]", protegido_por: F2}
   - {id: vq_gnd, de: "Ventoinhas dos coolers (−, pino 1)", para: "GND", bitola_mm2: 0.5, corrente_a: 0.52, origem: "[ds]", protegido_por: F2}
   - {id: gnd_fonte, de: "GND (conectores)", para: "Fonte V− (parafuso 3)", bitola_mm2: 1.5, corrente_a: 1.5, origem: "[calc] tudo menos as Peltier", protegido_por: F1}
   - {id: mega_gnd, de: "GND do Mega", para: "GND do módulo de relés", bitola_mm2: 0, corrente_a: 0.01, origem: "[calc] só referência de sinal", protegido_por: "-",
      nota: "Jumper. Único ponto entre o terra do Mega e o terra do 12 V"}
-  - {id: divisor_12v, de: "B12", para: "4,7 kΩ -> A0 -> 2,2 kΩ -> GND do Mega", bitola_mm2: 0, corrente_a: 0.002, origem: "[calc] 12 / 6,9 kΩ", protegido_por: F1}
+  - {id: divisor_12v, de: "B12", para: "4,7 kΩ -> meio do divisor -> 2,2 kΩ -> GND do Mega; meio do divisor -> 4,7 kΩ -> A0", bitola_mm2: 0, corrente_a: 0.002, origem: "[calc] 12 / 6,9 kΩ", protegido_por: F1,
+     nota: "Com o Mega desligado, entram no máximo (3,83 − 0,5) / 6,2 kΩ ≈ 0,5 mA pelo diodo do A0 [calc]: não alimenta o Mega por trás"}
 
 diodos:
   - {id: D1, tipo: 1N4007, entre: "P1 (catodo, faixa) e GND (anodo)", motivo: "Pico ao desligar a ventoinha fria 1 e os fios da Peltier"}
