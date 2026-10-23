@@ -2,6 +2,8 @@
 
 Revisão de 22/10/2026, branch `revisao-geral`. Fases 0 e 1 do plano: inventário (só leitura) e auditoria. Nada foi consertado ainda. As correções dependem da **DECISÃO 1** (arquitetura), no fim deste documento.
 
+> **Atualização de 23/10/2026:** as seções 1 a 8 mostram o projeto como estava em 22/10, antes das correções, e servem de registro. O que foi feito com cada item está na **seção 9**, e o resultado da revisão independente, na **seção 10**.
+
 ## Como ler
 
 Cada valor técnico tem uma marca de origem:
@@ -281,3 +283,53 @@ Leitura: **uma** 12703 (que o grupo já tem) segura a faixa de 2–8 °C numa ba
 - Dissipadores em convecção natural: R. E. Simons, "Estimating Parallel Plate-Fin Heat Sink Thermal Resistance", *Electronics Cooling*, fev/2003
 - A página do dissipador 65 × 46 × 24 da Usinainfo (link da LISTA) responde **404** hoje.
 - Preços do legado: `referencias_externas/.../dispensario_interno/docs/lista_de_compras.csv` (consultados de 07 a 15/10; reconferir na Fase 2).
+
+---
+
+## 9. Situação de cada item em 23/10/2026
+
+Legenda: **resolvido** (no projeto e com teste ou conta), **no papel** (projetado, mas depende de montagem ou medição), **pendente**.
+
+| ID | O que foi feito | Onde | Situação |
+|---|---|---|---|
+| 1 | Peltier com cooler de CPU e ventoinha (Hyper 212), dissipador e ventoinha também do lado frio, baia isolada com EPS de 50 mm. Os coolers ficam do lado de fora da lateral esquerda, porque o vão de trás não tem acesso com o armário colado | DECISOES 1.0–1.2, `calculos/gaveta_fria.py`, `calculos/coolers_externos.py` | no papel: falta medir na bancada (teste 7 e 9) |
+| 2 | Fusível térmico de 85 °C em série com cada Peltier, 3 DS18B20 e controle automático com histerese no firmware | `hardware/potencia.yaml`, `src/logica/termico.cpp` + 6 testes | resolvido (falta montar) |
+| 3 | Nível inativo gravado antes de `pinMode(OUTPUT)` (lista `SAIDAS` gerada) | `armario_dispensador.ino`, `pinos.h` | resolvido no código; conferir na bancada (teste 3) |
+| 4 | O Mega inicia com tudo desligado; a trava só abre com autenticação nova; o app abre a serial uma vez só | firmware, `app/hal/serial_mega.py` | resolvido |
+| 5 | Liberação de emergência: 2 parafusos do batente dentro da cava do puxador | `armario/MANUAL_PORTA.md` 4 | no papel: testar no cupom |
+| 6 | Bobina medida antes de ligar; F2 trocado por um de 4 A se der ~6 Ω; intertravamento cobre os 2 A | TESTES 0.1, DECISOES 1.4 | no papel: medir |
+| 7 | Barramento de 12 V e de GND com conectores de alavanca, cada COM com o seu fio | LIGACOES 4 | resolvido no projeto |
+| 8 | Fonte dentro da caixa da eletrônica, que cobre o borne; fonte fechada como alternativa na lista | DECISOES 1.5, LISTA | no papel |
+| 9 | 20 usuários com ID e senha própria (SHA-256 com sal no Mega) + digital | `src/logica/memoria.*` + testes | resolvido |
+| 10 | Auditoria só de acréscimo com HMAC encadeado no notebook + fila de eventos com número de sequência na EEPROM | `app/storage.py`, `src/logica/memoria.*` + testes | resolvido |
+| 11 | 2 webcams (externa no tampo, interna na lateral direita), clipe por abertura com SHA-256 na auditoria | `app/cameras.py`, `app/core.py` + testes | resolvido com câmera simulada; testar com as webcams |
+| 12 | Quiosque com CPF, MV simulado e API do legado reaproveitados | `app/` | resolvido (MV real fora do alcance) |
+| 13 | Reed de volta, com pull-up (fio rompido = aberta) | `pinos.yaml`, firmware | resolvido (falta montar) |
+| 14 | Mega na USB do notebook (bateria), estado e eventos na EEPROM, sessão no journal do SQLite | DECISOES 1.3, testes de reset | resolvido; testar na bancada (teste 10) |
+| 15 | Convenção única: gaveta 1 = a de baixo | DECISOES, simulação, `app/semente.py` | resolvido |
+| 16 | Dispensador documentado como estrutura passiva | README | resolvido |
+| 17 | Porta afastada 9 mm das gavetas; puxadores das gavetas só embutidos; o gerador recusa folga abaixo de 5 mm | `armario/gerador/porta_colisao.py` | resolvido; medir as frentes reais |
+| 18 | Todas as posições saem do `config.py` e do `layout.py`; furos e simulação gerados | `hardware/`, `docs/gerar_simulacao.py` | resolvido |
+| N01, N02 | Dissipador frio com ventoinha; prensa com barra roscada e berço (sem cola quente nem nylon no lado quente) | LIGACOES 7 | no papel |
+| N03 | Rotas novas por fora do armário; furos só nas laterais, conferidos contra prateleiras, nervuras e corrediças | `hardware/furos.py` | resolvido |
+| N04 | Vin desligado (Mega na USB) | DECISOES 1.3 | resolvido |
+| N05 | Buzzer passivo com volume por PWM e resistor de 1 kΩ; volume mais baixo à noite | firmware, `app/core.py` | resolvido; medir o volume (teste 4.6) |
+| N06 | Teste do LCD com o cabo longo; adaptador I²C como plano B na lista | TESTES 4.1 | no papel |
+| N07 | Câmera externa no tampo, sem furo na porta | DECISOES, simulação | resolvido |
+| N08 | F2 de 2 A no ramo fino; o teste de potência confere bitola × fusível | `hardware/potencia.yaml`, `tests/test_pinos.py` | resolvido |
+| N09 | Gerador da V2.3 corrigido, sem sobrescrever o LEIA_PRIMEIRO | `armario/gerador`, `tests/test_armario.py` | resolvido |
+| N10 | Bloqueio do painel com o relógio do núcleo | `app/auth.py` | resolvido |
+| N11 | Simulação refeita a partir do `config.py` | `docs/simulacao.html` | resolvido |
+| N12 | Prefixos `rogi:` removidos | README, LIGACOES, LISTA (os antigos estão em `legado/`) | resolvido |
+| N13 | Dupla confirmação: itens conferidos antes de liberar e quantidades confirmadas depois de fechar, com registro de divergência | `app/core.py` | resolvido |
+| N14 | Autorização (`LIBERADO`) e abertura (`PORTA_ABERTA`) são eventos separados | firmware, app | resolvido |
+
+### 9.1 Matriz RF/RNF com o que existe hoje
+
+Todos os requisitos **Must** estão atendidos no software e testados com o Mega simulado, menos o RF04 (parcial, justificado: o MV real não foi liberado). Falta confirmar na montagem:
+
+- **RF01 e RF07:** o leitor AS608 e as webcams reais.
+- **RF12 e RNF08:** a baia fria, que precisa do teste de 30 minutos.
+- **RNF14:** parcial justificado; na banca, grampos na mesa.
+- **RNF13 (prazo):** a montagem e os testes de bancada são o caminho crítico até 18/11.
+
